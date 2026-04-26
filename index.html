@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HM EXPRESS - Tarjeta Digital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #020202; /* Fondo de la página oscuro */
+        }
+        .font-serif-elegant {
+            font-family: 'Playfair Display', serif;
+        }
+        .card-container {
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            background-color: #020202; /* Fondo de la tarjeta oscuro */
+            border: 1px solid #333; /* Borde oscuro para combinar */
+        }
+        .profile-image-container {
+            position: relative;
+            height: 250px;
+        }
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            mask-image: linear-gradient(to top, transparent 0%, black 50%);
+            -webkit-mask-image: linear-gradient(to top, transparent 0%, black 50%);
+        }
+        .link-button {
+            background-color: #111111; /* Fondo oscuro muy sutil */
+            border: 1px solid #333333; /* Borde para enmarcar el botón */
+            color: #e5e7eb; /* Texto gris muy clarito/blanco */
+            font-weight: 500; 
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+        .link-button:hover {
+            background-color: #ffffff; /* Se vuelve blanco al pasar el mouse */
+            color: #000000; /* El texto y el icono se vuelven negros */
+            transform: translateY(-3px);
+            border-color: #ffffff;
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15); /* Resplandor blanco sutil */
+        }
+        /* Estilos para el Popup */
+        .modal {
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            transition: transform 0.3s ease;
+            max-height: 90vh;
+        }
+        
+        .modal-content.bordered {
+             border: 2px solid #5c636a; /* Borde plomo sutil */
+        }
+
+        .instruction-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            vertical-align: middle;
+            margin: 0 4px;
+        }
+        
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen py-8">
+
+    <!-- Contenedor principal de la tarjeta -->
+    <div class="card-container w-full sm:m-4 sm:rounded-3xl overflow-hidden pb-4">
+        
+        <div class="profile-image-container">
+            <!-- Icono Instalar Tarjeta -->
+            <a href="#" id="install-button" class="absolute top-4 left-4 z-10 bg-[#111111] border border-[#333333] p-3 rounded-full text-white hover:bg-white hover:text-black transition-all shadow-md" aria-label="Instalar Tarjeta">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><path d="M12 18h.01"/><path d="M12 6v8"/><path d="m9 11 3 3 3-3"/></svg>
+            </a>
+            <!-- Icono Llamar -->
+            <a href="tel:+542317529418" class="absolute top-4 right-4 z-10 bg-[#111111] border border-[#333333] p-3 rounded-full text-white hover:bg-white hover:text-black transition-all shadow-md" aria-label="Llamar">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </a>
+            
+            <img src="https://i.imgur.com/pLWQzl3.png" 
+                 alt="Logo de HM EXPRESS" 
+                 class="profile-image"
+                 onerror="this.onerror=null;this.src='https://placehold.co/400x400/020202/ffffff?text=HM';">
+        </div>
+
+        <!-- Títulos desplazados abajo de la imagen -->
+        <div class="text-center pt-4 px-4 sm:px-6">
+            <h1 class="text-3xl sm:text-4xl font-serif-elegant font-bold text-white">HM EXPRESS</h1>
+            <p class="text-sm tracking-wider uppercase text-gray-300 mt-1">Servicio de Logística y Paquetería</p>
+        </div>
+
+        <div class="p-4 sm:p-6 pt-6 text-center">
+            <h2 class="text-xl font-serif-elegant text-white">¡Bienvenido/a!</h2>
+            <p class="text-xs text-gray-400 mb-6">Toca para interactuar</p>
+
+            <div class="space-y-4">
+                <a href="https://wa.me/542317529418" target="_blank" class="link-button flex items-center justify-center w-full p-4 rounded-xl text-base sm:text-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                    <span>Escríbeme a WhatsApp</span>
+                </a>
+                
+                <a href="https://www.google.com/maps?q=-35.4440833,-60.8738056" target="_blank" class="link-button flex items-center justify-center w-full p-4 rounded-xl text-base sm:text-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    <span>Mi localización</span>
+                </a>
+
+                <a href="#" id="qr-button" class="link-button flex items-center justify-center w-full p-4 rounded-xl text-base sm:text-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect></svg>
+                    <span>Compartir QR</span>
+                </a>
+
+                <a href="#" id="save-contact-button" class="link-button flex items-center justify-center w-full p-4 rounded-xl text-base sm:text-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <span>Guardar Contacto</span>
+                </a>
+            </div>
+        </div>
+        
+        <div class="text-center p-4 sm:p-6 pt-2">
+            <a href="mailto:fabianmarcelino@gmail.com" class="text-gray-400 hover:text-white transition-colors">fabianmarcelino@gmail.com</a>
+        </div>
+    </div>
+    
+    <!-- Popup / Modal de Instalación -->
+    <div id="install-modal" class="modal fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none">
+        <div class="modal-content bordered w-full max-w-md mx-auto transform scale-95 rounded-2xl overflow-auto text-white bg-[#111]">
+            <div class="relative p-6">
+                <button id="close-install-modal-button" class="absolute top-2 right-2 text-gray-400 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+                <h2 class="text-3xl font-serif-elegant mb-4 text-center">¿Cómo instalar?</h2>
+                <p class="text-center text-gray-400 mb-6 text-sm">Sigue estos pasos para añadir un acceso directo en tu móvil.</p>
+
+                <!-- Instrucciones iOS -->
+                <div class="mb-6 bg-[#222] p-4 rounded-lg">
+                    <h3 class="font-bold text-lg mb-2 text-gray-200">En iPhone (Safari)</h3>
+                    <ol class="list-none space-y-3 text-gray-300">
+                        <li class="flex items-start">
+                            <span class="w-5 text-right mr-2 font-bold text-white">1.</span>
+                            <span>Toca el icono de <strong>Compartir</strong><svg class="instruction-icon inline text-white" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="w-5 text-right mr-2 font-bold text-white">2.</span>
+                            <span>Busca y selecciona <strong>"Añadir a inicio"</strong><svg class="instruction-icon inline text-white" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="w-5 text-right mr-2 font-bold text-white">3.</span>
+                            <span>¡Listo! La tarjeta aparecerá como una app.</span>
+                        </li>
+                    </ol>
+                </div>
+
+                <!-- Instrucciones Android -->
+                 <div class="bg-[#222] p-4 rounded-lg">
+                    <h3 class="font-bold text-lg mb-2 text-gray-200">En Android (Chrome)</h3>
+                    <ol class="list-none space-y-3 text-gray-300">
+                        <li class="flex items-start">
+                            <span class="w-5 text-right mr-2 font-bold text-white">1.</span>
+                            <span>Toca los <strong>tres puntos</strong><svg class="instruction-icon inline text-white" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="w-5 text-right mr-2 font-bold text-white">2.</span>
+                            <span>Selecciona <strong>"Instalar aplicación"</strong>.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="w-5 text-right mr-2 font-bold text-white">3.</span>
+                            <span>Confirma y se añadirá a tu pantalla.</span>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Popup / Modal de QR -->
+    <div id="qr-modal" class="modal fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none">
+        <div class="modal-content bordered w-full max-w-sm mx-auto transform scale-95 rounded-2xl overflow-auto text-white bg-[#111]">
+            <div class="relative p-6 sm:p-8 text-center">
+                 <button id="close-qr-modal-button" class="absolute top-2 right-2 text-gray-400 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+                <h2 class="text-xl sm:text-2xl font-serif-elegant mb-4">Comparte mi Tarjeta</h2>
+                <div class="flex justify-center mb-4">
+                     <img id="qr-code-img" src="" alt="Código QR" class="rounded-xl shadow-lg bg-white p-3">
+                </div>
+                <p class="text-gray-400 text-sm">Escanea el código para abrir mi tarjeta digital.</p>
+            </div>
+        </div>
+    </div>
+    
+
+    <script>
+        const setupModal = (triggerId, modalId, closeButtonId) => {
+            const triggerButton = document.getElementById(triggerId);
+            const modal = document.getElementById(modalId);
+            if (!triggerButton || !modal) return;
+            const modalContent = modal.querySelector('.modal-content');
+            const closeButton = document.getElementById(closeButtonId);
+
+            const openModal = (e) => {
+                e.preventDefault();
+                document.body.style.overflow = 'hidden';
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                if (modalContent) modalContent.classList.remove('scale-95');
+            };
+
+            const closeModal = () => {
+                document.body.style.overflow = '';
+                if (modalContent) modalContent.classList.add('scale-95');
+                modal.classList.add('opacity-0');
+                setTimeout(() => modal.classList.add('pointer-events-none'), 300);
+            };
+
+            triggerButton.addEventListener('click', openModal);
+            if (closeButton) closeButton.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+        };
+
+        const setupSaveContact = () => {
+            const saveButton = document.getElementById('save-contact-button');
+            if (!saveButton) return;
+
+            saveButton.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                // Datos VCF actualizados
+                const vCard = `BEGIN:VCARD
+VERSION:3.0
+FN:HM EXPRESS
+ORG:Servicio de Logística y Paquetería
+TEL;TYPE=WORK,VOICE:+542317529418
+EMAIL:fabianmarcelino@gmail.com
+URL:https://hmexpress.com
+END:VCARD`;
+
+                const blob = new Blob([vCard], { type: 'text/vcard;charset=utf-8' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'HM_EXPRESS.vcf';
+
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setupModal('install-button', 'install-modal', 'close-install-modal-button');
+            setupModal('qr-button', 'qr-modal', 'close-qr-modal-button');
+            
+            setupSaveContact();
+            
+            const qrImg = document.getElementById('qr-code-img');
+            if (qrImg) {
+                const currentUrl = window.location.href;
+                qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(currentUrl)}`;
+            }
+        });
+    </script>
+
+</body>
+</html>
