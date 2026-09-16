@@ -242,6 +242,17 @@ strong{font-weight:700}
 .nota-mecanismo{font-size:.8125rem;color:var(--texto-suave);margin-top:.5rem}
 .nota-mecanismo b{color:var(--texto)}
 
+/* Bloques de la arquitectura de página */
+.bloque-pagina{
+  border:1px solid var(--borde);border-left:4px solid var(--secundario);
+  border-radius:var(--radio-sm);padding:1rem 1.15rem;margin:.85rem 0;background:var(--fondo);
+}
+.rotulo-bloque{
+  display:block;font-size:.6875rem;font-weight:800;letter-spacing:.08em;
+  text-transform:uppercase;color:#047857;margin-bottom:.4rem;
+}
+.contenido-bloque{font-size:1rem;line-height:1.5;font-weight:600;color:var(--texto)}
+
 /* Acordeón de mecanismos */
 .acordeon{border:1px solid var(--borde);border-radius:var(--radio-sm);margin-bottom:.75rem;background:var(--blanco);overflow:hidden}
 .acordeon>summary{
@@ -1182,6 +1193,52 @@ function detectarSituacionActual(texto){
 }
 
 /* Detecta el TIPO DE OFERTA. */
+/* Precio, garantía, objeciones, bonos y mecanismo de la competencia:
+   los elementos que la arquitectura de una página de ventas necesita y
+   que hasta ahora la herramienta no buscaba. */
+function detectarPrecio(t){
+  var m = (t||"").match(/(?:US\s*)?\$\s?\d[\d.,]{1,11}/);
+  return m ? m[0].replace(/\s+/g," ").trim() : "";
+}
+function detectarGarantiaDias(t){
+  var m = (t||"").match(/garant[íi]a[^.\n]{0,28}?(\d{1,3})\s*d[íi]as/i)
+       || (t||"").match(/(\d{1,3})\s*d[íi]as\s+de\s+garant[íi]a/i)
+       || (t||"").match(/(\d{1,3})\s*d[íi]as\s+para\s+prob/i);
+  return m ? m[1] : "";
+}
+function detectarObjeciones(t){
+  var fuera = [], vistas = {};
+  var re = /\b(?:incluso\s+si|aunque|y\s+si)\s+([^.,;:\n()]{5,55})/gi, m, guardia = 0;
+  while((m = re.exec(t)) !== null && guardia++ < 20){
+    var c = limpiarFragmento(m[1],9);
+    if(c.length>4 && !vistas[normalizar(c)]){ vistas[normalizar(c)] = 1; fuera.push(c.toLowerCase()); }
+  }
+  var clasicas = [
+    [/\bno\s+teng[oa]s?\s+tiempo\b|\bsin\s+tiempo\b|\bno\s+tengo\s+tiempo\b/i, "no tenés tiempo"],
+    [/\bsin\s+experiencia\b|\bnunca\s+lo\s+hiciste\b|\bdesde\s+cero\b|\bnovato/i, "nunca lo hiciste antes"],
+    [/\bno\s+s[ée]\s+de\s+t[ée]cnic|\bno\s+soy\s+t[ée]cnic|\bsin\s+c[óo]digo\b|\bsin\s+saber\s+de\s+mec[áa]nica\b/i, "no sos técnico"],
+    [/\bya\s+prob[aá]|\bprobaste\s+de\s+todo\b|\bno\s+te\s+funcion/i, "ya probaste otras cosas"],
+    [/\bes\s+car[oa]\b|\bpresupuesto\b/i, "el presupuesto es corto"],
+    [/\bde\s+memoria\b|\bno\s+me\s+acuerdo\b|\bno\s+te\s+acord/i, "no te acordás de nada de lo anterior"]
+  ];
+  for(var i=0;i<clasicas.length && fuera.length<2;i++){
+    if(clasicas[i][0].test(t) && !vistas[normalizar(clasicas[i][1])]) fuera.push(clasicas[i][1]);
+  }
+  return fuera.slice(0,2);
+}
+function detectarMecanismoViejo(t){
+  var m = (t||"").match(/\b(?:a\s+diferencia\s+de|en\s+vez\s+de|en\s+lugar\s+de|sin\s+recurrir\s+a|olvidate\s+de)\s+([^.,;:\n()]{4,45})/i);
+  return m ? limpiarFragmento(m[1],8).toLowerCase() : "";
+}
+function detectarBonos(t){
+  var bonos = [], re = /\bbono\s*#?\s*\d?\s*[:.\-–]?\s*([^.\n]{6,70})/gi, m, guardia = 0;
+  while((m = re.exec(t)) !== null && guardia++ < 12){
+    var c = limpiarFragmento(m[1],12);
+    if(c.length>5) bonos.push(c);
+  }
+  return bonos.slice(0,3);
+}
+
 function detectarTipo(texto){
   var n = normalizar(texto||"");
   var puntos = { infoproducto:0, servicio:0, saas:0, ecommerce:0 };
@@ -1267,6 +1324,11 @@ function analizar(datos){
     entregable:  extraer(detectarEntregable),
     situacion:   extraer(detectarSituacionActual),
     producto:    detectarProducto(texto),
+    precio:      detectarPrecio(texto),
+    garantiaDias:detectarGarantiaDias(texto),
+    objeciones:  detectarObjeciones(texto),
+    mecanismoViejo: detectarMecanismoViejo(texto),
+    bonos:       detectarBonos(texto),
     textoOriginal: texto.trim(),
     deducidos: []
   };
@@ -1550,6 +1612,120 @@ function diagnosticar(ctx,texto){
   };
 }
 
+/* --- 3.6.c Arquitectura de la página de ventas --------------------------
+   Los ocho bloques de una página de alta conversión, rellenos con los
+   datos de la oferta. Lo que no se pudo deducir queda como campo a
+   completar, nunca inventado: una cifra de valor o un precio los pone
+   el dueño de la oferta, no la herramienta.                          */
+function construirPagina(ctx){
+  var obj1 = ctx.objeciones[0] || "[la objeción principal]";
+  var obj2 = ctx.objeciones[1] || "[la segunda objeción]";
+  var viejo = ctx.mecanismoViejo || "[el método viejo de la competencia]";
+  var dolor = falta(ctx.situacion) ? "[el problema que viven hoy]" : ctx.situacion;
+  var mec   = falta(ctx.mecanismo) ? "[el nombre de tu mecanismo único]" : ctx.mecanismo;
+  var aspir = falta(ctx.aspiracion) ? "[su resultado soñado]" : ctx.aspiracion;
+  var urg   = falta(ctx.urgencia) ? "[tiempo récord]" : ctx.urgencia;
+  var core  = falta(ctx.entregable) ? "[el componente central de tu oferta]" : ctx.entregable;
+
+  /* Los tres bonos cubren, por diseño, las tres objeciones que más frenan:
+     tiempo, dificultad y probabilidad de éxito. */
+  var rolesBono = [
+    "Destructor de la objeción de tiempo",
+    "Destructor de la objeción de dificultad",
+    "Multiplicador de resultados"
+  ];
+  var bonos = rolesBono.map(function(rol,i){
+    return {
+      rol: rol,
+      nombre: ctx.bonos[i] || "[bono que derribe la objeción de "+
+              ["tiempo","dificultad","dudas sobre si va a funcionar"][i]+"]",
+      valor: "[valor $]",
+      detectado: !!ctx.bonos[i]
+    };
+  });
+
+  return {
+    preTitular: "Atención "+ctx.heroe+": si estás cansado de "+dolor+"...",
+    titular:    contraer("Cómo "+aspir+" en "+urg+' usando el "'+mec+'"...'),
+    subtitular: "...incluso si "+obj1+" o "+obj2+". Sin "+viejo+".",
+    vsl:        "[Video de ventas de 3 minutos, o una imagen del producto que se vea real]",
+    core:       core,
+    bonos:      bonos,
+    valorTotal: "[suma de los valores de arriba]",
+    precio:     ctx.precio || "[precio de hoy]",
+    cta:        "Sí, quiero "+(falta(ctx.aspiracion) ? "acceder" : aspir)+" ahora",
+    garantia:   ctx.garantiaDias
+                  ? "Garantía de "+ctx.garantiaDias+" días: si no cumple, escribís y te devolvemos el importe completo."
+                  : "Garantía de [N] días: si no cumple [criterio], escribís a [canal] y te devolvemos el importe completo.",
+    urgencia:   "[motivo real de la urgencia: cupos, fecha de cierre o subida de precio]"
+  };
+}
+
+/* La misma página, como HTML listo para pegar. */
+function paginaAHTML(pg,ctx){
+  function e(t){ return String(t==null?"":t)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  var filas = [{n:e(pg.core), v:"[valor $]", c:"El sistema completo"}].concat(
+    pg.bonos.map(function(b){ return {n:e(b.nombre), v:b.valor, c:e(b.rol)}; })
+  ).map(function(f){
+    return '      <div class="item"><div>✔️ <strong>'+f.n+'</strong><br><small>'+f.c+'</small></div>'+
+           '<span>Valor: '+f.v+'</span></div>';
+  }).join("\n");
+
+  return [
+'<!DOCTYPE html>',
+'<html lang="es">',
+'<head>',
+'<meta charset="UTF-8">',
+'<meta name="viewport" content="width=device-width, initial-scale=1.0">',
+'<title>'+e(pg.titular.replace(/\[|\]/g,""))+'</title>',
+'<style>',
+'*,*::before,*::after{box-sizing:border-box}',
+'body{font-family:Helvetica Neue,Helvetica,Arial,sans-serif;background:#f8f9fa;color:#333;margin:0;overflow-wrap:anywhere}',
+'.container{max-width:900px;margin:0 auto;padding:40px 20px}',
+'.pre{color:#d93025;font-weight:bold;text-align:center;text-transform:uppercase;font-size:14px;letter-spacing:1px}',
+'h1{font-size:38px;text-align:center;font-weight:900;line-height:1.2;margin:15px 0;color:#111}',
+'.sub{font-size:20px;text-align:center;color:#555;margin-bottom:40px}',
+'.vsl{background:#000;width:100%;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;',
+'color:#fff;border:4px solid #fff;box-shadow:0 10px 30px rgba(0,0,0,.2);margin-bottom:40px;text-align:center;padding:20px}',
+'.stack{background:#fff;padding:40px;border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,.05);border-top:5px solid #d93025}',
+'.stack h3{text-align:center;font-size:28px;margin-top:0}',
+'.item{display:flex;justify-content:space-between;gap:16px;padding:15px 0;border-bottom:1px dashed #ccc;font-size:18px;min-width:0}',
+'.item>div{min-width:0}',
+'.item small{color:#777;font-size:13px}',
+'.item span{color:#d93025;font-weight:bold;white-space:nowrap}',
+'.total{text-align:center;font-size:24px;margin-top:30px;text-decoration:line-through;color:#777}',
+'.hoy{text-align:center;font-size:42px;font-weight:900;color:#111;margin:10px 0 30px}',
+'.cta{display:block;width:100%;max-width:420px;margin:0 auto;background:#00a859;color:#fff;text-align:center;',
+'padding:20px;font-size:22px;font-weight:bold;text-decoration:none;border-radius:5px;box-shadow:0 5px 0 #008244}',
+'.urg{text-align:center;color:#d93025;font-weight:bold;margin-top:14px;font-size:14px}',
+'.gar{text-align:center;margin-top:20px;font-size:14px;color:#666}',
+'@media(max-width:600px){h1{font-size:28px}.sub{font-size:17px}.container{padding:24px 16px}',
+'.stack{padding:20px 16px}.item{flex-direction:column;gap:4px}.item span{white-space:normal}',
+'.hoy{font-size:34px}.cta{font-size:18px;padding:16px}}',
+'</style>',
+'</head>',
+'<body>',
+'  <div class="container">',
+'    <div class="pre">'+e(pg.preTitular)+'</div>',
+'    <h1>'+e(pg.titular)+'</h1>',
+'    <div class="sub">'+e(pg.subtitular)+'</div>',
+'    <div class="vsl"><p>'+e(pg.vsl)+'</p></div>',
+'    <div class="stack">',
+'      <h3>Esto es lo que obtenés hoy:</h3>',
+filas,
+'      <div class="total">Valor total: '+e(pg.valorTotal)+'</div>',
+'      <div class="hoy">Precio hoy: '+e(pg.precio)+'</div>',
+'      <a href="#checkout" class="cta">'+e(pg.cta.toUpperCase())+'</a>',
+'      <p class="urg">⚠️ '+e(pg.urgencia)+'</p>',
+'      <div class="gar">🔒 '+e(pg.garantia)+'</div>',
+'    </div>',
+'  </div>',
+'</body>',
+'</html>'
+  ].join("\n");
+}
+
 /* --- 3.7 Orquestador ---------------------------------------------------- */
 function generar(datos){
   var ctx = analizar(datos);
@@ -1569,6 +1745,7 @@ function generar(datos){
     mecanismos: generarPromesasMecanismo(ctx),
     subpromesas: subpromesas,
     pila: generarPila(ctx),
+    pagina: construirPagina(ctx),
     diagnostico: diagnosticar(ctx, ctx.textoOriginal),
     auditoria: auditar(ctx.textoOriginal),
     claridad: puntuarClaridad(ctx,datos)
@@ -1669,6 +1846,49 @@ function render(res){
   h.push('<p class="apoyo" style="margin:1rem 0 .25rem"><strong>✅ Ahora</strong> — con los cuatro pilares:</p>');
   h.push('<div class="promesa" style="font-size:1.1875rem">'+texto(res.haus[0].texto)+'</div>');
 
+  h.push('</div>');
+
+  /* ---- 4.1.b Tu página de ventas armada ---- */
+  var pg = res.pagina;
+  h.push('<div class="tarjeta seccion">');
+  h.push('<span class="etiqueta">Estructura completa</span>');
+  h.push('<h2 style="margin-top:.75rem">🏗️ Tu página de ventas, bloque por bloque</h2>');
+  h.push('<p class="apoyo">El orden importa tanto como el texto: gancho, promesa, demostración, oferta, precio, acción y garantía. Cada bloque cumple una función distinta.</p>');
+
+  function bloque(num,rotulo,funcion,contenido){
+    h.push('<div class="bloque-pagina">');
+    h.push('<span class="rotulo-bloque">'+num+' · '+esc(rotulo)+'</span>');
+    h.push('<div class="contenido-bloque">'+texto(contenido)+'</div>');
+    h.push('<p class="nota-mecanismo">'+esc(funcion)+'</p>');
+    h.push('</div>');
+  }
+
+  bloque(1,"Pre-titular","Filtra: el que no se siente aludido no sigue leyendo, y eso está bien.",pg.preTitular);
+  bloque(2,"Titular","La promesa con su mecanismo. Es lo único que se lee seguro.",pg.titular);
+  bloque(3,"Subtítulo","Derriba las dos objeciones que aparecen antes de seguir leyendo.",pg.subtitular);
+  bloque(4,"Video o demostración","Muestra que existe y funciona. Sin esto, todo lo anterior es afirmación.",pg.vsl);
+
+  h.push('<div class="bloque-pagina">');
+  h.push('<span class="rotulo-bloque">5 · Pila de valor</span>');
+  h.push('<div class="tabla-scroll"><table><thead><tr><th>Componente</th><th>Qué objeción derriba</th><th>Valor</th></tr></thead><tbody>');
+  h.push('<tr><td><strong>'+texto(pg.core)+'</strong></td><td>El sistema completo</td><td><span class="hueco">[valor $]</span></td></tr>');
+  pg.bonos.forEach(function(b){
+    h.push('<tr><td>'+texto(b.nombre)+(b.detectado?' <span class="etiqueta etiqueta-verde">ya lo tenés</span>':'')+
+           '</td><td>'+esc(b.rol)+'</td><td><span class="hueco">[valor $]</span></td></tr>');
+  });
+  h.push('</tbody></table></div>');
+  h.push('<p class="nota-mecanismo">Cada bono existe para derribar una objeción concreta. Un bono que no derriba nada solo agrega ruido.</p>');
+  h.push('</div>');
+
+  bloque(6,"Precio","El valor total tachado y el precio de hoy debajo.","Valor total: "+pg.valorTotal+" → Precio hoy: "+pg.precio);
+  bloque(7,"Llamada a la acción","Una sola, repetida. Que diga el resultado, no “enviar”.",pg.cta);
+  bloque(8,"Garantía y urgencia","La garantía revierte el riesgo; la urgencia tiene que ser real y verificable.",pg.garantia+" · "+pg.urgencia);
+
+  h.push('<div class="grupo-botones" style="margin-top:1.5rem">');
+  h.push('<button type="button" class="btn btn-secundario" data-copiar="html">📋 Copiar el HTML de la página</button>');
+  h.push('<button type="button" class="btn btn-contorno" data-copiar="descargar">💾 Descargar pagina-de-ventas.html</button>');
+  h.push('</div>');
+  h.push('<p class="apoyo" style="margin-top:.75rem">Se abre en cualquier navegador y se puede subir tal cual. Reemplazá los <span class="hueco">[campos]</span> con tus datos reales antes de publicar.</p>');
   h.push('</div>');
 
   /* ---- 4.2 Variantes HAUS ---- */
@@ -1823,6 +2043,20 @@ function aTextoPlano(res){
     l.push((f.ok?"  [OK]   ":"  [FALTA] ")+f.rotulo+(f.ok?": "+f.valor:""));
     if(!f.ok) l.push("         -> "+f.accion);
   });
+  l.push("== TU PÁGINA DE VENTAS, BLOQUE POR BLOQUE ==");
+  l.push("1) PRE-TITULAR: "+res.pagina.preTitular);
+  l.push("2) TITULAR: "+res.pagina.titular);
+  l.push("3) SUBTÍTULO: "+res.pagina.subtitular);
+  l.push("4) VIDEO / DEMOSTRACIÓN: "+res.pagina.vsl);
+  l.push("5) PILA DE VALOR:");
+  l.push("   - "+res.pagina.core+"  (el sistema completo) ..... [valor $]");
+  res.pagina.bonos.forEach(function(b){
+    l.push("   - "+b.nombre+"  ("+b.rol+") ..... "+b.valor);
+  });
+  l.push("6) PRECIO: valor total "+res.pagina.valorTotal+" -> precio hoy "+res.pagina.precio);
+  l.push("7) LLAMADA A LA ACCIÓN: "+res.pagina.cta);
+  l.push("8) GARANTÍA: "+res.pagina.garantia);
+  l.push("   URGENCIA: "+res.pagina.urgencia);
   l.push("");
   l.push("PROMESAS PRINCIPALES (6 variantes)");
   res.haus.forEach(function(v,i){ l.push((i+1)+". ["+v.etiqueta+"] "+v.texto); });
@@ -2196,6 +2430,47 @@ function copiarResultados(soloFinal){
   }
 }
 
+/* El HTML de la página armada, al portapapeles o a un archivo. */
+function htmlDeLaPagina(){
+  return paginaAHTML(ultimoResultado.pagina, ultimoResultado.ctx);
+}
+
+function copiarHTML(){
+  if(!ultimoResultado){ avisar("Todavía no hay página que copiar.", true); return; }
+  var contenido = htmlDeLaPagina();
+  function respaldo(){
+    try{
+      var area = document.createElement("textarea");
+      area.value = contenido; area.setAttribute("readonly","");
+      area.style.position="fixed"; area.style.top="-1000px";
+      document.body.appendChild(area); area.select();
+      var ok = document.execCommand("copy");
+      document.body.removeChild(area);
+      avisar(ok ? "✅ HTML copiado. Pegalo en un archivo .html" : "No pudimos copiar.", !ok);
+    }catch(e){ avisar("No pudimos copiar.", true); }
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(contenido)
+      .then(function(){ avisar("✅ HTML copiado. Pegalo en un archivo .html"); })
+      .catch(respaldo);
+  }else{ respaldo(); }
+}
+
+function descargarHTML(){
+  if(!ultimoResultado){ avisar("Todavía no hay página que descargar.", true); return; }
+  try{
+    var blob = new Blob([htmlDeLaPagina()], {type:"text/html;charset=utf-8"});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = "pagina-de-ventas.html";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+    avisar("✅ Descargando pagina-de-ventas.html");
+  }catch(e){
+    avisar("Tu navegador no permitió la descarga. Usá el botón de copiar.", true);
+  }
+}
+
 function limpiarTodo(){
   if(!window.confirm("Se borrarán tus textos y los resultados guardados en este navegador. ¿Continuar?")) return;
   try{
@@ -2242,8 +2517,10 @@ function iniciar(){
 
   /* El botón del bloque destacado se pinta con innerHTML: se escucha por delegación. */
   $("salida").addEventListener("click", function(ev){
-    var boton = ev.target.closest && ev.target.closest('[data-copiar="final"]');
-    if(boton) copiarResultados(true);
+    if(!ev.target.closest) return;
+    if(ev.target.closest('[data-copiar="final"]'))      copiarResultados(true);
+    else if(ev.target.closest('[data-copiar="html"]'))  copiarHTML();
+    else if(ev.target.closest('[data-copiar="descargar"]')) descargarHTML();
   });
   $("btnLimpiar").addEventListener("click", limpiarTodo);
 
