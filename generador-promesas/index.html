@@ -254,6 +254,36 @@ tbody tr:last-child td{border-bottom:none}
 .lista-check li::before{content:"☐";position:absolute;left:0;font-size:1.1rem;color:var(--primario)}
 .lista-check li.ok::before{content:"✅";font-size:.9rem}
 
+/* Bloque "promesa lista para aplicar": el entregable principal */
+.final{
+  background:linear-gradient(135deg,#4F46E5 0%,#6366F1 100%);
+  color:#fff;border-radius:var(--radio);padding:2rem;box-shadow:var(--sombra-alta);
+}
+.final h2{color:#fff;margin-bottom:.35rem}
+.final .etiqueta{background:rgba(255,255,255,.2);color:#fff}
+.final-campo{
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+  border-radius:var(--radio-sm);padding:1rem 1.15rem;margin-top:.75rem;
+}
+.final-campo .rotulo{
+  display:block;font-size:.6875rem;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;opacity:.75;margin-bottom:.35rem;
+}
+.final-titular{font-size:1.375rem;line-height:1.35;font-weight:700}
+.final-subtitulo{font-size:1.0625rem;line-height:1.5}
+.final-condicion{font-size:.875rem;line-height:1.55;opacity:.95}
+.final .hueco{background:rgba(255,255,255,.28);color:#fff;border-bottom-color:rgba(255,255,255,.6)}
+.final-porque{font-size:.875rem;opacity:.9;margin-top:1rem}
+.final .btn-copiar{
+  background:#fff;color:var(--primario);border-color:#fff;margin-top:1.25rem;font-weight:700;
+}
+.final .btn-copiar:hover{background:#F3F4F6;transform:scale(1.05)}
+@media (max-width:768px){
+  .final{padding:1.25rem}
+  .final-titular{font-size:1.125rem}
+  .final-subtitulo{font-size:1rem}
+}
+
 /* Medidor de claridad */
 .medidor{height:10px;background:var(--borde);border-radius:999px;overflow:hidden;margin:.6rem 0}
 .medidor span{display:block;height:100%;background:var(--secundario);border-radius:999px;transition:width .6s ease;width:0}
@@ -698,7 +728,7 @@ var MECANISMOS_S = {
     plantillas:{
       infoproducto:"Aprende [habilidad] con {mecanismo}, en [formato y ritmo], para que puedas {aspiracion}.",
       servicio:"Llega a {aspiracion} a través de {mecanismo} por etapas, con [entregables y alcance].",
-      saas:"Centraliza [tarea] al {mecanismo}, para que {heroe} pueda {aspiracion}.",
+      saas:"Centraliza [tarea] con {mecanismo}, para que puedas {aspiracion} sin salir de la herramienta.",
       ecommerce:"{aspiracion} mediante {mecanismo}, para que [efecto intermedio] ocurra en [situación de uso]."
     },
     limite:"No uses “científico”, “probado” o “revolucionario” sin documentarlo. Si la causalidad no está demostrada, usa verbos proporcionales: “incluye”, “está diseñado para”, “puede ayudar”."
@@ -947,7 +977,8 @@ function detectarSinDolor(texto){
 function detectarMecanismo(texto){
   var t = texto || "";
   var m = t.match(/\b(?:m[ée]todo|sistema|proceso|framework|protocolo|f[óo]rmula|ruta|programa|metodolog[íi]a)\s+(?:de\s+|del\s+)?([^.,;:\n()]{3,45})/i);
-  if(m) return limpiarFragmento(m[0],8).toLowerCase();
+  /* El plazo es el pilar U: no debe quedar pegado al mecanismo. */
+  if(m) return quitarPlazo(limpiarFragmento(m[0],8)).toLowerCase();
   /* Si no hay nombre propio, describimos el vehículo por el formato detectado */
   var n = normalizar(t);
   if(/\bplantilla/.test(n)) return "plantillas listas para usar y ejemplos resueltos";
@@ -1126,6 +1157,44 @@ var PLANTILLAS_HAUS = [
     f:function(c){ return "De "+c.situacion+" a "+c.aspiracion+" en "+c.urgencia+", gracias a "+c.mecanismo+" y sin "+c.sinDolor+"."; } }
 ];
 
+/* --- 3.1.b Promesa lista para aplicar -----------------------------------
+   El entregable principal: UNA promesa decidida, no un catálogo. La
+   estructura del titular se elige según la fricción dominante, porque
+   cada fricción se responde mejor con un ángulo distinto.             */
+var VARIANTE_POR_FRICCION = {
+  vago:          { i:2, porque:"Tu lector no puede comparar tu oferta con nada. Por eso el titular arranca con el resultado concreto y su plazo: es lo único que se puede verificar." },
+  visualiza:     { i:5, porque:"Tu lector no se imagina el cambio. Por eso el titular contrasta el punto de partida con el de llegada y nombra el puente entre los dos." },
+  escepticismo:  { i:3, porque:"Tu lector ya escuchó promesas parecidas. Por eso el titular abre con el mecanismo: responde “por qué esto sí” antes de pedir nada." },
+  demora:        { i:2, porque:"Lo que frena la compra es cuándo llega el valor. Por eso el resultado y el plazo van primero, antes que el público." },
+  complejidad:   { i:0, porque:"Tu lector teme no poder con esto. Por eso el titular usa la forma más simple y directa posible: sujeto, acción, resultado." },
+  objecion:      { i:1, porque:"Hay una objeción que domina la decisión. Por eso el titular segmenta primero y cierra con el “sin”, que es donde está el miedo." },
+  identidad:     { i:4, porque:"Es una categoría donde el lector se pregunta si esto es para alguien como él. Por eso el titular lo invita a reconocerse antes de prometer." },
+  consideracion: { i:3, porque:"Es una oferta de alta consideración. Por eso el titular se apoya en el mecanismo y la página sostiene UNA sola promesa, no varias." }
+};
+
+var CONDICION = {
+  infoproducto:"Incluye {entregable}. Garantía de [N] días: si no cumple [criterio], escribes a [canal] y devolvemos [importe] en [plazo]. El resultado depende de [tu práctica y de factores externos].",
+  servicio:"Alcance: {primerHito} en [días laborables] desde [inputs completos]. Tú aportas [dependencias]. Si no entregamos por una causa bajo nuestro control, eliges [revisión, crédito o reembolso].",
+  saas:"Prueba [N] días. Si no cancelas antes de [momento], cobramos [importe] cada [periodo]; cancelas desde [ruta]. Medido en [entorno], sujeto a [límites].",
+  ecommerce:"Precio final [importe]. Envío a [zona] entre [fecha] y [fecha]. Devolución dentro de [N] días en [canal]; [excepciones]."
+};
+
+function construirPromesaFinal(ctx,haus,subpromesas){
+  var eleccion = VARIANTE_POR_FRICCION[ctx.friccion.id] || VARIANTE_POR_FRICCION.vago;
+  var idSub = ctx.friccion.s[0];
+  var sub = subpromesas.filter(function(x){ return x.id===idSub; })[0] || subpromesas[0];
+  return {
+    titular:   haus[eleccion.i].texto,
+    estructura:haus[eleccion.i].etiqueta,
+    subtitulo: sub.texto,
+    subId:     sub.id,
+    subNombre: sub.nombre,
+    condicion: capitalizar(rellenar(CONDICION[ctx.tipo] || CONDICION.infoproducto, ctx)),
+    porque:    eleccion.porque,
+    mecanismo: ctx.friccion.p + " — " + MECANISMOS_P[ctx.friccion.p].nombre
+  };
+}
+
 /* --- 3.2 Promesas por mecanismo (P1-P7) --------------------------------- */
 function generarPromesasMecanismo(ctx){
   var salida = [];
@@ -1217,14 +1286,17 @@ function puntuarClaridad(ctx,datos){
 /* --- 3.7 Orquestador ---------------------------------------------------- */
 function generar(datos){
   var ctx = analizar(datos);
+  var haus = PLANTILLAS_HAUS.map(function(p){
+    return { etiqueta:p.etiqueta, texto:capitalizar(p.f(ctx)) };
+  });
+  var subpromesas = generarSubpromesas(ctx);
   return {
     fecha: new Date().toISOString(),
     ctx: ctx,
-    haus: PLANTILLAS_HAUS.map(function(p){
-      return { etiqueta:p.etiqueta, texto:capitalizar(p.f(ctx)) };
-    }),
+    haus: haus,
+    promesaFinal: construirPromesaFinal(ctx,haus,subpromesas),
     mecanismos: generarPromesasMecanismo(ctx),
-    subpromesas: generarSubpromesas(ctx),
+    subpromesas: subpromesas,
     pila: generarPila(ctx),
     auditoria: auditar(datos.existente||""),
     claridad: puntuarClaridad(ctx,datos)
@@ -1253,6 +1325,27 @@ function texto(txt){ return marcarHuecos(esc(txt)); }
 
 function render(res){
   var c = res.ctx, h = [];
+
+  /* ---- 4.0 La promesa lista para aplicar (el entregable principal) ---- */
+  var pf = res.promesaFinal;
+  h.push('<div class="final seccion">');
+  h.push('<span class="etiqueta">Empieza por aquí</span>');
+  h.push('<h2 style="margin-top:.75rem">📌 Tu promesa lista para aplicar</h2>');
+  h.push('<p style="opacity:.9;margin-bottom:1.25rem">Copia estas tres líneas en tu página de ventas, en este orden. El resto del informe son alternativas y respaldo.</p>');
+
+  h.push('<div class="final-campo"><span class="rotulo">1 · Titular</span>');
+  h.push('<div class="final-titular">'+texto(pf.titular)+'</div></div>');
+
+  h.push('<div class="final-campo"><span class="rotulo">2 · Subtítulo ('+esc(pf.subId)+')</span>');
+  h.push('<div class="final-subtitulo">'+texto(pf.subtitulo)+'</div></div>');
+
+  h.push('<div class="final-campo"><span class="rotulo">3 · Condiciones (junto al precio y al botón)</span>');
+  h.push('<div class="final-condicion">'+texto(pf.condicion)+'</div></div>');
+
+  h.push('<p class="final-porque"><strong>Por qué esta y no otra:</strong> '+esc(pf.porque)+
+         ' Mecanismo: '+esc(pf.mecanismo)+'.</p>');
+  h.push('<button type="button" class="btn btn-copiar" data-copiar="final">📋 Copiar solo esta promesa</button>');
+  h.push('</div>');
 
   /* ---- 4.1 Antes / después ---- */
   h.push('<div class="tarjeta tarjeta-destacada seccion">');
@@ -1405,6 +1498,22 @@ function aTextoPlano(res){
   l.push("GENERADOR DE PROMESAS — RESULTADOS");
   l.push("Generado el "+new Date(res.fecha).toLocaleString());
   l.push("".padEnd ? "".padEnd(60,"=") : "============================================================");
+  l.push("");
+  l.push("== TU PROMESA LISTA PARA APLICAR ==");
+  l.push("");
+  l.push("1) TITULAR:");
+  l.push("   "+res.promesaFinal.titular);
+  l.push("");
+  l.push("2) SUBTÍTULO ("+res.promesaFinal.subId+"):");
+  l.push("   "+res.promesaFinal.subtitulo);
+  l.push("");
+  l.push("3) CONDICIONES (junto al precio y al botón):");
+  l.push("   "+res.promesaFinal.condicion);
+  l.push("");
+  l.push("Por qué esta: "+res.promesaFinal.porque);
+  l.push("Mecanismo: "+res.promesaFinal.mecanismo);
+  l.push("");
+  l.push("-".repeat(60));
   l.push("");
   l.push("TU FÓRMULA HAUS");
   l.push("H (Héroe): "+c.heroe);
@@ -1726,9 +1835,19 @@ function mostrarRecuperar(){
   el.btnGenerar.parentNode.parentNode.appendChild(enlace);
 }
 
-function copiarResultados(){
+/* Texto de la promesa final sola, para el botón del bloque destacado. */
+function promesaFinalATexto(res){
+  var pf = res.promesaFinal;
+  return ["TITULAR:", pf.titular, "", "SUBTÍTULO:", pf.subtitulo, "",
+          "CONDICIONES (junto al precio y al botón):", pf.condicion, "",
+          "Completa los datos entre [corchetes] antes de publicar."].join("\n");
+}
+
+function copiarResultados(soloFinal){
   if(!ultimoResultado){ avisar("Todavía no hay resultados que copiar.", true); return; }
-  var contenido = aTextoPlano(ultimoResultado);
+  var contenido = soloFinal ? promesaFinalATexto(ultimoResultado) : aTextoPlano(ultimoResultado);
+  var aviso = soloFinal ? "✅ Promesa copiada. Pégala en tu página de ventas."
+                        : "✅ Resultados copiados al portapapeles.";
 
   function respaldo(){
     try{
@@ -1741,7 +1860,7 @@ function copiarResultados(){
       area.select();
       var ok = document.execCommand("copy");
       document.body.removeChild(area);
-      avisar(ok ? "✅ Resultados copiados al portapapeles." : "No pudimos copiar. Selecciona el texto manualmente.", !ok);
+      avisar(ok ? aviso : "No pudimos copiar. Selecciona el texto manualmente.", !ok);
     }catch(e){
       avisar("No pudimos copiar. Selecciona el texto manualmente.", true);
     }
@@ -1749,7 +1868,7 @@ function copiarResultados(){
 
   if(navigator.clipboard && navigator.clipboard.writeText){
     navigator.clipboard.writeText(contenido)
-      .then(function(){ avisar("✅ Resultados copiados al portapapeles."); })
+      .then(function(){ avisar(aviso); })
       .catch(respaldo);
   }else{
     respaldo();
@@ -1798,7 +1917,13 @@ function iniciar(){
   $("formulario").addEventListener("submit", function(ev){ ev.preventDefault(); alGenerar(); });
   $("btnAutocompletar").addEventListener("click", autocompletarHaus);
   $("btnGenerarDeNuevo").addEventListener("click", generarDeNuevo);
-  $("btnCopiar").addEventListener("click", copiarResultados);
+  $("btnCopiar").addEventListener("click", function(){ copiarResultados(false); });
+
+  /* El botón del bloque destacado se pinta con innerHTML: se escucha por delegación. */
+  $("salida").addEventListener("click", function(ev){
+    var boton = ev.target.closest && ev.target.closest('[data-copiar="final"]');
+    if(boton) copiarResultados(true);
+  });
   $("btnLimpiar").addEventListener("click", limpiarTodo);
 
   /* Validación en tiempo real + autoguardado */
