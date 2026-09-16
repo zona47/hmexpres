@@ -1,0 +1,31 @@
+# =============================================================================
+# Configuración de Netlify — sitio estático, sin proceso de build
+# =============================================================================
+
+[build]
+  # No hay build: se publican los archivos tal cual están en el repositorio.
+  publish = "."
+  command = ""
+
+# -----------------------------------------------------------------------------
+# Cabeceras de seguridad para todo el sitio
+# -----------------------------------------------------------------------------
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), interest-cohort=()"
+    # La app es 100% local: esta política le impide hacer cualquier petición de red.
+    # Es la garantía técnica de la promesa "tus datos nunca salen de tu navegador".
+    # 'unsafe-inline' es necesario porque el CSS y el JS van embebidos en el HTML.
+    Content-Security-Policy = "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; frame-ancestors 'none'"
+
+# -----------------------------------------------------------------------------
+# Caché: el HTML debe revalidarse para que tus cambios se vean al instante
+# -----------------------------------------------------------------------------
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
