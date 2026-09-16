@@ -1726,6 +1726,192 @@ filas,
   ].join("\n");
 }
 
+/* La variante low-ticket, como HTML listo para pegar. */
+function lowTicketAHTML(lt,ctx){
+  function e(t){ return String(t==null?"":t)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  var bonos = lt.bonos.map(function(b){
+    return '        <li>✅ <strong>'+e(b.nombre)+'</strong> — '+e(b.rol)+' <em>('+e(b.valor)+')</em></li>';
+  }).join("\n");
+  return [
+'<!DOCTYPE html>','<html lang="es">','<head>','<meta charset="UTF-8">',
+'<meta name="viewport" content="width=device-width, initial-scale=1.0">',
+'<title>'+e(lt.titular.replace(/\[|\]/g,""))+'</title>','<style>',
+'*,*::before,*::after{box-sizing:border-box}',
+'body{font-family:Helvetica Neue,Arial,sans-serif;line-height:1.6;color:#333;max-width:800px;',
+'margin:0 auto;padding:20px;overflow-wrap:anywhere}',
+'.pre{color:#d32f2f;font-weight:bold;text-transform:uppercase;text-align:center}',
+'h1{text-align:center;font-size:2.4em;line-height:1.2;margin-bottom:10px}',
+'.sub{text-align:center;font-size:1.15em;color:#555;margin-bottom:30px}',
+'.vsl{background:#000;min-height:320px;display:flex;justify-content:center;align-items:center;',
+'color:#fff;margin-bottom:30px;text-align:center;padding:20px}',
+'.cta{display:block;width:100%;background:#ff9900;color:#000;text-align:center;padding:20px;',
+'font-size:1.35em;font-weight:bold;text-decoration:none;border-radius:5px;margin:20px 0;',
+'text-transform:uppercase;box-shadow:0 4px 6px rgba(0,0,0,.1)}',
+'.urg{text-align:center;color:#d32f2f;font-weight:bold;margin:-10px 0 30px}',
+'.val{background:#f9f9f9;padding:20px;border-left:5px solid #d32f2f;margin-bottom:30px}',
+'.val ul{padding-left:20px}','.val li{margin:8px 0}',
+'.gar{border:2px dashed #333;padding:20px;margin-bottom:30px}',
+'@media(max-width:600px){h1{font-size:1.7em}.cta{font-size:1.05em;padding:16px}}',
+'</style>','</head>','<body>',
+'  <div class="pre">'+e(lt.preTitular)+'</div>',
+'  <h1>'+e(lt.titular)+'</h1>',
+'  <div class="sub">'+e(lt.subtitular)+'</div>',
+'  <div class="vsl"><p>'+e(lt.vsl)+'</p></div>',
+'  <a href="#checkout" class="cta">'+e(lt.cta)+'</a>',
+'  <p class="urg">'+e(lt.urgencia)+'</p>',
+'  <div class="val">',
+'    <h2>'+e(lt.ecuacion.titulo)+'</h2>',
+'    <p><strong>El problema:</strong> '+e(lt.ecuacion.problema)+'</p>',
+'    <p><strong>La solución:</strong> '+e(lt.ecuacion.solucion)+'</p>',
+'    <ul>',bonos,'    </ul>',
+'  </div>',
+'  <div class="gar"><h3>Garantía de “cero excusas”</h3><p>'+e(lt.garantia)+'</p></div>',
+'  <a href="#checkout" class="cta">'+e(lt.cta)+'</a>',
+'</body>','</html>'
+  ].join("\n");
+}
+
+/* --- 3.6.d Nivel de conciencia y ángulo de venta -------------------------
+   El análisis automático que pide el sistema C.R.E.A.D.O.R.: dónde está
+   la cabeza del lector cuando llega, porque eso decide por dónde se
+   abre. A un lector que no sabe que tiene el problema no se le empieza
+   hablando de precio.                                                  */
+var NIVELES = {
+  inconsciente:{
+    nombre:"Inconsciente", resumen:"No sabe que tiene el problema.",
+    angulo:"Abrí con una historia o un dato que le revele el problema. Nombrar el producto acá lo espanta.",
+    abrir:"“{situacion}. La mayoría ni se entera hasta que es tarde.”"
+  },
+  problema:{
+    nombre:"Consciente del problema", resumen:"Le duele, pero no sabe que existe una solución como la tuya.",
+    angulo:"Agitá el problema con sus palabras y recién ahí presentá el mecanismo como la salida.",
+    abrir:"“Si {situacion}, no es porque te falte voluntad. Es porque nadie te dio un sistema.”"
+  },
+  solucion:{
+    nombre:"Consciente de la solución", resumen:"Sabe que hay soluciones. No sabe cuál ni por qué la tuya.",
+    angulo:"Todo el peso va al mecanismo único: por qué el tuyo funciona donde el resto falla.",
+    abrir:"“Ya probaste lo de siempre. Esto es distinto, y en una línea te digo por qué.”"
+  },
+  producto:{
+    nombre:"Consciente del producto", resumen:"Te conoce. Está comparando.",
+    angulo:"Oferta, bonos y garantía al frente. Sacale el riesgo de encima.",
+    abrir:"“Ya sabés lo que hace. Esto es todo lo que te llevás hoy y qué pasa si no te sirve.”"
+  },
+  total:{
+    nombre:"El más consciente", resumen:"Quiere comprar. Solo falta el empujón.",
+    angulo:"Precio, urgencia real y botón. No lo hagas leer de nuevo lo que ya sabe.",
+    abrir:"“Precio de hoy, qué incluye y el botón. Nada más.”"
+  }
+};
+
+function analizarConciencia(ctx,texto){
+  var n = normalizar(texto), puntos = { inconsciente:0, problema:0, solucion:0, producto:0, total:0 };
+  /* Señales de que el lector ni sabe que tiene el problema. "No sabés
+     cuándo fue el último service" NO entra acá: eso describe el problema,
+     no la inconsciencia. */
+  if(/\bni\s+te\s+enteras\b|\bnadie\s+te\s+dice\b|\blo\s+que\s+nadie\b|\bquiz[áa]\s+no\s+lo\s+sep|\bla\s+mayor[íi]a\s+ni\b/.test(n)) puntos.inconsciente += 2;
+  if(/\bcansado\s+de\b|\bharto\b|\bte\s+pasa\b|\bproblema\b|\bdolor\b|\bfrustra/.test(n)) puntos.problema += 2;
+  if(/\bm[ée]todo\b|\bsistema\b|\ba\s+diferencia\b|\bpor\s+qu[ée]\s+funciona\b|\bya\s+prob/.test(n)) puntos.solucion += 2;
+  if(/\bbono\b|\bincluye\b|\bgarant[íi]a\b|\bqu[ée]\s+te\s+llev[áa]s\b|\bvalor\s+total\b/.test(n)) puntos.producto += 2;
+  if(/\bprecio\b|\bcomprar\b|\bcheckout\b|\bcupos?\b|\b[úu]ltimas?\s+horas\b|\bpagar\b/.test(n)) puntos.total += 2;
+
+  /* Ante un empate gana el nivel MÁS PROFUNDO: si la página ya habla de
+     precio, bonos y garantía, el lector llegó más lejos que uno que solo
+     reconoce el problema. */
+  var orden = ["total","producto","solucion","problema","inconsciente"];
+  var mejor = "problema", max = 0;
+  for(var i=0;i<orden.length;i++){
+    if(puntos[orden[i]] > max){ max = puntos[orden[i]]; mejor = orden[i]; }
+  }
+  var nivel = NIVELES[mejor];
+  return {
+    clave: mejor, nombre: nivel.nombre, resumen: nivel.resumen, angulo: nivel.angulo,
+    abrir: contraer(nivel.abrir.replace("{situacion}", falta(ctx.situacion) ? "[su situación de hoy]" : ctx.situacion))
+  };
+}
+
+/* --- 3.6.e Esqueleto del infoproducto -----------------------------------
+   Exactamente cinco capítulos, ni más ni menos: consumo rápido y alto
+   impacto. La introducción va con el marco Problema-Agitación-Solución. */
+function construirEsqueleto(ctx){
+  var mec   = falta(ctx.mecanismo) ? "[tu mecanismo único]" : ctx.mecanismo;
+  var aspir = falta(ctx.aspiracion) ? "[su resultado soñado]" : ctx.aspiracion;
+  var sit   = falta(ctx.situacion) ? "[su situación de hoy]" : ctx.situacion;
+  var obj   = ctx.objeciones[0] || "[la objeción que más frena]";
+  var hito  = falta(ctx.entregable) ? "[el primer entregable]" : ctx.entregable;
+
+  return {
+    intro:{
+      problema:  contraer("Si estás leyendo esto es porque "+sit+", y ya probaste resolverlo por tu cuenta."),
+      agitacion: contraer("Cada semana que pasa sin resolverlo, el costo sube: no es solo lo que perdés, es lo que dejás de ganar mientras seguís improvisando."),
+      solucion:  contraer("Esto no es más información. Es "+mec+": un camino de cinco pasos que te lleva hasta "+aspir+".")
+    },
+    capitulos:[
+      { n:1, titulo:contraer("El diagnóstico: por qué "+sit+" y por qué no es falta de voluntad"),
+        papel:"Ubica al lector y le saca la culpa de encima. Sin esto, lo demás lo lee a la defensiva." },
+      { n:2, titulo:contraer(capitalizar(mec)+" explicado: las piezas que hacen el trabajo"),
+        papel:"El mecanismo único. Responde “¿por qué esto sí?” antes de pedir nada." },
+      { n:3, titulo:contraer("Primer paso: hasta "+hito),
+        papel:"El primer resultado observable, el que tu producto sí controla." },
+      { n:4, titulo:contraer("Del primer resultado hasta "+aspir),
+        papel:"La ejecución completa, con los puntos donde la mayoría abandona." },
+      { n:5, titulo:contraer("Cuando "+obj+": los tres errores que arruinan el resultado"),
+        papel:"Manejo de objeciones dentro del producto. Es el capítulo que evita el pedido de devolución." }
+    ]
+  };
+}
+
+/* "sin tener que X" solo funciona si X es un infinitivo. Con un sustantivo
+   ("cuentas ni internet") hay que decir simplemente "sin X". */
+function fraseSin(sinDolor){
+  if(falta(sinDolor)) return "sin [el sacrificio que odian]";
+  var primera = normalizar(sinDolor).split(" ")[0] || "";
+  var esInfinitivo = /(ar|er|ir)$/.test(primera) && primera.length > 3;
+  return esInfinitivo ? "sin tener que "+sinDolor : "sin "+sinDolor;
+}
+
+/* --- 3.6.f Variante low-ticket ------------------------------------------
+   Otra arquitectura, no la misma con menos: dos bonos, ecuación de valor
+   explícita, urgencia por subida de precio y garantía sin preguntas.   */
+function construirLowTicket(ctx,pagina){
+  var obj1 = ctx.objeciones[0] || "[la objeción principal]";
+  var aspir = falta(ctx.aspiracion) ? "[su resultado soñado]" : ctx.aspiracion;
+  var sit   = falta(ctx.situacion) ? "[el dolor principal]" : ctx.situacion;
+  var mec   = falta(ctx.mecanismo) ? "[tu mecanismo único]" : ctx.mecanismo;
+
+  return {
+    preTitular: contraer("Atención "+ctx.heroe+": si estás harto de "+sit),
+    titular:    contraer("Cómo conseguir "+aspir+" en "+(falta(ctx.urgencia)?"[tiempo récord]":ctx.urgencia)+
+                         " "+fraseSin(ctx.sinDolor)),
+    subtitular: contraer("Descubrí el método exacto, y poco conocido, que usamos para "+aspir+" de forma predecible."),
+    vsl:        "[Video de ventas de 3 minutos, o un mockup del producto que se vea real]",
+    cta:        contraer("Sí, quiero "+aspir+" ahora mismo — "+(ctx.precio||"[precio de entrada]")),
+    urgencia:   "⚠️ El precio sube a [precio siguiente] cuando [se cumpla la condición real de cierre].",
+    ecuacion:{
+      titulo:  "¿Por qué esto no es “un curso más”?",
+      problema: contraer("Seguro ya probaste [lo genérico 1] y [lo genérico 2]. Internet está lleno de eso gratis. No te falta información: te falta ejecución."),
+      solucion: contraer("Esto no es teoría. Es "+mec+", paso a paso, y te ahorra la curva de aprendizaje entera.")
+    },
+    bonos:[
+      { rol:"Elimina la fricción de tiempo",     nombre: ctx.bonos[0] || "[plantillas listas para copiar y pegar]", valor:"[valor $]" },
+      { rol:"Aumenta la probabilidad de éxito",  nombre: ctx.bonos[1] || "[checklist de verificación]",             valor:"[valor $]" }
+    ],
+    garantia: "Garantía de “cero excusas” de "+(ctx.garantiaDias||"[N]")+" días: descargalo, usalo, y si no ves "+
+              aspir+" o simplemente no te gusta, escribime y te devuelvo hasta el último centavo. Sin preguntas. El riesgo lo corro yo."
+  };
+}
+
+/* --- 3.6.g Reglas duras del copy ---------------------------------------- */
+var REGLAS_COPY = [
+  { regla:"Cero contenido de enciclopedia", detalle:"Si un párrafo se puede buscar gratis, no vende: sacalo o convertilo en una instrucción." },
+  { regla:"Tono imperativo y directo",      detalle:"Decile qué hacer. Los rodeos se leen como inseguridad." },
+  { regla:"Una promesa, una acción",        detalle:"Dos ofertas compitiendo en la misma página no suman: se cancelan." },
+  { regla:"Cada bono derriba una objeción", detalle:"Un bono que no derriba nada es ruido que baja el valor percibido del resto." },
+  { regla:"La urgencia tiene que ser real", detalle:"Cupos que nunca se agotan y relojes que se reinician se notan, y se pagan caro." },
+  { regla:"El riesgo lo corrés vos",        detalle:"En precio de entrada, la garantía no es un adorno: es lo que destraba la compra." }
+];
+
 /* --- 3.7 Orquestador ---------------------------------------------------- */
 function generar(datos){
   var ctx = analizar(datos);
@@ -1746,6 +1932,10 @@ function generar(datos){
     subpromesas: subpromesas,
     pila: generarPila(ctx),
     pagina: construirPagina(ctx),
+    lowTicket: construirLowTicket(ctx),
+    conciencia: analizarConciencia(ctx, ctx.textoOriginal),
+    esqueleto: construirEsqueleto(ctx),
+    reglas: REGLAS_COPY,
     diagnostico: diagnosticar(ctx, ctx.textoOriginal),
     auditoria: auditar(ctx.textoOriginal),
     claridad: puntuarClaridad(ctx,datos)
@@ -1890,6 +2080,67 @@ function render(res){
   h.push('</div>');
   h.push('<p class="apoyo" style="margin-top:.75rem">Se abre en cualquier navegador y se puede subir tal cual. Reemplazá los <span class="hueco">[campos]</span> con tus datos reales antes de publicar.</p>');
   h.push('</div>');
+
+  /* ---- 4.1.c Nivel de conciencia y ángulo de venta ---- */
+  var cc = res.conciencia;
+  h.push('<div class="tarjeta seccion">');
+  h.push('<span class="etiqueta">Por dónde abrir</span>');
+  h.push('<h2 style="margin-top:.75rem">🧠 Nivel de conciencia de tu lector</h2>');
+  h.push('<p><strong>'+esc(cc.nombre)+'.</strong> '+esc(cc.resumen)+'</p>');
+  h.push('<div class="bloque bloque-prueba">🎯 <strong>Ángulo de venta:</strong> '+esc(cc.angulo)+'</div>');
+  h.push('<p class="apoyo" style="margin-top:.75rem">Así abrirías la página con ese lector:</p>');
+  h.push('<div class="promesa">'+texto(cc.abrir)+'</div>');
+  h.push('</div>');
+
+  /* ---- 4.1.d Variante low-ticket ---- */
+  var lt = res.lowTicket;
+  h.push('<details class="tarjeta seccion" style="padding:0"><summary style="cursor:pointer;padding:1.25rem 2rem;font-weight:700;font-size:1.25rem;list-style:none">💸 Variante para precio de entrada (low-ticket) — otra arquitectura</summary>');
+  h.push('<div style="padding:0 2rem 2rem">');
+  h.push('<p class="apoyo">No es la misma página con menos: dos bonos en vez de tres, ecuación de valor explícita, urgencia por subida de precio y garantía sin preguntas. Para ofertas de entrada donde la fricción es el riesgo, no el precio.</p>');
+  h.push('<div class="bloque-pagina"><span class="rotulo-bloque">Pre-titular</span><div class="contenido-bloque">'+texto(lt.preTitular)+'</div></div>');
+  h.push('<div class="bloque-pagina"><span class="rotulo-bloque">Titular</span><div class="contenido-bloque">'+texto(lt.titular)+'</div></div>');
+  h.push('<div class="bloque-pagina"><span class="rotulo-bloque">Subtítulo</span><div class="contenido-bloque">'+texto(lt.subtitular)+'</div></div>');
+  h.push('<div class="bloque-pagina"><span class="rotulo-bloque">Ecuación de valor</span>');
+  h.push('<div class="contenido-bloque">'+esc(lt.ecuacion.titulo)+'</div>');
+  h.push('<p class="nota-mecanismo"><b>El problema:</b> '+texto(lt.ecuacion.problema)+'</p>');
+  h.push('<p class="nota-mecanismo"><b>La solución:</b> '+texto(lt.ecuacion.solucion)+'</p></div>');
+  lt.bonos.forEach(function(b){
+    h.push('<div class="subpromesa"><strong>'+texto(b.nombre)+'</strong> — '+esc(b.rol)+' <span class="hueco">[valor $]</span></div>');
+  });
+  h.push('<div class="bloque-pagina"><span class="rotulo-bloque">Llamada a la acción y urgencia</span><div class="contenido-bloque">'+texto(lt.cta)+'</div>');
+  h.push('<p class="nota-mecanismo">'+texto(lt.urgencia)+'</p></div>');
+  h.push('<div class="bloque bloque-prueba">🛡️ '+texto(lt.garantia)+'</div>');
+  h.push('<div class="grupo-botones" style="margin-top:1.25rem">');
+  h.push('<button type="button" class="btn btn-secundario" data-copiar="html-low">📋 Copiar el HTML low-ticket</button>');
+  h.push('<button type="button" class="btn btn-contorno" data-copiar="descargar-low">💾 Descargar pagina-low-ticket.html</button>');
+  h.push('</div></div></details>');
+
+  /* ---- 4.1.e Esqueleto del infoproducto ---- */
+  var es = res.esqueleto;
+  h.push('<div class="tarjeta seccion">');
+  h.push('<span class="etiqueta">El producto, no la página</span>');
+  h.push('<h2 style="margin-top:.75rem">📘 Esqueleto de tu infoproducto</h2>');
+  h.push('<p class="apoyo">Cinco capítulos, ni más ni menos: se consume rápido y se termina. Un producto que no se termina no se recomienda y se devuelve.</p>');
+  h.push('<h3 style="margin-top:1.25rem">Introducción (Problema · Agitación · Solución)</h3>');
+  h.push('<div class="subpromesa"><strong>Problema.</strong> '+texto(es.intro.problema)+'</div>');
+  h.push('<div class="subpromesa"><strong>Agitación.</strong> '+texto(es.intro.agitacion)+'</div>');
+  h.push('<div class="subpromesa"><strong>Solución.</strong> '+texto(es.intro.solucion)+'</div>');
+  h.push('<h3 style="margin-top:1.5rem">Los cinco capítulos</h3>');
+  es.capitulos.forEach(function(c){
+    h.push('<div class="bloque-pagina"><span class="rotulo-bloque">Capítulo '+c.n+'</span>');
+    h.push('<div class="contenido-bloque">'+texto(c.titulo)+'</div>');
+    h.push('<p class="nota-mecanismo">'+esc(c.papel)+'</p></div>');
+  });
+  h.push('</div>');
+
+  /* ---- 4.1.f Reglas duras del copy ---- */
+  h.push('<div class="tarjeta seccion">');
+  h.push('<h2>⚔️ Reglas duras antes de escribir una línea</h2>');
+  h.push('<div class="tabla-scroll"><table><thead><tr><th>Regla</th><th>Por qué</th></tr></thead><tbody>');
+  res.reglas.forEach(function(r){
+    h.push('<tr><td><strong>'+esc(r.regla)+'</strong></td><td>'+esc(r.detalle)+'</td></tr>');
+  });
+  h.push('</tbody></table></div></div>');
 
   /* ---- 4.2 Variantes HAUS ---- */
   h.push('<div class="tarjeta seccion">');
@@ -2431,13 +2682,14 @@ function copiarResultados(soloFinal){
 }
 
 /* El HTML de la página armada, al portapapeles o a un archivo. */
-function htmlDeLaPagina(){
-  return paginaAHTML(ultimoResultado.pagina, ultimoResultado.ctx);
+function htmlDeLaPagina(low){
+  return low ? lowTicketAHTML(ultimoResultado.lowTicket, ultimoResultado.ctx)
+             : paginaAHTML(ultimoResultado.pagina, ultimoResultado.ctx);
 }
 
-function copiarHTML(){
+function copiarHTML(low){
   if(!ultimoResultado){ avisar("Todavía no hay página que copiar.", true); return; }
-  var contenido = htmlDeLaPagina();
+  var contenido = htmlDeLaPagina(low);
   function respaldo(){
     try{
       var area = document.createElement("textarea");
@@ -2456,25 +2708,25 @@ function copiarHTML(){
   }else{ respaldo(); }
 }
 
-function descargarHTML(){
+function descargarHTML(low){
   if(!ultimoResultado){ avisar("Todavía no hay página que descargar.", true); return; }
   /* Dentro de un visor incrustado la descarga se bloquea y no pasa nada.
      Mejor decirlo que dejar un botón que aparenta funcionar. */
   var incrustada = false;
   try{ incrustada = (window.self !== window.top); }catch(e){ incrustada = true; }
   if(incrustada){
-    copiarHTML();
+    copiarHTML(low);
     avisar("La descarga no funciona dentro de una vista previa: copiamos el HTML al portapapeles.");
     return;
   }
   try{
-    var blob = new Blob([htmlDeLaPagina()], {type:"text/html;charset=utf-8"});
+    var blob = new Blob([htmlDeLaPagina(low)], {type:"text/html;charset=utf-8"});
     var url = URL.createObjectURL(blob);
     var a = document.createElement("a");
-    a.href = url; a.download = "pagina-de-ventas.html";
+    a.href = url; a.download = low ? "pagina-low-ticket.html" : "pagina-de-ventas.html";
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
-    avisar("✅ Descargando pagina-de-ventas.html");
+    avisar("✅ Descargando "+(low ? "pagina-low-ticket.html" : "pagina-de-ventas.html"));
   }catch(e){
     avisar("Tu navegador no permitió la descarga. Usá el botón de copiar.", true);
   }
@@ -2530,6 +2782,8 @@ function iniciar(){
     if(ev.target.closest('[data-copiar="final"]'))      copiarResultados(true);
     else if(ev.target.closest('[data-copiar="html"]'))  copiarHTML();
     else if(ev.target.closest('[data-copiar="descargar"]')) descargarHTML();
+    else if(ev.target.closest('[data-copiar="html-low"]')) copiarHTML(true);
+    else if(ev.target.closest('[data-copiar="descargar-low"]')) descargarHTML(true);
   });
   $("btnLimpiar").addEventListener("click", limpiarTodo);
 
