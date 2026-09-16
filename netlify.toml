@@ -3,8 +3,10 @@
 # =============================================================================
 
 [build]
-  # No hay build: se publican los archivos tal cual están en el repositorio.
-  publish = "."
+  # No hay build: se publica la carpeta de la aplicación tal cual está.
+  # El generador queda en la raíz del sitio; la tarjeta digital tiene su
+  # propio sitio aparte y no se publica desde aquí.
+  publish = "generador-promesas"
   command = ""
 
 # -----------------------------------------------------------------------------
