@@ -851,7 +851,7 @@ var REGLAS_AUDITORIA = [
     correccion:"“Hasta” y “desde” no corrigen una impresión principal engañosa. Añade el valor típico junto al extremo (P1)." },
   { re:/\bgratis\b|\bprueba\s+gratuita\b|\b0\s*€|\bgratuito\b/gi, nivel:"medio", tipo:"Gratuidad con letra pequeña",
     correccion:"Muestra duración, precio posterior, renovación automática y ruta de cancelación junto al claim, no en un enlace lejano (S4)." },
-  { re:/\b(gana|ganar[áa]s?|factura|facturar[áa]s?|ingresos?\s+de|\$\s?\d{3,}|\d+\s*k\s+(al|por)\s+mes)\b/gi, nivel:"alto", tipo:"Claim de ingresos",
+  { re:/\b(gan[áa]\s+(hasta\s+)?\$?\d+|ganar[áa]s?\s+(hasta\s+)?\$?\d+|factur[áa]\s+\$?\d+|facturar[áa]s?\s+\$?\d+|ingresos?\s+de\s+\$?\d+|\d+\s*k\s+(al|por)\s+mes)/gi, nivel:"alto", tipo:"Claim de ingresos",
     correccion:"Promete aprendizaje y entregables antes que ingresos. El resultado económico depende del mercado, el precio y la ejecución: dilo (P1, P2)." },
   { re:/\b(adelgaz|bajar\s+de\s+peso|perder\s+\d+\s*(kilos?|kg)|curar|cura\b|ansiedad|depresi[óo]n|insomnio|dolor\s+cr[óo]nico)\b/gi, nivel:"alto", tipo:"Claim de salud",
     correccion:"Los claims de salud exigen evidencia competente y fiable, no testimonios. Revisa la normativa local antes de publicar (P1)." },
@@ -1065,10 +1065,16 @@ function detectarAspiracion(texto){
     if(c.length>6 && !pareceDolor(c)) return c.toLowerCase();
   }
   /* Alternativa: "para que + oración" */
+  /* "para que + oración" solo sirve si arranca en infinitivo. Con un
+     pronombre o un verbo conjugado ("para que LA TENGAS andando") el
+     fragmento no encaja detrás de "Ayudo a X a ...". */
   var m2 = t.match(/\bpara\s+que\s+([^.,;:\n()]{6,70})/i);
   if(m2){
     var c2 = quitarPlazo(limpiarFragmento(m2[1],10));
-    if(c2.length>6 && !pareceDolor(c2)) return c2.toLowerCase();
+    var arranque = normalizar(c2).split(" ")[0] || "";
+    var esClitico = ["la","lo","le","les","las","los","te","se","me","nos","tu","su","el","un","una"].indexOf(arranque)!==-1;
+    var esInfinitivo = /(ar|er|ir)$/.test(arranque) && arranque.length>3;
+    if(c2.length>6 && !pareceDolor(c2) && !esClitico && esInfinitivo) return c2.toLowerCase();
   }
   return "";
 }
@@ -1125,7 +1131,12 @@ function detectarMecanismo(texto){
   var t = texto || "";
   var m = t.match(/\b(?:m[ée]todo|sistema|proceso|framework|protocolo|f[óo]rmula|ruta|programa|metodolog[íi]a)\s+(?:de\s+|del\s+)?([^.,;:\n()]{3,45})/i);
   /* El plazo es el pilar U: no debe quedar pegado al mecanismo. */
-  if(m) return quitarPlazo(limpiarFragmento(m[0],8)).toLowerCase();
+  if(m){
+    /* El nombre del mecanismo termina donde empieza el verbo que lo describe:
+       "sistema doble reloj cruza los kilómetros" -> "sistema doble reloj" */
+    var nombre = cortarEn(m[0],["que","cruza","permite","hace","combina","usa","toma","convierte","te"]);
+    return quitarPlazo(limpiarFragmento(nombre,6)).toLowerCase();
+  }
   /* Si no hay nombre propio, describimos el vehículo por el formato detectado */
   var n = normalizar(t);
   if(/\bplantilla/.test(n)) return "plantillas listas para usar y ejemplos resueltos";
@@ -1138,7 +1149,9 @@ function detectarMecanismo(texto){
 
 /* Detecta el ENTREGABLE concreto. */
 function detectarEntregable(texto){
-  var n = normalizar(texto||"");
+  /* Las direcciones web arrastran palabras que no describen la oferta:
+     un dominio como "mitiendax.com" hacía aparecer "tu tienda publicada". */
+  var n = normalizar((texto||"").replace(/https?:\/\/\S+/g," ").replace(/\b[\w-]+\.(com|ar|net|io|app|co)\b/g," "));
   var mapa = [
     ["pagina de venta","tu página de ventas terminada"],["landing","tu landing publicada"],
     ["anuncio","tus primeros anuncios en marcha"],["embudo","tu embudo montado"],
@@ -1240,8 +1253,10 @@ function analizar(datos){
 
   var ctx = {
     tipo: tipo,
-    /* Un producto de pago único no admite plantillas de prueba y renovación */
-    tipoPlantilla: (pagoUnico && tipo==="saas") ? "infoproducto" : tipo,
+    /* El tipo manda en todas las plantillas: un pago único no convierte
+       una aplicación en un curso. Solo la reversión del riesgo (S4) usa
+       la variante de devolución en lugar de la de prueba y renovación. */
+    tipoPlantilla: tipo,
     pagoUnico: pagoUnico,
     friccion: filaFriccion,
     heroe:       datos.h || extraer(detectarHeroe),
@@ -1290,9 +1305,17 @@ function rellenar(plantilla,ctx){
     obstaculo: ctx.sinDolor, mecanismo: ctx.mecanismo, entregable: ctx.entregable,
     situacionActual: ctx.situacion, producto: ctx.producto, primerHito: ctx.primerHito
   };
-  return plantilla.replace(/\{(\w+)\}/g,function(todo,clave){
+  return contraer(plantilla.replace(/\{(\w+)\}/g,function(todo,clave){
     return Object.prototype.hasOwnProperty.call(mapa,clave) ? mapa[clave] : todo;
-  });
+  }));
+}
+
+/* El español contrae "a el" en "al" y "de el" en "del". Sin esto las
+   promesas salen con "Ayudo a el que lleva el auto de memoria". */
+function contraer(txt){
+  return String(txt||"")
+    .replace(/\ba\s+el\s+/gi, function(m){ return m[0]==="A" ? "Al " : "al "; })
+    .replace(/\bde\s+el\s+/gi, function(m){ return m[0]==="D" ? "Del " : "del "; });
 }
 
 /* Mayúscula inicial respetando signos de apertura. */
@@ -1319,7 +1342,7 @@ var PLANTILLAS_HAUS = [
     f:function(c){ return "Ayudo a "+c.heroe+" a "+c.aspiracion+
         opcional(" en ",c.urgencia)+opcional(" sin ",c.sinDolor)+"."; } },
   { etiqueta:"Segmentada (arranca por el héroe)",
-    f:function(c){ return "Para "+c.heroe+" que quieren "+c.aspiracion+
+    f:function(c){ return "Para "+c.heroe+", que busca "+c.aspiracion+
         opcional(" en ",c.urgencia)+opcional(" sin ",c.sinDolor)+"."; } },
   { etiqueta:"Resultado primero (para titulares)",
     f:function(c){ return capitalizar(c.aspiracion)+opcional(" en ",c.urgencia)+
@@ -1403,7 +1426,10 @@ function generarSubpromesas(ctx){
   for(var id in MECANISMOS_S){
     if(!MECANISMOS_S.hasOwnProperty(id)) continue;
     var m = MECANISMOS_S[id];
-    var plantilla = m.plantillas[ctx.tipoPlantilla] || m.plantillas.infoproducto;
+    /* En una oferta de pago único, la reversión del riesgo es una
+       devolución, no una prueba con renovación automática. */
+    var clave = (id==="S4" && ctx.pagoUnico) ? "infoproducto" : ctx.tipoPlantilla;
+    var plantilla = m.plantillas[clave] || m.plantillas.infoproducto;
     salida.push({
       id:id, nombre:m.nombre, icono:m.icono, pregunta:m.pregunta, idea:m.idea,
       texto: capitalizar(rellenar(plantilla,ctx)),
@@ -1532,7 +1558,7 @@ function generar(datos){
   var haus = PLANTILLAS_HAUS.filter(function(p){
     return !p.requiere || !falta(ctx[p.requiere]);
   }).map(function(p){
-    return { etiqueta:p.etiqueta, texto:capitalizar(p.f(ctx)) };
+    return { etiqueta:p.etiqueta, texto:capitalizar(contraer(p.f(ctx))) };
   });
   var subpromesas = generarSubpromesas(ctx);
   return {
@@ -1791,7 +1817,12 @@ function aTextoPlano(res){
   l.push("U (Urgencia): "+c.urgencia);
   l.push("S (Sin dolor): "+c.sinDolor);
   l.push("Mecanismo único: "+c.mecanismo);
-  l.push("Claridad: "+res.claridad.logrados+"/"+res.claridad.total);
+  l.push("");
+  l.push("== DIAGNÓSTICO DE TU PÁGINA ("+res.diagnostico.logrados+"/"+res.diagnostico.total+") ==");
+  res.diagnostico.filas.forEach(function(f){
+    l.push((f.ok?"  [OK]   ":"  [FALTA] ")+f.rotulo+(f.ok?": "+f.valor:""));
+    if(!f.ok) l.push("         -> "+f.accion);
+  });
   l.push("");
   l.push("PROMESAS PRINCIPALES (6 variantes)");
   res.haus.forEach(function(v,i){ l.push((i+1)+". ["+v.etiqueta+"] "+v.texto); });
