@@ -1,0 +1,1839 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Generador de promesas y subpromesas de alto impacto para páginas de ventas. Funciona sin internet.">
+<title>Generador de Promesas</title>
+<style>
+/* =========================================================================
+   GENERADOR DE PROMESAS — Hoja de estilos
+   Todo el CSS vive aquí. Sin librerías, sin CDN, sin fuentes externas.
+   ========================================================================= */
+
+/* ---------- 1. Variables de diseño (paleta y escala) ---------- */
+:root{
+  --primario:#4F46E5;
+  --primario-oscuro:#4338CA;
+  --primario-suave:#EEF2FF;
+  --secundario:#10B981;
+  --secundario-suave:#ECFDF5;
+  --fondo:#F9FAFB;
+  --texto:#1F2937;
+  --texto-suave:#6B7280;
+  --exito:#10B981;
+  --error:#EF4444;
+  --error-suave:#FEF2F2;
+  --aviso:#F59E0B;
+  --aviso-suave:#FFFBEB;
+  --blanco:#FFFFFF;
+  --borde:#E5E7EB;
+  --radio:12px;
+  --radio-sm:8px;
+  --sombra:0 4px 6px rgba(0,0,0,.1);
+  --sombra-alta:0 12px 24px rgba(79,70,229,.18);
+  --transicion:.25s ease;
+}
+
+/* ---------- 2. Reset básico ---------- */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  background-color:var(--fondo);
+  color:var(--texto);
+  font-size:1rem;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+img,svg{max-width:100%}
+
+/* ---------- 3. Layout ---------- */
+.contenedor{max-width:880px;margin:0 auto;padding:2rem}
+.seccion{margin-bottom:3rem}
+.seccion:last-child{margin-bottom:0}
+
+/* Barra superior fija con la marca y el botón de reinicio */
+.barra{
+  position:sticky;top:0;z-index:50;
+  background:rgba(249,250,251,.92);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--borde);
+}
+.barra-interna{
+  max-width:880px;margin:0 auto;padding:.75rem 2rem;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+}
+.barra-marca{display:flex;align-items:center;gap:.5rem;font-weight:700;font-size:1rem}
+.barra-marca span.emoji{font-size:1.25rem}
+
+/* ---------- 4. Tipografía ---------- */
+h1{font-size:2.5rem;line-height:1.2;font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.5rem;line-height:1.3;font-weight:700;margin-bottom:.75rem}
+h3{font-size:1.125rem;font-weight:700;margin-bottom:.5rem}
+h4{font-size:1rem;font-weight:700}
+p{margin-bottom:1rem}
+p:last-child{margin-bottom:0}
+.subtitulo{font-size:1.25rem;color:var(--texto-suave);max-width:46ch;margin-inline:auto}
+.apoyo{font-size:.875rem;color:var(--texto-suave)}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9em}
+strong{font-weight:700}
+
+/* ---------- 5. Tarjetas ---------- */
+.tarjeta{
+  background:var(--blanco);
+  border:1px solid var(--borde);
+  border-radius:var(--radio);
+  box-shadow:var(--sombra);
+  padding:2rem;
+}
+.tarjeta + .tarjeta{margin-top:1.25rem}
+.tarjeta-plana{box-shadow:none;padding:1.25rem}
+.tarjeta-destacada{
+  border:2px solid var(--primario);
+  box-shadow:var(--sombra-alta);
+}
+
+/* ---------- 6. Botones ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+  font:inherit;font-weight:600;
+  padding:.85rem 1.6rem;
+  border-radius:var(--radio-sm);
+  border:2px solid transparent;
+  cursor:pointer;
+  transition:background-color var(--transicion),color var(--transicion),
+             transform var(--transicion),box-shadow var(--transicion),border-color var(--transicion);
+  text-align:center;
+}
+.btn:focus-visible{outline:3px solid var(--primario);outline-offset:2px}
+.btn-primario{background:var(--primario);color:#fff}
+.btn-primario:hover:not(:disabled){background:var(--primario-oscuro);transform:scale(1.05);box-shadow:var(--sombra-alta)}
+.btn-secundario{background:var(--secundario);color:#fff}
+.btn-secundario:hover:not(:disabled){background:#059669;transform:scale(1.05)}
+.btn-contorno{background:transparent;color:var(--primario);border-color:var(--primario)}
+.btn-contorno:hover:not(:disabled){background:var(--primario-suave);transform:scale(1.05)}
+.btn-fantasma{background:transparent;color:var(--texto-suave);border-color:var(--borde)}
+.btn-fantasma:hover:not(:disabled){background:var(--blanco);color:var(--texto);transform:scale(1.05)}
+.btn-grande{font-size:1.125rem;padding:1.1rem 2.5rem}
+.btn-chico{font-size:.8125rem;padding:.45rem .9rem;border-radius:6px}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.grupo-botones{display:flex;flex-wrap:wrap;gap:.75rem}
+
+/* ---------- 7. Formulario ---------- */
+.campo{margin-bottom:1.75rem}
+.campo label{display:block;font-weight:600;margin-bottom:.35rem}
+.campo .ayuda{font-size:.8125rem;color:var(--texto-suave);margin-bottom:.5rem}
+.campo textarea,.campo input,.campo select{
+  width:100%;
+  font:inherit;
+  color:var(--texto);
+  background:var(--blanco);
+  padding:.8rem .9rem;
+  border:2px solid var(--borde);
+  border-radius:var(--radio-sm);
+  transition:border-color var(--transicion),box-shadow var(--transicion);
+}
+.campo textarea{min-height:130px;resize:vertical;line-height:1.6}
+.campo textarea:focus,.campo input:focus,.campo select:focus{
+  outline:none;border-color:var(--primario);box-shadow:0 0 0 4px rgba(79,70,229,.15);
+}
+.campo.invalido textarea,.campo.invalido input{border-color:var(--error);background:var(--error-suave)}
+.campo.valido textarea,.campo.valido input{border-color:var(--secundario)}
+.mensaje-error{
+  display:none;margin-top:.4rem;font-size:.875rem;color:var(--error);font-weight:500;
+}
+.campo.invalido .mensaje-error{display:block}
+.contador{float:right;font-size:.75rem;color:var(--texto-suave);font-weight:400}
+.rejilla-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+
+/* Bloque plegable de ajustes opcionales */
+.plegable{border:1px solid var(--borde);border-radius:var(--radio-sm);overflow:hidden;margin-bottom:1.75rem}
+.plegable>summary{
+  cursor:pointer;padding:.85rem 1rem;font-weight:600;background:var(--primario-suave);
+  list-style:none;display:flex;align-items:center;gap:.5rem;
+}
+.plegable>summary::-webkit-details-marker{display:none}
+.plegable>summary::after{content:"▾";margin-left:auto;transition:transform var(--transicion)}
+.plegable[open]>summary::after{transform:rotate(180deg)}
+.plegable-cuerpo{padding:1.25rem 1rem .25rem}
+
+/* ---------- 8. Pantallas y animaciones ---------- */
+.pantalla{display:none}
+.pantalla.activa{display:block;animation:entrar .4s ease both}
+@keyframes entrar{
+  from{opacity:0;transform:translateY(16px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+}
+
+/* ---------- 9. Pantalla de inicio ---------- */
+.hero{text-align:center;padding:1rem 0 0}
+.hero .icono{font-size:4rem;line-height:1;display:block;margin-bottom:.75rem}
+.hero h1{margin-bottom:.75rem}
+.hero .subtitulo{margin-bottom:1.5rem}
+.beneficios{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:2.5rem 0}
+.beneficio{background:var(--blanco);border:1px solid var(--borde);border-radius:var(--radio);padding:1.25rem;text-align:left}
+.beneficio .emoji{font-size:1.5rem;display:block;margin-bottom:.35rem}
+.beneficio h3{font-size:.9375rem;margin-bottom:.25rem}
+.beneficio p{font-size:.8125rem;color:var(--texto-suave)}
+
+/* Aviso de sesión guardada */
+.aviso-sesion{
+  display:none;align-items:center;gap:1rem;flex-wrap:wrap;justify-content:center;
+  background:var(--secundario-suave);border:1px solid var(--secundario);
+  color:#065F46;border-radius:var(--radio-sm);padding:.85rem 1rem;margin-bottom:1.5rem;font-size:.9375rem;
+}
+.aviso-sesion.visible{display:flex}
+
+/* ---------- 10. Resultados ---------- */
+.cabecera-resultados{text-align:center;margin-bottom:2rem}
+.cabecera-resultados h2{font-size:1.75rem}
+.etiqueta{
+  display:inline-block;font-size:.75rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+  padding:.25rem .6rem;border-radius:999px;background:var(--primario-suave);color:var(--primario-oscuro);
+}
+.etiqueta-verde{background:var(--secundario-suave);color:#047857}
+.etiqueta-ambar{background:var(--aviso-suave);color:#92400E}
+.etiqueta-roja{background:var(--error-suave);color:#B91C1C}
+
+.promesa{
+  background:var(--primario-suave);border-left:4px solid var(--primario);
+  border-radius:var(--radio-sm);padding:1rem 1.15rem;margin:.75rem 0;
+  font-size:1.0625rem;line-height:1.55;font-weight:600;
+}
+.promesa-secundaria{background:var(--fondo);border-left-color:var(--borde);font-weight:500;font-size:1rem}
+.subpromesa{
+  border-left:3px solid var(--secundario);background:var(--secundario-suave);
+  border-radius:var(--radio-sm);padding:.8rem 1rem;margin:.6rem 0;font-size:.9375rem;
+}
+/* Hueco que el usuario debe completar con su dato real */
+.hueco{
+  background:#FEF3C7;color:#92400E;border-bottom:2px dotted #D97706;
+  padding:0 .25rem;border-radius:3px;font-weight:600;
+}
+/* Los textos generados pueden contener fragmentos largos sin espacios */
+.promesa,.subpromesa,.bloque,td,.acordeon>summary{overflow-wrap:anywhere;word-break:break-word}
+.nota-mecanismo{font-size:.8125rem;color:var(--texto-suave);margin-top:.5rem}
+.nota-mecanismo b{color:var(--texto)}
+
+/* Acordeón de mecanismos */
+.acordeon{border:1px solid var(--borde);border-radius:var(--radio-sm);margin-bottom:.75rem;background:var(--blanco);overflow:hidden}
+.acordeon>summary{
+  cursor:pointer;padding:.9rem 1rem;font-weight:600;list-style:none;
+  display:flex;align-items:center;gap:.6rem;transition:background var(--transicion);
+}
+.acordeon>summary:hover{background:var(--primario-suave)}
+.acordeon>summary::-webkit-details-marker{display:none}
+.acordeon>summary::after{content:"+";margin-left:auto;font-size:1.25rem;color:var(--texto-suave)}
+.acordeon[open]>summary::after{content:"–"}
+.acordeon-cuerpo{padding:0 1rem 1.15rem;border-top:1px solid var(--borde)}
+.acordeon-cuerpo>*:first-child{margin-top:1rem}
+
+/* Bloques de aviso */
+.bloque{border-radius:var(--radio-sm);padding:.9rem 1rem;font-size:.9375rem;margin:.75rem 0}
+.bloque-riesgo{background:var(--aviso-suave);border:1px solid #FDE68A;color:#78350F}
+.bloque-prueba{background:var(--secundario-suave);border:1px solid #A7F3D0;color:#065F46}
+.bloque-error{background:var(--error-suave);border:1px solid #FECACA;color:#7F1D1D}
+
+/* Tabla de auditoría */
+.tabla-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:.875rem;min-width:520px}
+th,td{text-align:left;padding:.65rem .7rem;border-bottom:1px solid var(--borde);vertical-align:top}
+th{background:var(--fondo);font-weight:700;font-size:.8125rem;text-transform:uppercase;letter-spacing:.03em;color:var(--texto-suave)}
+tbody tr:last-child td{border-bottom:none}
+
+/* Lista de verificación */
+.lista-check{list-style:none}
+.lista-check li{padding:.4rem 0 .4rem 1.75rem;position:relative;font-size:.9375rem;border-bottom:1px solid var(--borde)}
+.lista-check li:last-child{border-bottom:none}
+.lista-check li::before{content:"☐";position:absolute;left:0;font-size:1.1rem;color:var(--primario)}
+.lista-check li.ok::before{content:"✅";font-size:.9rem}
+
+/* Medidor de claridad */
+.medidor{height:10px;background:var(--borde);border-radius:999px;overflow:hidden;margin:.6rem 0}
+.medidor span{display:block;height:100%;background:var(--secundario);border-radius:999px;transition:width .6s ease;width:0}
+
+/* ---------- 11. Overlay de carga ---------- */
+.overlay{
+  position:fixed;inset:0;z-index:100;
+  background:rgba(249,250,251,.94);
+  display:none;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:2rem;text-align:center;
+}
+.overlay.visible{display:flex;animation:entrar .2s ease both}
+.girador{
+  width:48px;height:48px;border-radius:50%;
+  border:4px solid var(--borde);border-top-color:var(--primario);
+  animation:girar .8s linear infinite;
+}
+@keyframes girar{to{transform:rotate(360deg)}}
+.overlay p{font-weight:600;color:var(--texto)}
+
+/* ---------- 12. Avisos flotantes (toast) ---------- */
+.toast{
+  position:fixed;left:50%;bottom:1.5rem;transform:translate(-50%,150%);
+  background:var(--texto);color:#fff;padding:.8rem 1.25rem;border-radius:var(--radio-sm);
+  font-size:.9375rem;font-weight:600;z-index:200;box-shadow:var(--sombra-alta);
+  transition:transform .35s ease;max-width:90vw;
+}
+.toast.visible{transform:translate(-50%,0)}
+.toast.error{background:var(--error)}
+
+/* ---------- 13. Pie ---------- */
+.pie{text-align:center;font-size:.8125rem;color:var(--texto-suave);padding:2rem 1rem 3rem}
+
+/* ---------- 14. Responsive (móvil: hasta 768px) ---------- */
+@media (max-width:768px){
+  .contenedor{padding:1rem}
+  .barra-interna{padding:.6rem 1rem}
+  .seccion{margin-bottom:2rem}
+  h1{font-size:2rem}
+  h2{font-size:1.25rem}
+  .subtitulo{font-size:1.0625rem}
+  .tarjeta{padding:1.25rem}
+  .beneficios{grid-template-columns:1fr;gap:.75rem;margin:1.75rem 0}
+  .rejilla-2{grid-template-columns:1fr}
+  .btn{width:100%}
+  .btn-chico{width:auto}
+  .grupo-botones{flex-direction:column}
+  .barra .btn{width:auto}
+  .hero .icono{font-size:3rem}
+}
+
+/* ---------- 15. Impresión ---------- */
+@media print{
+  .barra,.grupo-botones,.overlay,.toast{display:none !important}
+  .tarjeta{box-shadow:none;border:1px solid #ccc;page-break-inside:avoid}
+  body{background:#fff}
+}
+</style>
+</head>
+<body>
+
+<!-- =====================================================================
+     BARRA SUPERIOR (siempre visible)
+     ===================================================================== -->
+<header class="barra">
+  <div class="barra-interna">
+    <div class="barra-marca"><span class="emoji">🎯</span> Generador de Promesas</div>
+    <button type="button" class="btn btn-fantasma btn-chico" id="btnLimpiar">🗑️ Limpiar datos</button>
+  </div>
+</header>
+
+<main class="contenedor">
+
+<!-- =====================================================================
+     PANTALLA 1 — INICIO
+     ===================================================================== -->
+<section id="pantalla-inicio" class="pantalla activa" aria-labelledby="titulo-inicio">
+  <div class="hero seccion">
+    <span class="icono" aria-hidden="true">🎯</span>
+    <h1 id="titulo-inicio">Generador de Promesas</h1>
+    <p class="subtitulo">Crea promesas impactantes para aumentar tus ventas</p>
+
+    <!-- Aviso de sesión previa recuperada desde localStorage -->
+    <div class="aviso-sesion" id="avisoSesion" role="status">
+      <span>💾 Encontramos una sesión guardada en este navegador.</span>
+      <button type="button" class="btn btn-secundario btn-chico" id="btnVerGuardado">Ver mis promesas</button>
+    </div>
+
+    <p>Ingresa la información sobre tu producto y obtén promesas y subpromesas persuasivas.</p>
+
+    <div class="grupo-botones" style="justify-content:center">
+      <button type="button" class="btn btn-primario btn-grande" id="btnComenzar">Comenzar →</button>
+    </div>
+  </div>
+
+  <div class="beneficios">
+    <div class="beneficio">
+      <span class="emoji" aria-hidden="true">🧲</span>
+      <h3>Fórmula HAUS</h3>
+      <p>Héroe + Aspiración + Urgencia + Sin dolor. El gancho que detiene el scroll.</p>
+    </div>
+    <div class="beneficio">
+      <span class="emoji" aria-hidden="true">⚙️</span>
+      <h3>7 mecanismos de promesa</h3>
+      <p>Especificidad, transformación, mecanismo causal, velocidad, simplicidad, obstáculo e identidad.</p>
+    </div>
+    <div class="beneficio">
+      <span class="emoji" aria-hidden="true">🛡️</span>
+      <h3>Auditoría de claims</h3>
+      <p>Detecta absolutos, falsa precisión y promesas que no podrías defender ante un comprador.</p>
+    </div>
+  </div>
+
+  <div class="tarjeta seccion">
+    <h2>Cómo funciona</h2>
+    <p class="apoyo">La app trabaja en dos capas complementarias:</p>
+    <div class="promesa">1 · <strong>Capa gancho (HAUS)</strong> — la promesa que se lee en 3 segundos y genera deseo.</div>
+    <div class="subpromesa">2 · <strong>Capa defensa (P1–P7 y S1–S5)</strong> — las subpromesas que explican el cómo, aportan prueba y fijan condiciones, para que la promesa sea creíble y sostenible.</div>
+    <p class="apoyo" style="margin-top:1rem">Una promesa sin la segunda capa vende una vez. Con las dos capas, vende y se puede defender.</p>
+  </div>
+</section>
+
+<!-- =====================================================================
+     PANTALLA 2 — FORMULARIO
+     ===================================================================== -->
+<section id="pantalla-formulario" class="pantalla" aria-labelledby="titulo-formulario">
+  <div class="tarjeta seccion">
+    <h2 id="titulo-formulario">Ingresa la información de tu producto</h2>
+    <p class="apoyo" style="margin-bottom:1.75rem">Cuanto más concreto seas, más específicas serán las promesas. Nada de lo que escribas sale de tu navegador.</p>
+
+    <form id="formulario" novalidate>
+
+      <!-- CAMPO 1 (obligatorio) -->
+      <div class="campo" id="campo-descripcion">
+        <label for="descripcion">
+          1. Descripción del Producto/Idea <span style="color:var(--error)">*</span>
+          <span class="contador" id="contadorDescripcion">0 caracteres</span>
+        </label>
+        <p class="ayuda">Qué vendes, a quién, qué resultado entrega y qué incluye. Ejemplo: “Curso para emprendedores novatos que quieren su primera venta online sin salir en cámara; 6 módulos y plantillas de anuncios”.</p>
+        <textarea id="descripcion" name="descripcion" placeholder="Ingresa tu texto aquí..." aria-describedby="error-descripcion"></textarea>
+        <p class="mensaje-error" id="error-descripcion" role="alert"></p>
+      </div>
+
+      <!-- CAMPO 2 (opcional, pero validado) -->
+      <div class="campo" id="campo-existente">
+        <label for="existente">
+          2. Texto Existente <span class="apoyo" style="font-weight:400">(opcional)</span>
+          <span class="contador" id="contadorExistente">0 caracteres</span>
+        </label>
+        <p class="ayuda">Pega el titular o el copy que ya usas. Lo analizamos y te señalamos los claims que no podrías defender.</p>
+        <textarea id="existente" name="existente" placeholder="O pega un texto existente..." aria-describedby="error-existente"></textarea>
+        <p class="mensaje-error" id="error-existente" role="alert"></p>
+      </div>
+
+      <!-- BLOQUE HAUS -->
+      <details class="plegable" id="bloqueHaus" open>
+        <summary>🧲 Fórmula HAUS — los 4 pilares de una promesa irresistible</summary>
+        <div class="plegable-cuerpo">
+          <p class="apoyo" style="margin-bottom:1rem">
+            Si los dejas vacíos los deducimos de tu descripción. Si los completas, las promesas salen mucho más afiladas.
+            <button type="button" class="btn btn-contorno btn-chico" id="btnAutocompletar" style="margin-left:.35rem">✨ Autocompletar desde mi descripción</button>
+          </p>
+
+          <div class="rejilla-2">
+            <div class="campo">
+              <label for="haus-h">H — Héroe (¿a quién le hablas?)</label>
+              <input type="text" id="haus-h" placeholder="emprendedores novatos / madres ocupadas">
+            </div>
+            <div class="campo">
+              <label for="haus-a">A — Aspiración (el resultado soñado)</label>
+              <input type="text" id="haus-a" placeholder="lograr su primera venta online">
+            </div>
+            <div class="campo">
+              <label for="haus-u">U — Urgencia (¿en cuánto tiempo?)</label>
+              <input type="text" id="haus-u" placeholder="7 días o menos / 30 días">
+            </div>
+            <div class="campo">
+              <label for="haus-s">S — Sin dolor (el miedo u obstáculo que eliminas)</label>
+              <input type="text" id="haus-s" placeholder="salir en cámara ni tener seguidores">
+            </div>
+          </div>
+
+          <div class="campo">
+            <label for="haus-m">⚙️ Mecanismo único (¿por qué funcionaría?)</label>
+            <p class="ayuda">El puente entre el punto A y el punto B. Ejemplo: “el método de 3 anuncios semilla”, “auditoría + plantillas + revisión semanal”.</p>
+            <input type="text" id="haus-m" placeholder="el sistema de 3 pasos que...">
+          </div>
+        </div>
+      </details>
+
+      <!-- CONTEXTO -->
+      <details class="plegable" id="bloqueContexto">
+        <summary>🎛️ Contexto de la oferta (afina las plantillas)</summary>
+        <div class="plegable-cuerpo">
+          <div class="rejilla-2">
+            <div class="campo">
+              <label for="tipo">Tipo de oferta</label>
+              <select id="tipo">
+                <option value="auto">Detectar automáticamente</option>
+                <option value="infoproducto">Infoproducto (curso, ebook, membresía)</option>
+                <option value="servicio">Servicio o agencia</option>
+                <option value="saas">SaaS / app / software</option>
+                <option value="ecommerce">E-commerce / producto físico</option>
+              </select>
+            </div>
+            <div class="campo">
+              <label for="friccion">Fricción dominante de tu prospecto</label>
+              <select id="friccion">
+                <option value="auto">Detectar automáticamente</option>
+              </select>
+            </div>
+          </div>
+          <p class="apoyo">La fricción dominante decide qué mecanismo priorizar. Es la columna vertebral de la matriz de selección.</p>
+        </div>
+      </details>
+
+      <!-- ACCIONES -->
+      <div class="grupo-botones" style="margin-top:2rem">
+        <button type="submit" class="btn btn-primario btn-grande" id="btnGenerar" disabled>Generar Promesas</button>
+        <button type="button" class="btn btn-contorno" id="btnVolverInicio">Volver al inicio</button>
+      </div>
+      <p class="apoyo" style="margin-top:1rem">💾 Tus datos se guardan automáticamente en tu navegador.</p>
+    </form>
+  </div>
+</section>
+
+<!-- =====================================================================
+     PANTALLA 3 — RESULTADOS
+     ===================================================================== -->
+<section id="pantalla-resultados" class="pantalla" aria-labelledby="titulo-resultados">
+  <div class="cabecera-resultados seccion">
+    <h2 id="titulo-resultados">✅ Aquí están tus promesas generadas</h2>
+    <p class="apoyo">Usa estas promesas en tu página de ventas para maximizar la conversión. Los bloques <span class="hueco">[así]</span> son datos que solo tú puedes completar: no inventamos cifras.</p>
+  </div>
+
+  <!-- El contenido se inyecta desde JavaScript -->
+  <div id="salida"></div>
+
+  <div class="grupo-botones seccion" style="justify-content:center;margin-top:2rem">
+    <button type="button" class="btn btn-primario" id="btnGenerarDeNuevo">🔄 Generar de nuevo</button>
+    <button type="button" class="btn btn-secundario" id="btnCopiar">📋 Copiar resultados</button>
+    <button type="button" class="btn btn-contorno" id="btnInicioDesdeResultados">🏠 Volver al inicio</button>
+  </div>
+  <p class="apoyo" style="text-align:center;margin-top:1rem">💾 Tus datos se guardan automáticamente en tu navegador</p>
+</section>
+
+</main>
+
+<footer class="pie">
+  Generador de Promesas · Funciona sin conexión a internet · Tus datos nunca salen de tu navegador.
+</footer>
+
+<!-- Overlay de carga -->
+<div class="overlay" id="overlay" role="status" aria-live="polite">
+  <div class="girador" aria-hidden="true"></div>
+  <p id="textoCarga">Analizando tu texto...</p>
+</div>
+
+<!-- Aviso flotante -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* =========================================================================
+   GENERADOR DE PROMESAS
+   Arquitectura:
+     1. DATOS      — matriz de fricciones, mecanismos P1-P7 y S1-S5, reglas de auditoría
+     2. ANÁLISIS   — extracción de los pilares HAUS desde el texto del usuario
+     3. GENERACIÓN — construcción de promesas, subpromesas y auditoría
+     4. RENDER     — pintado del resultado
+     5. UI         — navegación, validación, almacenamiento y utilidades
+   ========================================================================= */
+
+
+/* =========================================================================
+   1. DATOS
+   ========================================================================= */
+
+/* --- 1.1 Matriz: fricción dominante -> mecanismo prioritario --------------
+   Cada fila define qué mecanismo priorizar, qué subpromesa lo apoya,
+   qué prueba conviene y qué riesgo hay que controlar.                    */
+var MATRIZ = [
+  { id:"vago", friccion:"Beneficio vago o difícil de comparar",
+    p:"P1", s:["S1"], prueba:"Métrica definida, demostración o especificación",
+    riesgo:"Falsa precisión y extrapolación",
+    claves:["mejor","calidad","increíble","nivel","potenciar","transformar tu vida","excelente","premium","ideal"] },
+
+  { id:"visualiza", friccion:"El lector no visualiza el cambio",
+    p:"P2", s:["S1","S2"], prueba:"Escena de uso, flujo antes/después, entregable",
+    riesgo:"Dramatizar un problema o prometer transformación total",
+    claves:["desorden","caos","disperso","perdido","no sabe por dónde","confundid","abrumad","estancad","improvisa"] },
+
+  { id:"escepticismo", friccion:"Mercado saturado o escepticismo sobre por qué funcionaría",
+    p:"P3", s:["S2"], prueba:"Demostración, protocolo, comparación pertinente",
+    riesgo:"Causalidad inventada o jerga propietaria",
+    claves:["ya probó","ya probaron","no funciona","estafa","desconfía","escéptic","saturado","competencia","otro curso","promete"] },
+
+  { id:"demora", friccion:"Demora, entrega o activación bloquea la compra",
+    p:"P4", s:["S4"], prueba:"Mediana, p90, SLA, tracking y condiciones",
+    riesgo:"Confundir acceso inmediato con resultado inmediato",
+    claves:["rápido","rapido","urgente","ya mismo","hoy","inmediato","entrega","envío","demora","tarda","espera","al instante"] },
+
+  { id:"complejidad", friccion:"Complejidad o carga de aprendizaje",
+    p:"P5", s:["S2","S5"], prueba:"Flujo real, número de pasos, prueba de tarea",
+    riesgo:"Ocultar trabajo, requisitos o costes",
+    claves:["difícil","dificil","complicado","técnic","tecnic","no sé cómo","no se como","código","codigo","curva","aprender","configurar","herramientas"] },
+
+  { id:"objecion", friccion:"Una objeción concreta domina la decisión",
+    p:"P6", s:["S4"], prueba:"Política, integración, soporte, garantía operativa",
+    riesgo:"Absolutos del tipo “sin riesgo” o “sin esfuerzo”",
+    claves:["caro","precio","presupuesto","miedo","dudas","no tengo tiempo","vergüenza","verguenza","riesgo","devolución","sin experiencia"] },
+
+  { id:"identidad", friccion:"Categoría visible, comunitaria o simbólica",
+    p:"P7", s:["S3"], prueba:"Conducta, propósito auditable, casos comparables",
+    riesgo:"Exclusión, vergüenza y estatus vacío",
+    claves:["comunidad","pertenecer","marca personal","referente","autoridad","estilo de vida","identidad","sentirse","imagen"] },
+
+  { id:"consideracion", friccion:"Oferta compleja de alta consideración",
+    p:"P3", s:["S5"], prueba:"Prueba junto a cada objeción",
+    riesgo:"Lista interminable y CTA que compiten entre sí",
+    nota:"En ofertas complejas: UNA promesa principal, no varias.",
+    claves:["b2b","empresa","implementación","implementacion","contrato","alto ticket","consultoría","consultoria","licencia","equipo comercial"] }
+];
+
+/* --- 1.2 Mecanismos de PROMESA PRINCIPAL (P1-P7) -------------------------
+   plantillas: una por tipo de oferta. Los [corchetes] que no se puedan
+   rellenar con datos reales quedan visibles como huecos a completar.     */
+var MECANISMOS_P = {
+  P1:{
+    nombre:"Especificidad concreta y resultado medible", icono:"📐",
+    pregunta:"¿Qué cambia exactamente, en qué unidad y en qué horizonte?",
+    idea:"Sustituye abstracciones por acción, resultado, unidad y horizonte temporal. Lo que no se puede observar, no se puede comparar.",
+    plantillas:{
+      infoproducto:"En [número] sesiones de [duración], completarás {entregable} y demostrarás [criterio de dominio]. {aspiracion} depende de [factores].",
+      servicio:"En los primeros [días], entregamos {primerHito} y reportamos [métrica] para {heroe}, bajo [dependencias].",
+      saas:"{heroe} obtiene {entregable} en [rango] desde la conexión, medido en [entorno] y sujeto a [límites].",
+      ecommerce:"Hasta [cifra] de [unidad o resultado] en [escenario de prueba]; el resultado real varía según [variables]. Consulta [método]."
+    },
+    prueba:"Guarda la especificación, el protocolo, la cohorte, la fecha, el denominador y la fuente antes de publicar.",
+    limite:"No fabriques precisión. Distingue capacidad nominal, promedio, mediana, máximo y resultado garantizado: “hasta” no es un escudo si la impresión global sugiere resultado típico."
+  },
+  P2:{
+    nombre:"Transformación del estado actual al deseado", icono:"🔀",
+    pregunta:"¿De qué situación reconocible a qué resultado observable, y por qué puente?",
+    idea:"Contraste con puente. No “transforma tu vida”, sino punto de partida → mecanismo → primer hito → resultado.",
+    plantillas:{
+      infoproducto:"De {situacionActual} a {entregable} en {urgencia}, con {mecanismo}. Necesitarás [esfuerzo real].",
+      servicio:"Sustituimos {situacionActual} por {aspiracion} mediante {mecanismo}. Tú aportas [dependencias]; nosotros entregamos {primerHito}.",
+      saas:"Pasa de {situacionActual} a {aspiracion} mediante {mecanismo}, empezando por {primerHito}. [Condición].",
+      ecommerce:"Pasa de {situacionActual} a {aspiracion} mediante {mecanismo}, empezando por {primerHito}. [Condición]."
+    },
+    prueba:"Escena de uso, flujo antes/después y un primer hito que tu oferta sí controla.",
+    limite:"No inventes un “antes” degradante para crear ansiedad, y no prometas transformación de identidad, ingresos o salud si solo entregas contenido o herramientas."
+  },
+  P3:{
+    nombre:"Mecanismo único y diferenciación causal", icono:"⚙️",
+    pregunta:"¿Por qué esta oferta podría producir el resultado?",
+    idea:"Cadena de 3 a 5 pasos: causa relevante → componente o método → efecto intermedio → resultado. “Único” significa distintivo y defendible, no necesariamente patentado.",
+    plantillas:{
+      infoproducto:"{aspiracion} porque {mecanismo} conecta [práctica] con [feedback], corrige [error frecuente] y consolida {entregable}, bajo [condición].",
+      servicio:"Diagnosticamos [causa], ejecutamos {mecanismo} y medimos [indicador], para que {heroe} pueda {aspiracion}.",
+      saas:"{aspiracion} porque {producto} conecta [dato o acción] con [automatización], detecta [señal] y activa [respuesta], bajo [condición].",
+      ecommerce:"{aspiracion} gracias a {mecanismo}: [componente] genera [efecto intermedio], que produce [resultado medible] en [condición de ensayo]."
+    },
+    prueba:"Dos capas: una visible (demo, captura, muestra) y una empírica (protocolo, datos, casos).",
+    limite:"No inventes nombre propietario, ingrediente, algoritmo o estudio. Una etiqueta técnica puede producir ilusión de explicación sin demostrar nada."
+  },
+  P4:{
+    nombre:"Velocidad y tiempo hasta el valor", icono:"⚡",
+    pregunta:"¿Cuándo aparece el primer valor observable, medido desde qué evento?",
+    idea:"No promete “rápido”: separa acceso, primer resultado y resultado final. Un borrador en segundos no es una campaña terminada.",
+    plantillas:{
+      infoproducto:"Accede hoy y completa {primerHito} en {urgencia}. El resultado final depende de [práctica y factores externos].",
+      servicio:"Recibe {primerHito} en [días laborables] después de [inputs completos]; después avanzamos por [hitos].",
+      saas:"Obtén {entregable} en [rango]; revisa y aprueba antes del resultado final. Medido en [entorno], sujeto a [límites].",
+      ecommerce:"Compra antes de [hora] y recibe {producto} entre [fecha] y [fecha] en [zona]. Incluye procesamiento; consulta [exclusiones]."
+    },
+    prueba:"Mide desde un evento inequívoco (pago, inputs completos, clic) hasta el hito. Registra mediana, p90 y causas de demora.",
+    limite:"No digas “instantáneo”, “24 horas” o “garantizado” si intervienen terceros, stock, zona o la conducta del usuario. Nunca uses temporizadores que se reinician."
+  },
+  P5:{
+    nombre:"Simplicidad, facilidad y reducción del esfuerzo", icono:"🪶",
+    pregunta:"¿Qué esfuerzo concreto se reduce y mediante qué mecanismo?",
+    idea:"Especifica qué carga desaparece (comprender, recordar, decidir, cargar datos, coordinar, instalar) y quién hace cada paso.",
+    plantillas:{
+      infoproducto:"Ruta guiada de [número] módulos, con {mecanismo}. No necesitas [prerrequisito real]; sí necesitarás [trabajo].",
+      servicio:"{aspiracion} sin coordinar {obstaculo}, porque nuestro equipo asume [tareas]. Tú aportas [inputs] y revisas [puntos].",
+      saas:"Haz [tarea] en [número real] pasos, sin {obstaculo}: {mecanismo} se encarga de [trabajo automatizado].",
+      ecommerce:"De {situacionActual} a {aspiracion} en [número real] pasos: [acciones]. [Precio, requisitos y excepciones] antes de pagar."
+    },
+    prueba:"Mide pasos, tiempo mediano, errores, campos o incidencias antes y después. Muestra el flujo real.",
+    limite:"Define “fácil”, “simple” y “en minutos”. No escondas configuración, requisitos previos ni costes para fabricar simplicidad."
+  },
+  P6:{
+    nombre:"Eliminación del obstáculo dominante", icono:"🚧",
+    pregunta:"¿Cuál es la barrera que más impide avanzar y qué parte asume tu oferta?",
+    idea:"Resultado observable + público + “sin” obstáculo específico + mecanismo verificable + condiciones.",
+    plantillas:{
+      infoproducto:"Consigue {aspiracion} sin {obstaculo} gracias a {mecanismo}. [Condición o prueba].",
+      servicio:"Obtén {aspiracion} sin apostar a ciegas: [política, demostración o compatibilidad] explica qué ocurre si [supuesto].",
+      saas:"Haz [tarea] sin {obstaculo}, con [integraciones, permisos y registros] que muestran cómo se reduce la fricción.",
+      ecommerce:"Consigue {aspiracion} sin {obstaculo} gracias a {mecanismo}. [Condición o prueba]."
+    },
+    prueba:"Conecta el obstáculo con una característica operativa: precio visible, plantillas, integración, garantía o soporte.",
+    limite:"No uses absolutos si queda alguna carga, y no traslades el obstáculo en silencio. Si tu producto no controla el obstáculo, no lo conviertas en promesa."
+  },
+  P7:{
+    nombre:"Identidad, estatus y aspiración", icono:"👑",
+    pregunta:"¿Qué conducta observable confirma la identidad que tu cliente quiere sostener?",
+    idea:"El beneficio funcional como forma de actuar según una identidad. La identidad es consecuencia del uso y de una práctica, no de la compra.",
+    plantillas:{
+      infoproducto:"Aprende [habilidad] para actuar como [rol observable]. Al terminar podrás {entregable}, no solo sentirte [etiqueta].",
+      servicio:"Logra {aspiracion} para trabajar o presentarte como [rol reputacional], mediante {mecanismo} y [entregables].",
+      saas:"{aspiracion} para equipos que [conducta identitaria], con [registro, control o estándar] que lo demuestra.",
+      ecommerce:"{aspiracion} para quienes [conducta identitaria], con [material, prueba, reparación o garantía]."
+    },
+    prueba:"Demostración, casos comparables, propósito operativo y resultados típicos, no excepcionales.",
+    limite:"No prometas prestigio, pertenencia o aceptación automática. Evita vergüenza, clasismo y estereotipos; el beneficio funcional debe dominar."
+  }
+};
+
+/* --- 1.3 Mecanismos de SUBPROMESA (S1-S5) ------------------------------- */
+var MECANISMOS_S = {
+  S1:{
+    nombre:"Expansión concreta de la promesa", icono:"🔎",
+    pregunta:"¿Qué se ofrece, para quién, en qué situación y con qué condición?",
+    idea:"El subtítulo no repite el titular con sinónimos: reduce la incertidumbre que queda. Categoría → resultado → audiencia → contexto → mecanismo → calificación.",
+    plantillas:{
+      infoproducto:"{aspiracion} para {heroe} en [situación]. Obtienes {entregable} mediante {mecanismo}. [Condición].",
+      servicio:"{aspiracion} para {heroe} cuando [detonante]. Integramos [sistemas], entregamos {primerHito} y medimos [indicador].",
+      saas:"{aspiracion} para {heroe} en [situación]. Obtienes {entregable} mediante {mecanismo}. [Condición].",
+      ecommerce:"{producto} para [uso]. Diseñado con [propiedad verificable] y sujeto a [entrega, devolución o compatibilidad]."
+    },
+    limite:"Una calificación no puede contradecir el titular ni quedar enterrada. Si necesitas varias cifras y públicos, el problema es de segmentación, no de longitud."
+  },
+  S2:{
+    nombre:"Explicación breve del cómo", icono:"🔧",
+    pregunta:"¿Cómo podría ocurrir el resultado?",
+    idea:"Puente inferencial: promesa → vehículo o acción → resultado intermedio. Responde el “cómo” sin intentar probarlo todo arriba.",
+    plantillas:{
+      infoproducto:"Aprende [habilidad] con {mecanismo}, en [formato y ritmo], para que puedas {aspiracion}.",
+      servicio:"Llega a {aspiracion} a través de {mecanismo} por etapas, con [entregables y alcance].",
+      saas:"Centraliza [tarea] al {mecanismo}, para que {heroe} pueda {aspiracion}.",
+      ecommerce:"{aspiracion} mediante {mecanismo}, para que [efecto intermedio] ocurra en [situación de uso]."
+    },
+    limite:"No uses “científico”, “probado” o “revolucionario” sin documentarlo. Si la causalidad no está demostrada, usa verbos proporcionales: “incluye”, “está diseñado para”, “puede ayudar”."
+  },
+  S3:{
+    nombre:"Prueba y credibilidad incorporadas", icono:"🏅",
+    pregunta:"¿Por qué debería creerlo?",
+    idea:"Adopción, autoridad, evidencia, demostración o pares comparables. Una familia de señal por objeción, no una acumulación decorativa.",
+    plantillas:{
+      infoproducto:"{aspiracion} para {heroe}. Ya lo han aplicado [número definido] alumnos en [mercado y periodo]; mira [caso o demostración].",
+      servicio:"[Resultado definido] observado en [población, n y periodo]; consulta [método y condiciones].",
+      saas:"{mecanismo} creado o revisado por [credencial pertinente], con [fuente o metodología] disponible.",
+      ecommerce:"{aspiracion} para {heroe}. Ya lo han elegido [número definido] clientes en [mercado y periodo]."
+    },
+    limite:"Distingue registrados, activos, compradores y reseñadores. Declara relaciones materiales y contextualiza resultados atípicos: la adopción muestra escala, no calidad."
+  },
+  S4:{
+    nombre:"Reversión del riesgo y reducción de fricción", icono:"🛡️",
+    pregunta:"¿Qué ocurre si no cumple, en qué plazo y por qué canal?",
+    idea:"Si ocurre X dentro de Y, el cliente recibe Z. Y esa protección debe poder entenderse y ejercerse sin fricción.",
+    plantillas:{
+      infoproducto:"Pruébalo [N] días. Si no cumple [criterio], solicita la devolución antes de [fecha] en [canal]. Reembolsamos [importe] en [plazo].",
+      servicio:"Si no entregamos {primerHito} por una causa bajo nuestro control, elige [revisión, crédito o reembolso] mediante [canal].",
+      saas:"Prueba [N] días. Si no cancelas antes de [momento], cobraremos [importe] cada [periodo]. Cancela desde [ruta].",
+      ecommerce:"Pruébalo [N] días. Si no cumple [criterio], solicita la devolución antes de [fecha] en [canal]. [Envío y excepciones]."
+    },
+    limite:"“Cancela cuando quieras” no significa “reembolso cuando quieras”. Muestra precio total, renovación e importe antes del cobro, y no hagas la cancelación más difícil que la compra."
+  },
+  S5:{
+    nombre:"Pila de microresultados y objeciones", icono:"🧱",
+    pregunta:"¿Qué objeción resuelve cada bloque, con qué mecanismo y qué prueba?",
+    idea:"Una gran promesa arriba y 4-5 resultados secundarios debajo, cada uno atado a una objeción, un mecanismo y una prueba o condición.",
+    plantillas:{
+      infoproducto:"Si te preocupa [objeción], obtienes [microresultado] gracias a {mecanismo}. [Prueba y condición].",
+      servicio:"Si te preocupa [objeción], obtienes [microresultado] gracias a {mecanismo}. [Prueba y condición].",
+      saas:"Si te preocupa [objeción], obtienes [microresultado] gracias a {mecanismo}. [Prueba y condición].",
+      ecommerce:"Si te preocupa [objeción], obtienes [microresultado] gracias a {mecanismo}. [Prueba y condición]."
+    },
+    limite:"Reconocer una duda sin responderla empeora el mensaje. No escondas condiciones entre tarjetas ni repitas sinónimos como si fueran beneficios distintos."
+  }
+};
+
+/* --- 1.4 Objeciones base para la pila S5 (se adaptan al tipo de oferta) -- */
+var OBJECIONES = {
+  comun:[
+    { objecion:"“¿Y si no funciona en mi caso?”", micro:"un primer resultado verificable antes de avanzar", mecanismo:"un diagnóstico inicial", prueba:"[caso comparable a tu situación]" },
+    { objecion:"“No tengo tiempo”",               micro:"avanzar en bloques cortos sin rehacer nada", mecanismo:"una ruta por hitos",      prueba:"[duración real de cada bloque]" },
+    { objecion:"“Ya probé otras cosas”",          micro:"entender por qué lo anterior no funcionó",  mecanismo:"una comparación honesta",  prueba:"[qué hace distinto tu método]" },
+    { objecion:"“Es caro”",                       micro:"ver el coste total y qué incluye antes de pagar", mecanismo:"precio y alcance visibles", prueba:"[precio, plan y qué no incluye]" },
+    { objecion:"“¿Y si me arrepiento?”",          micro:"una salida clara y sin castigo",            mecanismo:"una política escrita",     prueba:"[plazo, canal y condiciones]" }
+  ],
+  infoproducto:[
+    { objecion:"“No tengo experiencia previa”",   micro:"empezar desde cero con un entregable guiado", mecanismo:"plantillas y ejemplos resueltos", prueba:"[primer módulo o clase de muestra]" },
+    { objecion:"“No voy a terminarlo”",           micro:"completar el primer entregable en la semana 1", mecanismo:"una ruta corta con hitos",  prueba:"[tasa real de finalización, si la mides]" }
+  ],
+  servicio:[
+    { objecion:"“No quiero perder el control”",   micro:"saber en todo momento en qué punto va tu proyecto", mecanismo:"reportes por hito",     prueba:"[frecuencia y formato del reporte]" },
+    { objecion:"“¿Cuánto trabajo me toca a mí?”", micro:"un reparto de tareas explícito desde el día 1",     mecanismo:"un alcance por escrito", prueba:"[lista de inputs que aportas tú]" }
+  ],
+  saas:[
+    { objecion:"“¿Se integra con lo que ya uso?”", micro:"conectar tus herramientas actuales sin migrar nada", mecanismo:"integraciones nativas", prueba:"[lista de integraciones y límites]" },
+    { objecion:"“¿Qué pasa con mis datos?”",      micro:"control y exportación de tu información",             mecanismo:"permisos y registros",  prueba:"[política y estándar que cumples]" }
+  ],
+  ecommerce:[
+    { objecion:"“¿Cuándo me llega?”",             micro:"una fecha de entrega antes de pagar",  mecanismo:"fecha estimada en el checkout", prueba:"[zona, corte horario y excepciones]" },
+    { objecion:"“¿Y si no es lo que esperaba?”",  micro:"cambiarlo o devolverlo sin pelear",    mecanismo:"devolución con etiqueta incluida", prueba:"[plazo, estado del producto y costes]" }
+  ]
+};
+
+/* --- 1.5 Reglas de auditoría de claims ----------------------------------
+   Detectan afirmaciones que exigen respaldo o que no podrías defender.  */
+var REGLAS_AUDITORIA = [
+  { re:/\bsin\s+riesgo\b/gi, nivel:"alto", tipo:"Absoluto",
+    correccion:"Sustituye “sin riesgo” por el riesgo concreto que reviertes: dinero, tiempo, datos o desempeño. Una devolución no elimina el riesgo de tiempo (S4)." },
+  { re:/\bsin\s+esfuerzo\b|\bsin\s+hacer\s+nada\b|\ben\s+piloto\s+autom[áa]tico\b/gi, nivel:"alto", tipo:"Absoluto",
+    correccion:"Di qué esfuerzo desaparece y cuál permanece, y quién hace cada paso (P5)." },
+  { re:/\bgarantizad[oa]s?\b|\bte\s+garantizo\b|\bresultados?\s+garantizad/gi, nivel:"alto", tipo:"Garantía sin condiciones",
+    correccion:"Una garantía crea una obligación: define supuesto, plazo, canal, remedio y exclusiones. Si no puedes cumplirla, es una expectativa, no una garantía (S4)." },
+  { re:/\b(instant[áa]nea?o?|inmediat[oa]s?|al\s+instante|de\s+la\s+noche\s+a\s+la\s+ma[ñn]ana|en\s+24\s*(h|horas))\b/gi, nivel:"alto", tipo:"Velocidad absoluta",
+    correccion:"Separa acceso, primer resultado y resultado final. Mide desde un evento inequívoco y publica mediana y condiciones (P4)." },
+  { re:/\b(revolucionari[oa]|definitiv[oa]|el\s+[úu]nico|la\s+[úu]nica|el\s+mejor|la\s+mejor|n[úu]mero\s*1|#\s*1|l[íi]der\s+(mundial|del\s+mercado))\b/gi, nivel:"medio", tipo:"Hipérbole",
+    correccion:"Sustituye el superlativo por una diferencia demostrable: qué haces distinto, para quién y con qué prueba (P3)." },
+  { re:/\bpara\s+(todos|cualquiera|todo\s+el\s+mundo)\b|\bfunciona\s+para\s+todos\b/gi, nivel:"medio", tipo:"Público indefinido",
+    correccion:"Define el héroe con un rasgo verificable o una situación. Un público total impide que alguien se auto-califique (S1)." },
+  { re:/\b\d+[.,]\d+\s*%/g, nivel:"alto", tipo:"Falsa precisión",
+    correccion:"Un decimal eleva la expectativa de exactitud. Publica población, método, periodo y denominador, o retira el decimal (P1)." },
+  { re:/\b(\d{1,3})\s*%/g, nivel:"medio", tipo:"Cifra sin respaldo visible",
+    correccion:"Acompaña la cifra con su naturaleza (media, mediana, máximo), la muestra, el periodo y el método (P1)." },
+  { re:/\b(100\s*%\s*(garantizado|efectivo|seguro))\b/gi, nivel:"alto", tipo:"Absoluto numérico",
+    correccion:"Ningún resultado es 100 % en todos los casos. Acota condición, población y qué no afirmas (P1)." },
+  { re:/\b(cient[íi]ficamente\s+)?(comprobad|probad|demostrad)[oa]s?\b|\bcl[íi]nicamente\b/gi, nivel:"alto", tipo:"Claim de evidencia",
+    correccion:"Enlaza el estudio: producto, dosis, población, uso y métrica deben coincidir con tu claim. Un testimonio no es evidencia (P3)." },
+  { re:/\bhasta\s+\d|\bdesde\s+\$|\bdesde\s+\d/gi, nivel:"bajo", tipo:"Calificador débil",
+    correccion:"“Hasta” y “desde” no corrigen una impresión principal engañosa. Añade el valor típico junto al extremo (P1)." },
+  { re:/\bgratis\b|\bprueba\s+gratuita\b|\b0\s*€|\bgratuito\b/gi, nivel:"medio", tipo:"Gratuidad con letra pequeña",
+    correccion:"Muestra duración, precio posterior, renovación automática y ruta de cancelación junto al claim, no en un enlace lejano (S4)." },
+  { re:/\b(gana|ganar[áa]s?|factura|facturar[áa]s?|ingresos?\s+de|\$\s?\d{3,}|\d+\s*k\s+(al|por)\s+mes)\b/gi, nivel:"alto", tipo:"Claim de ingresos",
+    correccion:"Promete aprendizaje y entregables antes que ingresos. El resultado económico depende del mercado, el precio y la ejecución: dilo (P1, P2)." },
+  { re:/\b(adelgaz|bajar\s+de\s+peso|perder\s+\d+\s*(kilos?|kg)|curar|cura\b|ansiedad|depresi[óo]n|insomnio|dolor\s+cr[óo]nico)\b/gi, nivel:"alto", tipo:"Claim de salud",
+    correccion:"Los claims de salud exigen evidencia competente y fiable, no testimonios. Revisa la normativa local antes de publicar (P1)." },
+  { re:/\bcambiar[áa]\s+tu\s+vida\b|\btransforma\s+tu\s+vida\b|\bnunca\s+m[áa]s\b|\bpara\s+siempre\b/gi, nivel:"medio", tipo:"Transformación total",
+    correccion:"Define el estado deseado como conducta, entregable o capacidad verificable. Evita identidades totales (P2)." },
+  { re:/\b[úu]ltimas?\s+(horas|plazas|cupos)\b|\bsolo\s+hoy\b|\bexpira\s+en\b/gi, nivel:"medio", tipo:"Urgencia declarada",
+    correccion:"La escasez debe ser real y verificable. No uses temporizadores que se reinician ni cupos que nunca se agotan (P4)." },
+  { re:/\bf[áa]cil\b|\bsimple\b|\bsencill[oa]\b|\ben\s+minutos\b|\bsin\s+c[óo]digo\b/gi, nivel:"bajo", tipo:"Facilidad sin definir",
+    correccion:"Define qué esfuerzo se reduce: número de pasos, tiempo mediano, campos o herramientas que dejas de usar (P5)." }
+];
+
+
+/* =========================================================================
+   2. ANÁLISIS — extracción de los pilares HAUS desde el texto
+   ========================================================================= */
+
+/* Quita acentos y pasa a minúsculas: sirve para comparar, no para mostrar. */
+function normalizar(txt){
+  try{
+    return (txt||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+  }catch(e){
+    return (txt||"").toLowerCase();
+  }
+}
+
+/* Limpia un fragmento extraído: recorta, quita conectores finales y puntuación. */
+function limpiarFragmento(txt,maxPalabras){
+  if(!txt) return "";
+  var t = txt.replace(/\s+/g," ").trim()
+             .replace(/^[\s,;:.\-–—"'¡!¿?()]+/,"")
+             .replace(/[\s,;:.\-–—"'()]+$/,"");
+  var palabras = t.split(" ");
+  if(maxPalabras && palabras.length>maxPalabras) palabras = palabras.slice(0,maxPalabras);
+  /* Si termina en conector, lo soltamos: "para vender más y" -> "para vender más" */
+  var colas = ["y","o","de","con","para","que","en","a","por","del","la","el","los","las","un","una","sin","su","tu"];
+  while(palabras.length>1 && colas.indexOf(normalizar(palabras[palabras.length-1]))!==-1){ palabras.pop(); }
+  return palabras.join(" ").trim();
+}
+
+/* Corta un fragmento en el primer conector que abre una idea distinta.
+   Evita capturar "emprendedores novatos QUE QUIEREN..." como héroe. */
+function cortarEn(txt,marcadores){
+  if(!txt) return "";
+  var corte = txt.length;
+  for(var i=0;i<marcadores.length;i++){
+    var re = new RegExp("\\s"+marcadores[i]+"\\s","i");
+    var m = txt.match(re);
+    if(m && m.index>2 && m.index<corte) corte = m.index;
+  }
+  return txt.slice(0,corte).trim();
+}
+
+/* Detecta el HÉROE (a quién le hablas). */
+function detectarHeroe(texto){
+  var t = texto || "";
+  /* 1) Construcciones explícitas: "para X", "dirigido a X", "ayudo a X" */
+  var patrones = [
+    /\b(?:ayud[oa]|ayudamos|dirigid[oa]s?)\s+a\s+([^.,;:\n()]{4,60})/i,
+    /\bpara\s+((?:[a-záéíóúñü]+\s+){0,2}(?:emprendedor|emprendedora|coach|freelancer|consultor|terapeuta|nutricionista|entrenador|psicolog|abogad|dentista|arquitect|diseñador|programador|fotograf|madre|madres|padre|padres|mam[áa]|due[ñn]|negocio|pyme|pymes|agencia|agencias|equipo|equipos|tienda|marca|infoproductor|creador|vendedor|comercial|estudiante|docente|profesor)[a-záéíóúñü]*(?:\s+[a-záéíóúñü]+){0,3})/i,
+    /\b(?:pensad[oa]|diseñad[oa])\s+para\s+([^.,;:\n()]{4,60})/i
+  ];
+  for(var i=0;i<patrones.length;i++){
+    var m = t.match(patrones[i]);
+    if(m && m[1]){
+      var c = limpiarFragmento(cortarEn(m[1],["que","quienes","para","porque","y\\s+quieren"]),6);
+      if(c.length>3) return c;
+    }
+  }
+  /* 2) Sustantivos de audiencia sueltos en el texto */
+  var pistas = ["emprendedores","emprendedoras","coaches","freelancers","consultores","agencias","nutricionistas",
+                "entrenadores","psicólogos","abogados","dentistas","arquitectos","diseñadores","programadores",
+                "madres ocupadas","madres","padres","dueños de negocio","pymes","tiendas online","infoproductores",
+                "creadores de contenido","vendedores","estudiantes","docentes","equipos de marketing","equipos comerciales"];
+  var n = normalizar(t);
+  for(var j=0;j<pistas.length;j++){
+    if(n.indexOf(normalizar(pistas[j]))!==-1) return pistas[j];
+  }
+  return "";
+}
+
+/* La urgencia es un pilar aparte (U): si la aspiración ya lo lleva dentro,
+   lo quitamos para no escribir "en 30 días en 30 días". */
+function quitarPlazo(txt){
+  if(!txt) return "";
+  return txt
+    .replace(/\s+(?:en|durante|en\s+solo|en\s+apenas)\s+\d{1,3}\s*(?:minutos?|horas?|d[íi]as?|semanas?|meses?|a[ñn]os?)\b.*$/i,"")
+    .replace(/\s+(?:esta|la\s+misma)\s+semana\b.*$/i,"")
+    .trim();
+}
+
+/* Detecta la ASPIRACIÓN (el resultado soñado). */
+function detectarAspiracion(texto){
+  var t = texto || "";
+  var verbos = "vender|conseguir|lograr|alcanzar|generar|captar|atraer|cerrar|aumentar|duplicar|triplicar|multiplicar|"+
+               "reducir|bajar|perder|ahorrar|recuperar|automatizar|escalar|crear|lanzar|publicar|montar|construir|"+
+               "organizar|ordenar|dominar|aprender\\s+a|dejar\\s+de|convertir|posicionar|facturar";
+  var re = new RegExp("\\b(?:"+verbos+")\\b[^.,;:\\n()]{3,70}","i");
+  var m = t.match(re);
+  if(m){
+    var c = limpiarFragmento(cortarEn(m[0],["sin","aunque","porque","para\\s+que","pero"]),10);
+    c = quitarPlazo(c);
+    if(c.length>6) return c.toLowerCase();
+  }
+  /* Alternativa: "para que + oración" */
+  var m2 = t.match(/\bpara\s+que\s+([^.,;:\n()]{6,70})/i);
+  if(m2) return limpiarFragmento(m2[1],10).toLowerCase();
+  return "";
+}
+
+/* Detecta la URGENCIA (plazo). */
+function detectarUrgencia(texto){
+  var t = texto || "";
+  var m = t.match(/\b(\d{1,3})\s*(minutos?|horas?|d[íi]as?|semanas?|meses?|a[ñn]os?)\b/i);
+  if(m) return (m[1]+" "+m[2].toLowerCase());
+  if(/\bmisma\s+semana\b|\besta\s+semana\b/i.test(t)) return "la misma semana";
+  if(/\bfin\s+de\s+semana\b/i.test(t)) return "un fin de semana";
+  if(/\bprimer\s+mes\b/i.test(t)) return "el primer mes";
+  return "";
+}
+
+/* Detecta el SIN DOLOR (obstáculo, miedo u objeción que se elimina). */
+function detectarSinDolor(texto){
+  var t = texto || "";
+  /* 1) "sin X" explícito, incluyendo "sin X ni Y" */
+  var m = t.match(/\bsin\s+((?:tener\s+que\s+)?[^.,;:\n()]{3,70})/i);
+  if(m){
+    var c = limpiarFragmento(m[1],12);
+    if(c.length>3) return c.toLowerCase();
+  }
+  /* 2) "no necesitas X" / "sin necesidad de X" */
+  var m2 = t.match(/\b(?:no\s+(?:necesitas?|hace\s+falta|requiere)|sin\s+necesidad\s+de)\s+([^.,;:\n()]{3,60})/i);
+  if(m2) return limpiarFragmento(m2[1],10).toLowerCase();
+  /* 3) Dolores frecuentes nombrados en el texto */
+  var dolores = [
+    ["camara","salir en cámara"],["seguidores","tener seguidores"],["experiencia","tener experiencia previa"],
+    ["presupuesto","gastar de más en publicidad"],["tiempo","dedicarle horas todos los días"],
+    ["tecnic","pelear con la parte técnica"],["codigo","escribir una línea de código"],
+    ["equipo","contratar a un equipo"],["gimnasio","pasar horas en el gimnasio"],
+    ["dieta","dejar de comer lo que te gusta"],["agencia","depender de una agencia"]
+  ];
+  var n = normalizar(t);
+  for(var i=0;i<dolores.length;i++){
+    if(n.indexOf(dolores[i][0])!==-1) return dolores[i][1];
+  }
+  return "";
+}
+
+/* Detecta el MECANISMO ÚNICO (el puente). */
+function detectarMecanismo(texto){
+  var t = texto || "";
+  var m = t.match(/\b(?:m[ée]todo|sistema|proceso|framework|protocolo|f[óo]rmula|ruta|programa|metodolog[íi]a)\s+(?:de\s+|del\s+)?([^.,;:\n()]{3,45})/i);
+  if(m) return limpiarFragmento(m[0],8).toLowerCase();
+  /* Si no hay nombre propio, describimos el vehículo por el formato detectado */
+  var n = normalizar(t);
+  if(/\bplantilla/.test(n)) return "plantillas listas para usar y ejemplos resueltos";
+  if(/\bmodulo|\bclases|\bleccion/.test(n)) return "una ruta guiada por módulos con práctica y feedback";
+  if(/\bauditor|\bdiagnost/.test(n)) return "un diagnóstico inicial seguido de ejecución por hitos";
+  if(/\bautomatiz|\bintegraci/.test(n)) return "la automatización que conecta tus herramientas actuales";
+  if(/\bacompanamiento|\bmentor|\basesor/.test(n)) return "acompañamiento con revisiones periódicas";
+  return "";
+}
+
+/* Detecta el ENTREGABLE concreto. */
+function detectarEntregable(texto){
+  var n = normalizar(texto||"");
+  var mapa = [
+    ["pagina de venta","tu página de ventas terminada"],["landing","tu landing publicada"],
+    ["anuncio","tus primeros anuncios en marcha"],["embudo","tu embudo montado"],
+    ["plantilla","tus plantillas completadas"],["guion","tus guiones escritos"],
+    ["ebook","tu ebook terminado"],["curso","tu curso estructurado"],
+    ["tienda","tu tienda publicada"],["dashboard","tu panel configurado"],
+    ["informe","tu informe entregado"],["calendario","tu calendario de contenidos cargado"],
+    ["auditor","tu auditoría entregada"],["dieta","tu plan semanal armado"],
+    ["rutina","tu rutina programada"],["portafolio","tu portafolio publicado"]
+  ];
+  for(var i=0;i<mapa.length;i++){ if(n.indexOf(mapa[i][0])!==-1) return mapa[i][1]; }
+  return "";
+}
+
+/* Detecta la SITUACIÓN ACTUAL (el "antes"). */
+function detectarSituacionActual(texto){
+  var n = normalizar(texto||"");
+  var mapa = [
+    ["improvis","improvisar cada mes"],["desorden","trabajar con todo disperso"],
+    ["disperso","trabajar con todo disperso"],["caos","un proceso que nadie controla"],
+    ["manual","hacerlo todo a mano"],["excel","pelear con hojas de cálculo sueltas"],
+    ["hoja de calculo","pelear con hojas de cálculo sueltas"],["estancad","estar estancado en el mismo punto"],
+    ["no vende","publicar sin vender"],["sin clientes","publicar sin que llegue un solo cliente"],
+    ["copiar","copiar plantillas genéricas que no encajan"],["adivin","adivinar qué decir en cada publicación"]
+  ];
+  for(var i=0;i<mapa.length;i++){ if(n.indexOf(mapa[i][0])!==-1) return mapa[i][1]; }
+  return "";
+}
+
+/* Detecta el TIPO DE OFERTA. */
+function detectarTipo(texto){
+  var n = normalizar(texto||"");
+  var puntos = { infoproducto:0, servicio:0, saas:0, ecommerce:0 };
+  var señales = {
+    infoproducto:["curso","ebook","membresia","mentoria","modulo","modulos","clases","leccion","masterclass","taller","formacion","alumnos","comunidad de pago","infoproducto"],
+    servicio:["servicio","agencia","consultoria","implementamos","gestionamos","para clientes","honorarios","proyecto","auditoria","acompanamiento","freelance"],
+    saas:["app","software","plataforma","saas","suscripcion mensual","integracion","dashboard","panel","api","usuarios activos","herramienta web"],
+    ecommerce:["envio","envios","stock","talle","tienda online","producto fisico","carrito","checkout","devolucion del producto","unidades","material"]
+  };
+  for(var clave in señales){
+    if(!señales.hasOwnProperty(clave)) continue;
+    for(var i=0;i<señales[clave].length;i++){
+      if(n.indexOf(señales[clave][i])!==-1) puntos[clave]++;
+    }
+  }
+  var mejor="infoproducto", max=0;
+  for(var k in puntos){ if(puntos.hasOwnProperty(k) && puntos[k]>max){ max=puntos[k]; mejor=k; } }
+  return max===0 ? "infoproducto" : mejor;
+}
+
+/* Detecta la FRICCIÓN DOMINANTE recorriendo la matriz. */
+function detectarFriccion(texto){
+  var n = normalizar(texto||"");
+  var mejor=null, max=0;
+  for(var i=0;i<MATRIZ.length;i++){
+    var fila=MATRIZ[i], p=0;
+    for(var j=0;j<fila.claves.length;j++){
+      if(n.indexOf(normalizar(fila.claves[j]))!==-1) p++;
+    }
+    if(p>max){ max=p; mejor=fila; }
+  }
+  return mejor || MATRIZ[0];
+}
+
+/* Detecta un nombre de producto (primera línea corta, tipo título). */
+function detectarProducto(texto){
+  var lineas = (texto||"").split(/\n/);
+  var primera = (lineas[0]||"").trim();
+  if(primera.length>3 && primera.length<55 && !/[.:;]$/.test(primera) && primera.split(" ").length<=7){
+    return primera;
+  }
+  return "";
+}
+
+/* Análisis completo: devuelve el contexto que alimenta a todo el generador. */
+function analizar(datos){
+  var texto = (datos.descripcion||"") + "\n" + (datos.existente||"");
+
+  var tipo = (datos.tipo && datos.tipo!=="auto") ? datos.tipo : detectarTipo(texto);
+  var filaFriccion;
+  if(datos.friccion && datos.friccion!=="auto"){
+    filaFriccion = MATRIZ.filter(function(f){ return f.id===datos.friccion; })[0] || detectarFriccion(texto);
+  }else{
+    filaFriccion = detectarFriccion(texto);
+  }
+
+  var ctx = {
+    tipo: tipo,
+    friccion: filaFriccion,
+    heroe:       datos.h || detectarHeroe(texto),
+    aspiracion:  datos.a || detectarAspiracion(texto),
+    urgencia:    datos.u || detectarUrgencia(texto),
+    sinDolor:    datos.s || detectarSinDolor(texto),
+    mecanismo:   datos.m || detectarMecanismo(texto),
+    entregable:  detectarEntregable(texto),
+    situacion:   detectarSituacionActual(texto),
+    producto:    detectarProducto(datos.descripcion||""),
+    textoOriginal: (datos.existente||"").trim(),
+    deducidos: []
+  };
+
+  /* Marcamos qué pilares fueron deducidos por la app y cuáles vienen del usuario */
+  ["heroe","aspiracion","urgencia","sinDolor","mecanismo"].forEach(function(clave){
+    var campoUsuario = {heroe:"h",aspiracion:"a",urgencia:"u",sinDolor:"s",mecanismo:"m"}[clave];
+    if(!datos[campoUsuario] && ctx[clave]) ctx.deducidos.push(clave);
+  });
+
+  /* Huecos: lo que no se pudo deducir se marca para que el usuario lo complete.
+     Nunca inventamos un dato que el usuario tendría que defender. */
+  if(!ctx.heroe)      ctx.heroe      = "[tu héroe: a quién le hablas]";
+  if(!ctx.aspiracion) ctx.aspiracion = "[su resultado soñado]";
+  if(!ctx.urgencia)   ctx.urgencia   = "[plazo realista que puedas sostener]";
+  if(!ctx.sinDolor)   ctx.sinDolor   = "[el obstáculo que eliminas]";
+  if(!ctx.mecanismo)  ctx.mecanismo  = "[tu mecanismo único]";
+  if(!ctx.entregable) ctx.entregable = "[el entregable que reciben]";
+  if(!ctx.situacion)  ctx.situacion  = "[su situación actual observable]";
+  if(!ctx.producto)   ctx.producto   = "[tu producto]";
+  ctx.primerHito = ctx.entregable;
+
+  return ctx;
+}
+
+
+/* =========================================================================
+   3. GENERACIÓN
+   ========================================================================= */
+
+/* Rellena una plantilla {slot} con el contexto. Los [corchetes] quedan
+   intactos a propósito: son datos que solo el usuario puede aportar.     */
+function rellenar(plantilla,ctx){
+  var mapa = {
+    heroe: ctx.heroe, aspiracion: ctx.aspiracion, urgencia: ctx.urgencia,
+    obstaculo: ctx.sinDolor, mecanismo: ctx.mecanismo, entregable: ctx.entregable,
+    situacionActual: ctx.situacion, producto: ctx.producto, primerHito: ctx.primerHito
+  };
+  return plantilla.replace(/\{(\w+)\}/g,function(todo,clave){
+    return Object.prototype.hasOwnProperty.call(mapa,clave) ? mapa[clave] : todo;
+  });
+}
+
+/* Mayúscula inicial respetando signos de apertura. */
+function capitalizar(txt){
+  if(!txt) return txt;
+  var i = 0;
+  while(i<txt.length && /[¿¡"'(\[\s]/.test(txt[i])) i++;
+  return txt.slice(0,i) + txt.charAt(i).toUpperCase() + txt.slice(i+1);
+}
+
+/* --- 3.1 Promesas HAUS ---------------------------------------------------
+   Seis estructuras distintas sobre los mismos cuatro pilares.           */
+var PLANTILLAS_HAUS = [
+  { etiqueta:"Declarativa (la del ejemplo clásico)",
+    f:function(c){ return "Ayudo a "+c.heroe+" a "+c.aspiracion+" en "+c.urgencia+" sin "+c.sinDolor+"."; } },
+  { etiqueta:"Segmentada (arranca por el héroe)",
+    f:function(c){ return "Para "+c.heroe+" que quieren "+c.aspiracion+" en "+c.urgencia+" sin "+c.sinDolor+"."; } },
+  { etiqueta:"Resultado primero (para titulares)",
+    f:function(c){ return capitalizar(c.aspiracion)+" en "+c.urgencia+", sin "+c.sinDolor+". Para "+c.heroe+"."; } },
+  { etiqueta:"Con mecanismo único (la más defendible)",
+    f:function(c){ return capitalizar(c.mecanismo)+": el puente que lleva a "+c.heroe+" hasta "+c.aspiracion+" en "+c.urgencia+", sin "+c.sinDolor+"."; } },
+  { etiqueta:"Condicional (auto-calificación del lector)",
+    f:function(c){ return "Si te reconoces en "+c.heroe+" y quieres "+c.aspiracion+", "+c.mecanismo+" te lleva ahí en "+c.urgencia+" sin "+c.sinDolor+"."; } },
+  { etiqueta:"Contraste A → B (transformación)",
+    f:function(c){ return "De "+c.situacion+" a "+c.aspiracion+" en "+c.urgencia+", gracias a "+c.mecanismo+" y sin "+c.sinDolor+"."; } }
+];
+
+/* --- 3.2 Promesas por mecanismo (P1-P7) --------------------------------- */
+function generarPromesasMecanismo(ctx){
+  var salida = [];
+  for(var id in MECANISMOS_P){
+    if(!MECANISMOS_P.hasOwnProperty(id)) continue;
+    var m = MECANISMOS_P[id];
+    var plantilla = m.plantillas[ctx.tipo] || m.plantillas.infoproducto;
+    salida.push({
+      id:id, nombre:m.nombre, icono:m.icono, pregunta:m.pregunta, idea:m.idea,
+      texto: capitalizar(rellenar(plantilla,ctx)),
+      prueba:m.prueba, limite:m.limite,
+      prioritario: (id===ctx.friccion.p)
+    });
+  }
+  return salida;
+}
+
+/* --- 3.3 Subpromesas por mecanismo (S1-S5) ------------------------------ */
+function generarSubpromesas(ctx){
+  var salida = [];
+  for(var id in MECANISMOS_S){
+    if(!MECANISMOS_S.hasOwnProperty(id)) continue;
+    var m = MECANISMOS_S[id];
+    var plantilla = m.plantillas[ctx.tipo] || m.plantillas.infoproducto;
+    salida.push({
+      id:id, nombre:m.nombre, icono:m.icono, pregunta:m.pregunta, idea:m.idea,
+      texto: capitalizar(rellenar(plantilla,ctx)),
+      limite:m.limite,
+      recomendada: (ctx.friccion.s.indexOf(id)!==-1)
+    });
+  }
+  return salida;
+}
+
+/* --- 3.4 Pila de microresultados (S5) ----------------------------------- */
+function generarPila(ctx){
+  var lista = OBJECIONES.comun.slice(0,3).concat(OBJECIONES[ctx.tipo] || []);
+  return lista.slice(0,5).map(function(b){
+    return {
+      objecion: b.objecion,
+      texto: "Si te preocupa "+b.objecion.replace(/[“”"]/g,"")+", obtienes "+b.micro+
+             " gracias a "+b.mecanismo+". Prueba: "+b.prueba+"."
+    };
+  });
+}
+
+/* --- 3.5 Auditoría del texto existente ---------------------------------- */
+function auditar(texto){
+  var hallazgos = [];
+  if(!texto || !texto.trim()) return hallazgos;
+  var vistos = {};
+  for(var i=0;i<REGLAS_AUDITORIA.length;i++){
+    var regla = REGLAS_AUDITORIA[i];
+    var re = new RegExp(regla.re.source, regla.re.flags);
+    var m, guardia = 0;
+    while((m = re.exec(texto)) !== null && guardia < 40){
+      guardia++;
+      if(m[0].length===0){ re.lastIndex++; continue; }
+      var clave = regla.tipo + "|" + normalizar(m[0]);
+      if(!vistos[clave]){
+        vistos[clave] = true;
+        hallazgos.push({ fragmento:m[0].trim(), nivel:regla.nivel, tipo:regla.tipo, correccion:regla.correccion });
+      }
+      if(!re.global) break;
+    }
+  }
+  /* Los hallazgos más graves primero */
+  var orden = { alto:0, medio:1, bajo:2 };
+  hallazgos.sort(function(a,b){ return orden[a.nivel]-orden[b.nivel]; });
+  return hallazgos.slice(0,14);
+}
+
+/* --- 3.6 Puntaje de claridad de la promesa ------------------------------ */
+function puntuarClaridad(ctx,datos){
+  var criterios = [
+    { ok: ctx.heroe.indexOf("[")!==0,       texto:"Héroe definido (a quién le hablas)" },
+    { ok: ctx.aspiracion.indexOf("[")!==0,  texto:"Aspiración observable (el resultado soñado)" },
+    { ok: ctx.urgencia.indexOf("[")!==0,    texto:"Urgencia declarada (plazo concreto)" },
+    { ok: ctx.sinDolor.indexOf("[")!==0,    texto:"Sin dolor identificado (el obstáculo que eliminas)" },
+    { ok: ctx.mecanismo.indexOf("[")!==0,   texto:"Mecanismo único (por qué funcionaría)" },
+    { ok: ctx.entregable.indexOf("[")!==0,  texto:"Entregable verificable (qué recibe exactamente)" },
+    { ok: /\d/.test(datos.descripcion||""), texto:"Al menos un dato numérico que puedas respaldar" }
+  ];
+  var logrados = criterios.filter(function(c){ return c.ok; }).length;
+  return { criterios:criterios, logrados:logrados, total:criterios.length,
+           porcentaje: Math.round(logrados/criterios.length*100) };
+}
+
+/* --- 3.7 Orquestador ---------------------------------------------------- */
+function generar(datos){
+  var ctx = analizar(datos);
+  return {
+    fecha: new Date().toISOString(),
+    ctx: ctx,
+    haus: PLANTILLAS_HAUS.map(function(p){
+      return { etiqueta:p.etiqueta, texto:capitalizar(p.f(ctx)) };
+    }),
+    mecanismos: generarPromesasMecanismo(ctx),
+    subpromesas: generarSubpromesas(ctx),
+    pila: generarPila(ctx),
+    auditoria: auditar(datos.existente||""),
+    claridad: puntuarClaridad(ctx,datos)
+  };
+}
+
+
+/* =========================================================================
+   4. RENDER
+   ========================================================================= */
+
+/* Escapa HTML para que nada de lo que escriba el usuario se ejecute. */
+function esc(txt){
+  return String(txt==null?"":txt)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+}
+
+/* Resalta los [huecos] pendientes de completar. Se aplica DESPUÉS de escapar. */
+function marcarHuecos(htmlSeguro){
+  return htmlSeguro.replace(/\[([^\[\]]{1,80})\]/g, function(_,dentro){
+    return '<span class="hueco">['+dentro+']</span>';
+  });
+}
+function texto(txt){ return marcarHuecos(esc(txt)); }
+
+function render(res){
+  var c = res.ctx, h = [];
+
+  /* ---- 4.1 Antes / después ---- */
+  h.push('<div class="tarjeta tarjeta-destacada seccion">');
+  h.push('<span class="etiqueta">Tu promesa principal</span>');
+  h.push('<h2 style="margin-top:.75rem">🧲 Fórmula HAUS aplicada</h2>');
+  if(c.textoOriginal){
+    h.push('<p class="apoyo" style="margin-bottom:.25rem"><strong>❌ Antes</strong> — lo que tenías:</p>');
+    h.push('<div class="promesa promesa-secundaria">'+texto(c.textoOriginal.slice(0,300))+'</div>');
+  }
+  h.push('<p class="apoyo" style="margin:1rem 0 .25rem"><strong>✅ Ahora</strong> — con los cuatro pilares:</p>');
+  h.push('<div class="promesa" style="font-size:1.1875rem">'+texto(res.haus[0].texto)+'</div>');
+
+  /* Pilares desglosados */
+  h.push('<div class="tabla-scroll" style="margin-top:1.25rem"><table><thead><tr>'+
+         '<th>Pilar</th><th>Contenido</th><th>Origen</th></tr></thead><tbody>');
+  [["H","Héroe","heroe"],["A","Aspiración","aspiracion"],["U","Urgencia","urgencia"],
+   ["S","Sin dolor","sinDolor"],["⚙️","Mecanismo único","mecanismo"]].forEach(function(fila){
+    var deducido = c.deducidos.indexOf(fila[2])!==-1;
+    var pendiente = String(c[fila[2]]).indexOf("[")===0;
+    var origen = pendiente ? '<span class="etiqueta etiqueta-ambar">completar</span>'
+               : deducido  ? '<span class="etiqueta">deducido</span>'
+                           : '<span class="etiqueta etiqueta-verde">tuyo</span>';
+    h.push('<tr><td><strong>'+fila[0]+'</strong> · '+fila[1]+'</td><td>'+texto(c[fila[2]])+'</td><td>'+origen+'</td></tr>');
+  });
+  h.push('</tbody></table></div>');
+
+  /* Medidor de claridad */
+  h.push('<h3 style="margin-top:1.5rem">Claridad de tu promesa: '+res.claridad.logrados+'/'+res.claridad.total+'</h3>');
+  h.push('<div class="medidor"><span style="width:'+res.claridad.porcentaje+'%"></span></div>');
+  h.push('<ul class="lista-check">');
+  res.claridad.criterios.forEach(function(cr){
+    h.push('<li class="'+(cr.ok?"ok":"")+'">'+esc(cr.texto)+'</li>');
+  });
+  h.push('</ul>');
+  h.push('</div>');
+
+  /* ---- 4.2 Variantes HAUS ---- */
+  h.push('<div class="tarjeta seccion">');
+  h.push('<h2>6 variantes de la promesa principal</h2>');
+  h.push('<p class="apoyo">Misma sustancia, distinta estructura. Prueba una por vez: si cambias varias cosas a la vez, no sabrás qué funcionó.</p>');
+  res.haus.forEach(function(v,i){
+    h.push('<div style="margin-top:1.1rem"><span class="etiqueta">'+(i+1)+' · '+esc(v.etiqueta)+'</span>');
+    h.push('<div class="promesa">'+texto(v.texto)+'</div></div>');
+  });
+  h.push('</div>');
+
+  /* ---- 4.3 Mecanismo prioritario ---- */
+  var f = c.friccion, mp = MECANISMOS_P[f.p];
+  h.push('<div class="tarjeta seccion">');
+  h.push('<span class="etiqueta">Recomendación</span>');
+  h.push('<h2 style="margin-top:.75rem">🎛️ Tu fricción dominante marca el mecanismo</h2>');
+  h.push('<p><strong>Fricción detectada:</strong> '+esc(f.friccion)+'</p>');
+  if(f.nota) h.push('<div class="bloque bloque-riesgo">⚠️ '+esc(f.nota)+'</div>');
+  h.push('<p><strong>Mecanismo prioritario:</strong> '+mp.icono+' '+f.p+' — '+esc(mp.nombre)+'</p>');
+  h.push('<p><strong>Subpromesa de apoyo:</strong> '+f.s.map(function(s){
+    return s+' — '+esc(MECANISMOS_S[s].nombre);
+  }).join(' · ')+'</p>');
+  h.push('<div class="bloque bloque-prueba">🔬 <strong>Prueba preferible:</strong> '+esc(f.prueba)+'</div>');
+  h.push('<div class="bloque bloque-riesgo">⚠️ <strong>Riesgo a controlar:</strong> '+esc(f.riesgo)+'</div>');
+  h.push('<p class="apoyo" style="margin-top:1rem">Empieza por este bloque. Los demás mecanismos son munición de respaldo para el resto de la página.</p>');
+  h.push('</div>');
+
+  /* ---- 4.4 Promesas por mecanismo ---- */
+  h.push('<div class="seccion">');
+  h.push('<h2>⚙️ Promesas por mecanismo (P1–P7)</h2>');
+  h.push('<p class="apoyo" style="margin-bottom:1rem">Cada mecanismo responde a una duda distinta del lector. Elige uno como titular; el resto sirve para bloques interiores.</p>');
+  res.mecanismos.forEach(function(m){
+    h.push('<details class="acordeon"'+(m.prioritario?" open":"")+'>');
+    h.push('<summary>'+m.icono+' <strong>'+m.id+'</strong> — '+esc(m.nombre)+
+           (m.prioritario?' <span class="etiqueta etiqueta-verde">prioritario</span>':'')+'</summary>');
+    h.push('<div class="acordeon-cuerpo">');
+    h.push('<p class="apoyo"><em>'+esc(m.pregunta)+'</em></p>');
+    h.push('<div class="promesa">'+texto(m.texto)+'</div>');
+    h.push('<p class="nota-mecanismo"><b>Cómo funciona:</b> '+esc(m.idea)+'</p>');
+    h.push('<div class="bloque bloque-prueba">🔬 <strong>Prueba:</strong> '+esc(m.prueba)+'</div>');
+    h.push('<div class="bloque bloque-riesgo">⚠️ <strong>Límite:</strong> '+esc(m.limite)+'</div>');
+    h.push('</div></details>');
+  });
+  h.push('</div>');
+
+  /* ---- 4.5 Subpromesas ---- */
+  h.push('<div class="seccion">');
+  h.push('<h2>🔎 Subpromesas (S1–S5)</h2>');
+  h.push('<p class="apoyo" style="margin-bottom:1rem">La subpromesa no repite el titular: reduce la incertidumbre que queda después de leerlo.</p>');
+  res.subpromesas.forEach(function(s){
+    h.push('<details class="acordeon"'+(s.recomendada?" open":"")+'>');
+    h.push('<summary>'+s.icono+' <strong>'+s.id+'</strong> — '+esc(s.nombre)+
+           (s.recomendada?' <span class="etiqueta etiqueta-verde">recomendada</span>':'')+'</summary>');
+    h.push('<div class="acordeon-cuerpo">');
+    h.push('<p class="apoyo"><em>'+esc(s.pregunta)+'</em></p>');
+    h.push('<div class="subpromesa">'+texto(s.texto)+'</div>');
+    h.push('<p class="nota-mecanismo"><b>Cómo funciona:</b> '+esc(s.idea)+'</p>');
+    h.push('<div class="bloque bloque-riesgo">⚠️ <strong>Límite:</strong> '+esc(s.limite)+'</div>');
+    h.push('</div></details>');
+  });
+  h.push('</div>');
+
+  /* ---- 4.6 Pila de microresultados ---- */
+  h.push('<div class="tarjeta seccion">');
+  h.push('<h2>🧱 Pila de microresultados (S5)</h2>');
+  h.push('<p class="apoyo">Debajo de la promesa principal, un bloque por objeción. Cada uno con mecanismo y prueba: reconocer una duda sin responderla empeora el mensaje.</p>');
+  res.pila.forEach(function(b,i){
+    h.push('<div class="subpromesa"><strong>'+(i+1)+'.</strong> '+texto(b.texto)+'</div>');
+  });
+  h.push('</div>');
+
+  /* ---- 4.7 Auditoría ---- */
+  h.push('<div class="tarjeta seccion">');
+  h.push('<h2>🛡️ Auditoría de tu texto existente</h2>');
+  if(!c.textoOriginal){
+    h.push('<p class="apoyo">No pegaste un texto existente. Si quieres revisar tu copy actual, vuelve al formulario y pégalo en el campo 2: marcamos absolutos, cifras sin respaldo y promesas difíciles de defender.</p>');
+  }else if(res.auditoria.length===0){
+    h.push('<div class="bloque bloque-prueba">✅ No detectamos absolutos, falsa precisión ni claims de riesgo alto en tu texto. Aun así, revisa que cada afirmación tenga respaldo <em>antes</em> de publicar.</div>');
+  }else{
+    h.push('<p class="apoyo">'+res.auditoria.length+' punto(s) que conviene revisar antes de publicar:</p>');
+    h.push('<div class="tabla-scroll"><table><thead><tr><th>En tu texto</th><th>Riesgo</th><th>Corrección</th></tr></thead><tbody>');
+    res.auditoria.forEach(function(a){
+      var et = a.nivel==="alto" ? "etiqueta-roja" : a.nivel==="medio" ? "etiqueta-ambar" : "";
+      h.push('<tr><td><span class="mono">“'+esc(a.fragmento)+'”</span></td>'+
+             '<td><span class="etiqueta '+et+'">'+esc(a.tipo)+'</span></td>'+
+             '<td>'+esc(a.correccion)+'</td></tr>');
+    });
+    h.push('</tbody></table></div>');
+  }
+  h.push('</div>');
+
+  /* ---- 4.8 Checklist ---- */
+  h.push('<div class="tarjeta seccion">');
+  h.push('<h2>✅ Antes de publicar</h2>');
+  h.push('<ul class="lista-check">');
+  [ "Reemplacé todos los [huecos] con datos reales que puedo respaldar.",
+    "Titular y subtítulo se leen como una unidad: mismo público, mismo plazo, misma certeza.",
+    "Cada cifra tiene naturaleza (media, mediana, máximo), muestra, periodo y método.",
+    "Distingo lo que entrego (bajo mi control) de lo que depende del cliente o del mercado.",
+    "Si hay garantía: plazo, canal, remedio y exclusiones están visibles junto al precio.",
+    "El precio total, la renovación y la forma de cancelar se ven antes del compromiso.",
+    "Una sola promesa principal y una sola llamada a la acción por página.",
+    "Guardé la evidencia (fuente, fecha, denominador, protocolo) por si alguien la pide."
+  ].forEach(function(item){ h.push('<li>'+esc(item)+'</li>'); });
+  h.push('</ul>');
+  h.push('<p class="apoyo" style="margin-top:1rem">Regla final: promete el resultado más valioso que puedas describir con claridad, explicar con honestidad, respaldar antes de publicar, cumplir operativamente y defender ante un comprador razonable.</p>');
+  h.push('</div>');
+
+  document.getElementById("salida").innerHTML = h.join("");
+}
+
+/* --- 4.9 Versión en texto plano (para el portapapeles) ------------------ */
+function aTextoPlano(res){
+  var c = res.ctx, l = [];
+  l.push("GENERADOR DE PROMESAS — RESULTADOS");
+  l.push("Generado el "+new Date(res.fecha).toLocaleString());
+  l.push("".padEnd ? "".padEnd(60,"=") : "============================================================");
+  l.push("");
+  l.push("TU FÓRMULA HAUS");
+  l.push("H (Héroe): "+c.heroe);
+  l.push("A (Aspiración): "+c.aspiracion);
+  l.push("U (Urgencia): "+c.urgencia);
+  l.push("S (Sin dolor): "+c.sinDolor);
+  l.push("Mecanismo único: "+c.mecanismo);
+  l.push("Claridad: "+res.claridad.logrados+"/"+res.claridad.total);
+  l.push("");
+  l.push("PROMESAS PRINCIPALES (6 variantes)");
+  res.haus.forEach(function(v,i){ l.push((i+1)+". ["+v.etiqueta+"] "+v.texto); });
+  l.push("");
+  l.push("FRICCIÓN DOMINANTE: "+c.friccion.friccion);
+  l.push("Mecanismo prioritario: "+c.friccion.p+" — "+MECANISMOS_P[c.friccion.p].nombre);
+  l.push("Subpromesa de apoyo: "+c.friccion.s.join(", "));
+  l.push("Prueba preferible: "+c.friccion.prueba);
+  l.push("Riesgo a controlar: "+c.friccion.riesgo);
+  l.push("");
+  l.push("PROMESAS POR MECANISMO (P1–P7)");
+  res.mecanismos.forEach(function(m){
+    l.push("");
+    l.push(m.id+" — "+m.nombre+(m.prioritario?"  [PRIORITARIO]":""));
+    l.push("  Promesa: "+m.texto);
+    l.push("  Prueba: "+m.prueba);
+    l.push("  Límite: "+m.limite);
+  });
+  l.push("");
+  l.push("SUBPROMESAS (S1–S5)");
+  res.subpromesas.forEach(function(s){
+    l.push("");
+    l.push(s.id+" — "+s.nombre+(s.recomendada?"  [RECOMENDADA]":""));
+    l.push("  Subpromesa: "+s.texto);
+    l.push("  Límite: "+s.limite);
+  });
+  l.push("");
+  l.push("PILA DE MICRORESULTADOS (S5)");
+  res.pila.forEach(function(b,i){ l.push((i+1)+". "+b.texto); });
+  if(res.auditoria.length){
+    l.push("");
+    l.push("AUDITORÍA DEL TEXTO EXISTENTE");
+    res.auditoria.forEach(function(a){
+      l.push("- ["+a.nivel.toUpperCase()+"] "+a.tipo+" → “"+a.fragmento+"”");
+      l.push("  Corrección: "+a.correccion);
+    });
+  }
+  l.push("");
+  l.push("NOTA: los textos entre [corchetes] son datos que debes completar con");
+  l.push("información real y respaldada. No los publiques sin verificar.");
+  return l.join("\n");
+}
+
+
+/* =========================================================================
+   5. INTERFAZ — navegación, validación, almacenamiento
+   ========================================================================= */
+
+var CLAVE        = "generadorPromesas.v1";
+var CLAVE_COPIA  = "generadorPromesas.copia.v1";
+var ultimoResultado = null;
+
+/* --- 5.1 Atajos del DOM ------------------------------------------------- */
+function $(id){ return document.getElementById(id); }
+var el = {
+  pantallas:{ inicio:$("pantalla-inicio"), formulario:$("pantalla-formulario"), resultados:$("pantalla-resultados") },
+  descripcion:$("descripcion"), existente:$("existente"),
+  campoDescripcion:$("campo-descripcion"), campoExistente:$("campo-existente"),
+  errorDescripcion:$("error-descripcion"), errorExistente:$("error-existente"),
+  contadorDescripcion:$("contadorDescripcion"), contadorExistente:$("contadorExistente"),
+  h:$("haus-h"), a:$("haus-a"), u:$("haus-u"), s:$("haus-s"), m:$("haus-m"),
+  tipo:$("tipo"), friccion:$("friccion"),
+  btnGenerar:$("btnGenerar"), overlay:$("overlay"), textoCarga:$("textoCarga"),
+  toast:$("toast"), avisoSesion:$("avisoSesion")
+};
+
+/* --- 5.2 Aviso flotante ------------------------------------------------- */
+var temporizadorToast = null;
+function avisar(mensaje,esError){
+  el.toast.textContent = mensaje;
+  el.toast.className = "toast visible" + (esError ? " error" : "");
+  clearTimeout(temporizadorToast);
+  temporizadorToast = setTimeout(function(){ el.toast.className = "toast"; }, 3200);
+}
+
+/* --- 5.3 Navegación entre pantallas ------------------------------------- */
+function mostrar(nombre){
+  for(var k in el.pantallas){
+    if(el.pantallas.hasOwnProperty(k)) el.pantallas[k].classList.remove("activa");
+  }
+  el.pantallas[nombre].classList.add("activa");
+  window.scrollTo({ top:0, behavior:"smooth" });
+  guardar();
+}
+
+/* --- 5.4 Almacenamiento (tolerante a fallos) ----------------------------
+   localStorage puede fallar en modo privado o con cookies bloqueadas:
+   la app debe seguir funcionando igual.                                   */
+function leerDatosFormulario(){
+  return {
+    descripcion: el.descripcion.value,
+    existente:   el.existente.value,
+    h: el.h.value.trim(), a: el.a.value.trim(), u: el.u.value.trim(),
+    s: el.s.value.trim(), m: el.m.value.trim(),
+    tipo: el.tipo.value, friccion: el.friccion.value
+  };
+}
+
+var temporizadorGuardado = null;
+function guardar(){
+  clearTimeout(temporizadorGuardado);
+  temporizadorGuardado = setTimeout(function(){
+    try{
+      var pantallaActiva = "inicio";
+      for(var k in el.pantallas){
+        if(el.pantallas.hasOwnProperty(k) && el.pantallas[k].classList.contains("activa")) pantallaActiva = k;
+      }
+      localStorage.setItem(CLAVE, JSON.stringify({
+        formulario: leerDatosFormulario(),
+        resultado: ultimoResultado,
+        pantalla: pantallaActiva,
+        guardadoEn: Date.now()
+      }));
+    }catch(e){
+      /* Sin almacenamiento disponible: la sesión sigue en memoria. */
+    }
+  }, 400);
+}
+
+function cargar(){
+  var datos = null;
+  try{
+    var crudo = localStorage.getItem(CLAVE);
+    if(crudo) datos = JSON.parse(crudo);
+  }catch(e){
+    datos = null;
+  }
+  if(!datos || !datos.formulario) return;
+
+  var f = datos.formulario;
+  el.descripcion.value = f.descripcion || "";
+  el.existente.value   = f.existente || "";
+  el.h.value = f.h || ""; el.a.value = f.a || ""; el.u.value = f.u || "";
+  el.s.value = f.s || ""; el.m.value = f.m || "";
+  if(f.tipo) el.tipo.value = f.tipo;
+  if(f.friccion) el.friccion.value = f.friccion;
+
+  if(datos.resultado && datos.resultado.ctx){
+    ultimoResultado = datos.resultado;
+    try{
+      render(ultimoResultado);
+      el.avisoSesion.classList.add("visible");
+    }catch(e){
+      ultimoResultado = null;
+    }
+  }
+  validarTodo();
+  actualizarContadores();
+}
+
+/* --- 5.5 Validación ----------------------------------------------------- */
+var MIN_DESCRIPCION = 25, MAX_DESCRIPCION = 3000;
+var MIN_EXISTENTE   = 15, MAX_EXISTENTE   = 5000;
+
+function validarDescripcion(mostrarError){
+  var v = el.descripcion.value.trim(), mensaje = "";
+  if(v.length === 0)                     mensaje = "Este campo es obligatorio: describe tu producto o idea para poder generar promesas.";
+  else if(v.length < MIN_DESCRIPCION)    mensaje = "Necesitamos al menos "+MIN_DESCRIPCION+" caracteres. Te faltan "+(MIN_DESCRIPCION-v.length)+". Cuenta qué vendes, a quién y qué resultado entrega.";
+  else if(v.length > MAX_DESCRIPCION)    mensaje = "Máximo "+MAX_DESCRIPCION+" caracteres. Te sobran "+(v.length-MAX_DESCRIPCION)+".";
+
+  el.errorDescripcion.textContent = mensaje;
+  /* El error solo se PINTA si el usuario ya escribió algo o si forzamos
+     la revisión (blur / envío). Pero el estado siempre se recalcula:
+     al vaciar el campo hay que quitar el rojo anterior. */
+  var pintarError = !!mensaje && (mostrarError || v.length > 0);
+  el.campoDescripcion.classList.toggle("invalido", pintarError);
+  el.campoDescripcion.classList.toggle("valido", !mensaje && v.length > 0);
+  return !mensaje;
+}
+
+function validarExistente(mostrarError){
+  var v = el.existente.value.trim(), mensaje = "";
+  if(v.length > 0 && v.length < MIN_EXISTENTE) mensaje = "Si pegas un texto existente, incluye al menos "+MIN_EXISTENTE+" caracteres para poder auditarlo. También puedes dejarlo vacío.";
+  else if(v.length > MAX_EXISTENTE)            mensaje = "Máximo "+MAX_EXISTENTE+" caracteres. Te sobran "+(v.length-MAX_EXISTENTE)+".";
+
+  el.errorExistente.textContent = mensaje;
+  var pintarError = !!mensaje && (mostrarError || v.length > 0);
+  el.campoExistente.classList.toggle("invalido", pintarError);
+  el.campoExistente.classList.toggle("valido", !mensaje && v.length > 0);
+  return !mensaje;
+}
+
+function validarTodo(mostrarError){
+  /* Se evalúan SIEMPRE los dos campos: sin cortocircuito, para que el
+     segundo se marque aunque el primero ya sea inválido. */
+  var okDescripcion = validarDescripcion(mostrarError);
+  var okExistente   = validarExistente(mostrarError);
+  var ok = okDescripcion && okExistente;
+  el.btnGenerar.disabled = !ok;
+  return ok;
+}
+
+function actualizarContadores(){
+  el.contadorDescripcion.textContent = el.descripcion.value.length + " caracteres";
+  el.contadorExistente.textContent   = el.existente.value.length + " caracteres";
+}
+
+/* --- 5.6 Estados de carga ----------------------------------------------- */
+var PASOS_CARGA = [
+  "Analizando tu texto...",
+  "Extrayendo los pilares HAUS...",
+  "Eligiendo el mecanismo prioritario...",
+  "Redactando promesas y subpromesas...",
+  "Auditando claims..."
+];
+
+function conCarga(trabajo){
+  var i = 0;
+  el.textoCarga.textContent = PASOS_CARGA[0];
+  el.overlay.classList.add("visible");
+  var intervalo = setInterval(function(){
+    i = (i+1) % PASOS_CARGA.length;
+    el.textoCarga.textContent = PASOS_CARGA[i];
+  }, 260);
+
+  setTimeout(function(){
+    try{
+      trabajo();
+    }catch(e){
+      avisar("No pudimos generar las promesas. Revisa el texto e inténtalo de nuevo.", true);
+      if(window.console && console.error) console.error(e);
+    }finally{
+      clearInterval(intervalo);
+      el.overlay.classList.remove("visible");
+    }
+  }, 900);
+}
+
+/* --- 5.7 Acciones ------------------------------------------------------- */
+function autocompletarHaus(){
+  var datos = leerDatosFormulario();
+  if(datos.descripcion.trim().length < MIN_DESCRIPCION){
+    avisar("Escribe primero la descripción de tu producto (mínimo "+MIN_DESCRIPCION+" caracteres).", true);
+    el.descripcion.focus();
+    return;
+  }
+  var ctx = analizar({ descripcion:datos.descripcion, existente:datos.existente, tipo:datos.tipo, friccion:datos.friccion });
+  var rellenados = 0;
+  [["h","heroe"],["a","aspiracion"],["u","urgencia"],["s","sinDolor"],["m","mecanismo"]].forEach(function(par){
+    var valor = ctx[par[1]];
+    if(!el[par[0]].value.trim() && valor && valor.indexOf("[")!==0){
+      el[par[0]].value = valor;
+      rellenados++;
+    }
+  });
+  guardar();
+  avisar(rellenados ? "Completamos "+rellenados+" pilar(es). Revísalos y ajústalos."
+                    : "No pudimos deducir pilares nuevos. Completa los que falten a mano.");
+}
+
+function alGenerar(){
+  if(!validarTodo(true)){
+    avisar("Revisa los campos marcados en rojo.", true);
+    var primero = document.querySelector(".campo.invalido textarea");
+    if(primero) primero.focus();
+    return;
+  }
+  var datos = leerDatosFormulario();
+  conCarga(function(){
+    ultimoResultado = generar(datos);
+    render(ultimoResultado);
+    mostrar("resultados");
+    el.avisoSesion.classList.remove("visible");
+    guardar();
+  });
+}
+
+function generarDeNuevo(){
+  /* Guardamos una copia por si el usuario quería editar en vez de empezar de cero */
+  try{ localStorage.setItem(CLAVE_COPIA, JSON.stringify(leerDatosFormulario())); }catch(e){}
+  el.descripcion.value = ""; el.existente.value = "";
+  el.h.value = ""; el.a.value = ""; el.u.value = ""; el.s.value = ""; el.m.value = "";
+  el.tipo.value = "auto"; el.friccion.value = "auto";
+  el.campoDescripcion.className = "campo"; el.campoExistente.className = "campo";
+  el.campoDescripcion.id = "campo-descripcion"; el.campoExistente.id = "campo-existente";
+  actualizarContadores();
+  validarTodo();
+  mostrar("formulario");
+  el.descripcion.focus();
+  avisar("Campos limpios. ¿Querías editar lo anterior? Pulsa “Recuperar último texto”.");
+  mostrarRecuperar();
+}
+
+/* Enlace para recuperar el texto anterior tras un "Generar de nuevo" */
+function mostrarRecuperar(){
+  var existente = $("enlaceRecuperar");
+  if(existente) existente.remove();
+  var enlace = document.createElement("button");
+  enlace.type = "button";
+  enlace.id = "enlaceRecuperar";
+  enlace.className = "btn btn-fantasma btn-chico";
+  enlace.style.marginTop = ".75rem";
+  enlace.textContent = "↩ Recuperar último texto";
+  enlace.addEventListener("click", function(){
+    try{
+      var copia = JSON.parse(localStorage.getItem(CLAVE_COPIA) || "null");
+      if(!copia){ avisar("No hay texto anterior guardado.", true); return; }
+      el.descripcion.value = copia.descripcion || "";
+      el.existente.value   = copia.existente || "";
+      el.h.value = copia.h || ""; el.a.value = copia.a || ""; el.u.value = copia.u || "";
+      el.s.value = copia.s || ""; el.m.value = copia.m || "";
+      if(copia.tipo) el.tipo.value = copia.tipo;
+      if(copia.friccion) el.friccion.value = copia.friccion;
+      actualizarContadores(); validarTodo(); guardar();
+      avisar("Texto recuperado.");
+      enlace.remove();
+    }catch(e){
+      avisar("No pudimos recuperar el texto anterior.", true);
+    }
+  });
+  el.btnGenerar.parentNode.parentNode.appendChild(enlace);
+}
+
+function copiarResultados(){
+  if(!ultimoResultado){ avisar("Todavía no hay resultados que copiar.", true); return; }
+  var contenido = aTextoPlano(ultimoResultado);
+
+  function respaldo(){
+    try{
+      var area = document.createElement("textarea");
+      area.value = contenido;
+      area.setAttribute("readonly","");
+      area.style.position = "fixed";
+      area.style.top = "-1000px";
+      document.body.appendChild(area);
+      area.select();
+      var ok = document.execCommand("copy");
+      document.body.removeChild(area);
+      avisar(ok ? "✅ Resultados copiados al portapapeles." : "No pudimos copiar. Selecciona el texto manualmente.", !ok);
+    }catch(e){
+      avisar("No pudimos copiar. Selecciona el texto manualmente.", true);
+    }
+  }
+
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(contenido)
+      .then(function(){ avisar("✅ Resultados copiados al portapapeles."); })
+      .catch(respaldo);
+  }else{
+    respaldo();
+  }
+}
+
+function limpiarTodo(){
+  if(!window.confirm("Se borrarán tus textos y los resultados guardados en este navegador. ¿Continuar?")) return;
+  try{
+    localStorage.removeItem(CLAVE);
+    localStorage.removeItem(CLAVE_COPIA);
+  }catch(e){}
+  ultimoResultado = null;
+  el.descripcion.value = ""; el.existente.value = "";
+  el.h.value = ""; el.a.value = ""; el.u.value = ""; el.s.value = ""; el.m.value = "";
+  el.tipo.value = "auto"; el.friccion.value = "auto";
+  el.campoDescripcion.className = "campo"; el.campoExistente.className = "campo";
+  $("salida").innerHTML = "";
+  el.avisoSesion.classList.remove("visible");
+  var enlace = $("enlaceRecuperar"); if(enlace) enlace.remove();
+  actualizarContadores();
+  validarTodo();
+  mostrar("inicio");
+  avisar("Datos borrados.");
+}
+
+/* --- 5.8 Arranque ------------------------------------------------------- */
+function iniciar(){
+  /* Poblamos el selector de fricción desde la matriz */
+  MATRIZ.forEach(function(f){
+    var opcion = document.createElement("option");
+    opcion.value = f.id;
+    opcion.textContent = f.friccion;
+    el.friccion.appendChild(opcion);
+  });
+
+  /* Navegación */
+  $("btnComenzar").addEventListener("click", function(){ mostrar("formulario"); el.descripcion.focus(); });
+  $("btnVolverInicio").addEventListener("click", function(){ mostrar("inicio"); });
+  $("btnInicioDesdeResultados").addEventListener("click", function(){ mostrar("inicio"); });
+  $("btnVerGuardado").addEventListener("click", function(){
+    if(ultimoResultado){ mostrar("resultados"); } else { mostrar("formulario"); }
+  });
+
+  /* Formulario */
+  $("formulario").addEventListener("submit", function(ev){ ev.preventDefault(); alGenerar(); });
+  $("btnAutocompletar").addEventListener("click", autocompletarHaus);
+  $("btnGenerarDeNuevo").addEventListener("click", generarDeNuevo);
+  $("btnCopiar").addEventListener("click", copiarResultados);
+  $("btnLimpiar").addEventListener("click", limpiarTodo);
+
+  /* Validación en tiempo real + autoguardado */
+  [el.descripcion, el.existente].forEach(function(campo){
+    campo.addEventListener("input", function(){ actualizarContadores(); validarTodo(); guardar(); });
+    campo.addEventListener("blur",  function(){ validarTodo(true); });
+  });
+  [el.h, el.a, el.u, el.s, el.m, el.tipo, el.friccion].forEach(function(campo){
+    campo.addEventListener("input",  guardar);
+    campo.addEventListener("change", guardar);
+  });
+
+  /* Atajo: Ctrl/Cmd + Enter genera desde el formulario */
+  document.addEventListener("keydown", function(ev){
+    if((ev.ctrlKey || ev.metaKey) && ev.key === "Enter" &&
+       el.pantallas.formulario.classList.contains("activa")){
+      ev.preventDefault();
+      alGenerar();
+    }
+  });
+
+  cargar();
+  actualizarContadores();
+  validarTodo();
+}
+
+/* Arrancamos cuando el DOM esté listo, con red de seguridad. */
+try{
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", iniciar);
+  }else{
+    iniciar();
+  }
+}catch(e){
+  if(window.console && console.error) console.error("Error al iniciar la app:", e);
+}
+
+})();
+</script>
+</body>
+</html>
