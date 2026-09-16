@@ -149,6 +149,27 @@ strong{font-weight:700}
 .contador{float:right;font-size:.75rem;color:var(--texto-suave);font-weight:400}
 .rejilla-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 
+/* Traer desde una dirección web */
+.traer{display:flex;gap:.5rem;margin-bottom:.85rem}
+.traer input{flex:1;min-width:0}
+.traer .btn{flex:0 0 auto;white-space:nowrap}
+@media (max-width:768px){ .traer{flex-direction:column} .traer .btn{width:100%} }
+
+/* Zona para soltar archivos */
+.soltar{
+  border:2px dashed var(--borde);border-radius:var(--radio-sm);
+  padding:1.5rem 1rem;text-align:center;margin-bottom:.85rem;
+  background:var(--fondo);transition:border-color var(--transicion),background var(--transicion);
+}
+.soltar.encima{border-color:var(--primario);background:var(--primario-suave)}
+.soltar-ico{font-size:1.75rem;display:block;margin-bottom:.35rem}
+.soltar p{margin-bottom:.2rem;font-size:.9375rem}
+.enlace{
+  background:none;border:0;padding:0;font:inherit;color:var(--primario);
+  font-weight:600;text-decoration:underline;cursor:pointer;
+}
+.enlace:hover{color:var(--primario-oscuro)}
+
 /* Bloque plegable de ajustes opcionales */
 .plegable{border:1px solid var(--borde);border-radius:var(--radio-sm);overflow:hidden;margin-bottom:1.75rem}
 .plegable>summary{
@@ -309,6 +330,8 @@ tbody tr:last-child td{border-bottom:none}
   background:var(--texto);color:#fff;padding:.8rem 1.25rem;border-radius:var(--radio-sm);
   font-size:.9375rem;font-weight:600;z-index:200;box-shadow:var(--sombra-alta);
   transition:transform .35s ease;max-width:90vw;
+  /* Es solo informativo: no debe interceptar los clics de lo que tape */
+  pointer-events:none;
 }
 .toast.visible{transform:translate(-50%,0)}
 .toast.error{background:var(--error)}
@@ -371,10 +394,10 @@ tbody tr:last-child td{border-bottom:none}
       <button type="button" class="btn btn-secundario btn-chico" id="btnVerGuardado">Ver mis promesas</button>
     </div>
 
-    <p>Ingresa la información sobre tu producto y obtén promesas y subpromesas persuasivas.</p>
+    <p>Pegá tu página de ventas y recibí las mejoras concretas: qué promesa poner, qué le falta y qué claims te pueden traer problemas.</p>
 
     <div class="grupo-botones" style="justify-content:center">
-      <button type="button" class="btn btn-primario btn-grande" id="btnComenzar">Comenzar →</button>
+      <button type="button" class="btn btn-primario btn-grande" id="btnComenzar">Pegar mi página →</button>
     </div>
   </div>
 
@@ -411,40 +434,43 @@ tbody tr:last-child td{border-bottom:none}
      ===================================================================== -->
 <section id="pantalla-formulario" class="pantalla" aria-labelledby="titulo-formulario">
   <div class="tarjeta seccion">
-    <h2 id="titulo-formulario">Ingresa la información de tu producto</h2>
-    <p class="apoyo" style="margin-bottom:1.75rem">Cuanto más concreto seas, más específicas serán las promesas. Nada de lo que escribas sale de tu navegador.</p>
+    <h2 id="titulo-formulario">Pegá tu página y listo</h2>
+    <p class="apoyo" style="margin-bottom:1.75rem">Un solo paso. La herramienta lee tu página, detecta qué le falta y te devuelve las mejoras ya escritas para tu producto. Nada de lo que pegues sale de tu navegador.</p>
 
     <form id="formulario" novalidate>
 
-      <!-- CAMPO 1 (obligatorio) -->
-      <div class="campo" id="campo-descripcion">
-        <label for="descripcion">
-          1. Descripción del Producto/Idea <span style="color:var(--error)">*</span>
-          <span class="contador" id="contadorDescripcion">0 caracteres</span>
+      <!-- CAMPO ÚNICO: pegar o soltar la página de ventas -->
+      <div class="campo" id="campo-fuente">
+        <label for="fuente">
+          Pegá tu página de ventas <span style="color:var(--error)">*</span>
+          <span class="contador" id="contadorFuente">0 caracteres</span>
         </label>
-        <p class="ayuda">Qué vendes, a quién, qué resultado entrega y qué incluye. Ejemplo: “Curso para emprendedores novatos que quieren su primera venta online sin salir en cámara; 6 módulos y plantillas de anuncios”.</p>
-        <textarea id="descripcion" name="descripcion" placeholder="Ingresa tu texto aquí..." aria-describedby="error-descripcion"></textarea>
-        <p class="mensaje-error" id="error-descripcion" role="alert"></p>
-      </div>
+        <p class="ayuda">Copiá todo y pegalo acá: texto, el copy de tu landing o el HTML tal cual. Lo leemos, detectamos qué tenés y qué te falta, y te devolvemos las mejoras. No hace falta que ordenes nada.</p>
 
-      <!-- CAMPO 2 (opcional, pero validado) -->
-      <div class="campo" id="campo-existente">
-        <label for="existente">
-          2. Texto Existente <span class="apoyo" style="font-weight:400">(opcional)</span>
-          <span class="contador" id="contadorExistente">0 caracteres</span>
-        </label>
-        <p class="ayuda">Pega el titular o el copy que ya usas. Lo analizamos y te señalamos los claims que no podrías defender.</p>
-        <textarea id="existente" name="existente" placeholder="O pega un texto existente..." aria-describedby="error-existente"></textarea>
-        <p class="mensaje-error" id="error-existente" role="alert"></p>
+        <div class="traer">
+          <input type="url" id="url" placeholder="https://tupagina.com" aria-label="Dirección de la página a auditar">
+          <button type="button" class="btn btn-contorno btn-chico" id="btnTraer">🌐 Traer</button>
+        </div>
+        <p class="apoyo" style="margin:-.35rem 0 .85rem">Muchos sitios bloquean la lectura desde otra página por seguridad. Si falla, abrí tu página, seleccioná todo, copiá y pegá acá: funciona siempre.</p>
+
+        <div class="soltar" id="zonaSoltar">
+          <span class="soltar-ico" aria-hidden="true">📄</span>
+          <p><strong>Arrastrá un archivo acá</strong> o <button type="button" class="enlace" id="btnExaminar">elegilo de tu equipo</button></p>
+          <p class="apoyo">.txt · .md · .html · .pdf</p>
+          <input type="file" id="archivo" accept=".txt,.md,.html,.htm,.pdf,text/plain,text/html,text/markdown,application/pdf" hidden>
+        </div>
+
+        <textarea id="fuente" name="fuente" placeholder="Pegá acá el texto de tu página de ventas..." aria-describedby="error-fuente"></textarea>
+        <p class="mensaje-error" id="error-fuente" role="alert"></p>
       </div>
 
       <!-- BLOQUE HAUS -->
-      <details class="plegable" id="bloqueHaus" open>
-        <summary>🧲 Fórmula HAUS — los 4 pilares de una promesa irresistible</summary>
+      <details class="plegable" id="bloqueHaus">
+        <summary>✏️ Corregir lo que detectamos (opcional)</summary>
         <div class="plegable-cuerpo">
           <p class="apoyo" style="margin-bottom:1rem">
-            Si los dejas vacíos los deducimos de tu descripción. Si los completas, las promesas salen mucho más afiladas.
-            <button type="button" class="btn btn-contorno btn-chico" id="btnAutocompletar" style="margin-left:.35rem">✨ Autocompletar desde mi descripción</button>
+            Todo esto lo deducimos solos de tu página. Tocá solo si algo salió mal.
+            <button type="button" class="btn btn-contorno btn-chico" id="btnAutocompletar" style="margin-left:.35rem">✨ Releer mi página</button>
           </p>
 
           <div class="rejilla-2">
@@ -502,7 +528,7 @@ tbody tr:last-child td{border-bottom:none}
 
       <!-- ACCIONES -->
       <div class="grupo-botones" style="margin-top:2rem">
-        <button type="submit" class="btn btn-primario btn-grande" id="btnGenerar" disabled>Generar Promesas</button>
+        <button type="submit" class="btn btn-primario btn-grande" id="btnGenerar" disabled>Analizar y mejorar mi página</button>
         <button type="button" class="btn btn-contorno" id="btnVolverInicio">Volver al inicio</button>
       </div>
       <p class="apoyo" style="margin-top:1rem">💾 Tus datos se guardan automáticamente en tu navegador.</p>
@@ -842,6 +868,71 @@ var REGLAS_AUDITORIA = [
    2. ANÁLISIS — extracción de los pilares HAUS desde el texto
    ========================================================================= */
 
+/* ── Lectura de archivos ─────────────────────────────────────────────
+   Extrae el texto de un PDF sin librerías: los flujos de contenido van
+   comprimidos con deflate, y el navegador sabe descomprimirlo con
+   DecompressionStream. Después se leen los operadores de texto (Tj, TJ).
+   Es mejor esfuerzo: un PDF con tipografías incrustadas y codificación
+   propia puede no rendir texto legible, y en ese caso se avisa.       */
+async function extraerPDF(buffer){
+  var bytes = new Uint8Array(buffer);
+  var crudo = "";
+  for(var i=0;i<bytes.length;i++) crudo += String.fromCharCode(bytes[i]);
+
+  var trozos = [], re = /stream\r?\n?([\s\S]*?)endstream/g, m;
+  while((m = re.exec(crudo)) !== null){
+    var datos = m[1];
+    /* Los flujos deflate empiezan por 0x78 */
+    if(datos.charCodeAt(0) !== 0x78){ trozos.push(datos); continue; }
+    try{
+      var arr = new Uint8Array(datos.length);
+      for(var j=0;j<datos.length;j++) arr[j] = datos.charCodeAt(j) & 0xff;
+      var ds = new DecompressionStream("deflate");
+      var salida = new Response(new Blob([arr]).stream().pipeThrough(ds));
+      trozos.push(await salida.text());
+    }catch(e){ /* flujo no textual: se ignora */ }
+  }
+
+  /* De los flujos de contenido se toman las cadenas entre paréntesis */
+  var texto = "";
+  trozos.join("\n").replace(/\((?:\\.|[^\\()])*\)\s*(?:Tj|TJ|')/g, function(frag){
+    texto += frag.replace(/^\(|\)\s*(?:Tj|TJ|')$/g,"")
+                 .replace(/\\([()\\])/g,"$1")
+                 .replace(/\\n/g,"\n") + " ";
+    return frag;
+  });
+  /* Formato en array: [(a) -3 (b)] TJ */
+  trozos.join("\n").replace(/\[((?:\((?:\\.|[^\\()])*\)|[^\[\]])*)\]\s*TJ/g, function(_,dentro){
+    dentro.replace(/\((?:\\.|[^\\()])*\)/g, function(c){
+      texto += c.slice(1,-1).replace(/\\([()\\])/g,"$1");
+      return c;
+    });
+    texto += " ";
+    return _;
+  });
+
+  return texto.replace(/\s+/g," ").trim();
+}
+
+/* Lee un archivo soltado o elegido y devuelve su texto. */
+async function leerArchivo(archivo){
+  var nombre = (archivo.name||"").toLowerCase();
+  if(/^image\//.test(archivo.type) || /\.(png|jpe?g|gif|webp|avif|heic)$/.test(nombre)){
+    throw new Error("Las imágenes no se pueden leer sin conexión. Abrí la imagen, copiá el texto a mano y pegalo en el campo.");
+  }
+  if(/\.pdf$/.test(nombre) || archivo.type === "application/pdf"){
+    if(typeof DecompressionStream === "undefined"){
+      throw new Error("Tu navegador no puede abrir PDF sin conexión. Abrí el PDF, seleccioná todo, copiá y pegá el texto acá.");
+    }
+    var texto = await extraerPDF(await archivo.arrayBuffer());
+    if(texto.replace(/[^a-záéíóúñü]/gi,"").length < 60){
+      throw new Error("Ese PDF no entrega texto legible (suele pasar con PDF escaneados o con tipografías incrustadas). Abrilo, seleccioná todo, copiá y pegá el texto acá.");
+    }
+    return texto;
+  }
+  return await archivo.text();
+}
+
 /* Convierte HTML en texto plano. El campo "texto existente" recibe páginas
    enteras pegadas desde el navegador: sin esto la app analiza etiquetas,
    CSS y JavaScript como si fueran copy. Se usa DOMParser, que construye el
@@ -1124,17 +1215,15 @@ function detectarProducto(texto){
 
 /* Análisis completo: devuelve el contexto que alimenta a todo el generador. */
 function analizar(datos){
-  /* Ambos campos se pasan a texto plano antes de analizar nada. */
-  var desc  = limpiarHTML(datos.descripcion||"");
-  var exist = limpiarHTML(datos.existente||"");
-  var texto = desc + "\n" + exist;
+  /* Una sola fuente: lo que el usuario pegó, ya convertido a texto plano. */
+  var texto = limpiarHTML(datos.fuente||"");
 
-  /* Los pilares se buscan PRIMERO en la descripción, que son las palabras
-     propias del usuario sobre su oferta. El texto existente es material de
-     marketing ya escrito: sirve de respaldo, pero contiene también titulares
-     de problemas y objeciones que no deben confundirse con la aspiración. */
+  /* La promesa de una página vive arriba del todo. Los pilares se buscan
+     PRIMERO en esa zona; más abajo aparecen los bloques de problema y las
+     objeciones, que confunden a los detectores. */
+  var encabezado = texto.slice(0,1500);
   function extraer(detector){
-    return detector(desc) || detector(exist) || "";
+    return detector(encabezado) || detector(texto) || "";
   }
 
   /* Pago único frente a suscripción: cambia por completo las condiciones,
@@ -1160,10 +1249,10 @@ function analizar(datos){
     urgencia:    datos.u || extraer(detectarUrgencia),
     sinDolor:    datos.s || extraer(detectarSinDolor),
     mecanismo:   datos.m || extraer(detectarMecanismo),
-    entregable:  detectarEntregable(desc) || detectarEntregable(exist),
-    situacion:   detectarSituacionActual(desc) || detectarSituacionActual(exist),
-    producto:    detectarProducto(desc),
-    textoOriginal: exist.trim(),
+    entregable:  extraer(detectarEntregable),
+    situacion:   extraer(detectarSituacionActual),
+    producto:    detectarProducto(texto),
+    textoOriginal: texto.trim(),
     deducidos: []
   };
 
@@ -1216,19 +1305,37 @@ function capitalizar(txt){
 
 /* --- 3.1 Promesas HAUS ---------------------------------------------------
    Seis estructuras distintas sobre los mismos cuatro pilares.           */
+/* Devuelve la cláusula solo si el dato existe de verdad. Un pilar sin
+   detectar no debe ensuciar la promesa con un corchete: se omite y el
+   diagnóstico lo reclama aparte. */
+function opcional(prefijo,valor,sufijo){
+  if(!valor || String(valor).indexOf("[")===0) return "";
+  return prefijo + valor + (sufijo||"");
+}
+function falta(valor){ return !valor || String(valor).indexOf("[")===0; }
+
 var PLANTILLAS_HAUS = [
   { etiqueta:"Declarativa (la del ejemplo clásico)",
-    f:function(c){ return "Ayudo a "+c.heroe+" a "+c.aspiracion+" en "+c.urgencia+" sin "+c.sinDolor+"."; } },
+    f:function(c){ return "Ayudo a "+c.heroe+" a "+c.aspiracion+
+        opcional(" en ",c.urgencia)+opcional(" sin ",c.sinDolor)+"."; } },
   { etiqueta:"Segmentada (arranca por el héroe)",
-    f:function(c){ return "Para "+c.heroe+" que quieren "+c.aspiracion+" en "+c.urgencia+" sin "+c.sinDolor+"."; } },
+    f:function(c){ return "Para "+c.heroe+" que quieren "+c.aspiracion+
+        opcional(" en ",c.urgencia)+opcional(" sin ",c.sinDolor)+"."; } },
   { etiqueta:"Resultado primero (para titulares)",
-    f:function(c){ return capitalizar(c.aspiracion)+" en "+c.urgencia+", sin "+c.sinDolor+". Para "+c.heroe+"."; } },
+    f:function(c){ return capitalizar(c.aspiracion)+opcional(" en ",c.urgencia)+
+        opcional(", sin ",c.sinDolor)+". Para "+c.heroe+"."; } },
   { etiqueta:"Con mecanismo único (la más defendible)",
-    f:function(c){ return capitalizar(c.mecanismo)+": el puente que lleva a "+c.heroe+" hasta "+c.aspiracion+" en "+c.urgencia+", sin "+c.sinDolor+"."; } },
+    requiere:"mecanismo",
+    f:function(c){ return capitalizar(c.mecanismo)+": el puente que lleva a "+c.heroe+
+        " hasta "+c.aspiracion+opcional(" en ",c.urgencia)+opcional(", sin ",c.sinDolor)+"."; } },
   { etiqueta:"Condicional (auto-calificación del lector)",
-    f:function(c){ return "Si te reconoces en "+c.heroe+" y quieres "+c.aspiracion+", "+c.mecanismo+" te lleva ahí en "+c.urgencia+" sin "+c.sinDolor+"."; } },
+    f:function(c){ return "Si te reconoces en "+c.heroe+" y quieres "+c.aspiracion+", "+
+        (falta(c.mecanismo) ? "esta es tu herramienta" : c.mecanismo+" te lleva ahí")+
+        opcional(" en ",c.urgencia)+opcional(" sin ",c.sinDolor)+"."; } },
   { etiqueta:"Contraste A → B (transformación)",
-    f:function(c){ return "De "+c.situacion+" a "+c.aspiracion+" en "+c.urgencia+", gracias a "+c.mecanismo+" y sin "+c.sinDolor+"."; } }
+    requiere:"situacion",
+    f:function(c){ return "De "+c.situacion+" a "+c.aspiracion+opcional(" en ",c.urgencia)+
+        opcional(", gracias a ",c.mecanismo)+opcional(" y sin ",c.sinDolor)+"."; } }
 ];
 
 /* --- 3.1.b Promesa lista para aplicar -----------------------------------
@@ -1282,6 +1389,8 @@ function generarPromesasMecanismo(ctx){
       id:id, nombre:m.nombre, icono:m.icono, pregunta:m.pregunta, idea:m.idea,
       texto: capitalizar(rellenar(plantilla,ctx)),
       prueba:m.prueba, limite:m.limite,
+      /* Con más de dos datos sin completar, la promesa no se sostiene todavía */
+      aplicable: ((rellenar(plantilla,ctx).match(/\[[^\]]+\]/g)||[]).length <= 2),
       prioritario: (id===ctx.friccion.p)
     });
   }
@@ -1299,6 +1408,7 @@ function generarSubpromesas(ctx){
       id:id, nombre:m.nombre, icono:m.icono, pregunta:m.pregunta, idea:m.idea,
       texto: capitalizar(rellenar(plantilla,ctx)),
       limite:m.limite,
+      aplicable: ((rellenar(plantilla,ctx).match(/\[[^\]]+\]/g)||[]).length <= 2),
       recomendada: (ctx.friccion.s.indexOf(id)!==-1)
     });
   }
@@ -1317,7 +1427,7 @@ function generarPila(ctx){
   });
 }
 
-/* --- 3.5 Auditoría del texto existente ---------------------------------- */
+/* --- 3.5 Auditoría de los claims de la página --------------------------- */
 function auditar(texto){
   var hallazgos = [];
   if(!texto || !texto.trim()) return hallazgos;
@@ -1352,17 +1462,76 @@ function puntuarClaridad(ctx,datos){
     { ok: ctx.sinDolor.indexOf("[")!==0,    texto:"Sin dolor identificado (el obstáculo que eliminas)" },
     { ok: ctx.mecanismo.indexOf("[")!==0,   texto:"Mecanismo único (por qué funcionaría)" },
     { ok: ctx.entregable.indexOf("[")!==0,  texto:"Entregable verificable (qué recibe exactamente)" },
-    { ok: /\d/.test(datos.descripcion||""), texto:"Al menos un dato numérico que puedas respaldar" }
+    { ok: /\d/.test(datos.fuente||""), texto:"Al menos un dato numérico que puedas respaldar" }
   ];
   var logrados = criterios.filter(function(c){ return c.ok; }).length;
   return { criterios:criterios, logrados:logrados, total:criterios.length,
            porcentaje: Math.round(logrados/criterios.length*100) };
 }
 
+/* --- 3.6.b Diagnóstico de la página -------------------------------------
+   Lo que el usuario quiere saber primero: qué tiene, qué le falta y qué
+   hacer al respecto. Los elementos que no aplican a su oferta no se
+   reclaman.                                                            */
+function diagnosticar(ctx,texto){
+  var n = normalizar(texto);
+  var filas = [];
+
+  function fila(rotulo,valor,siFalta){
+    filas.push({
+      rotulo: rotulo,
+      ok: !falta(valor),
+      valor: falta(valor) ? "" : valor,
+      accion: siFalta
+    });
+  }
+
+  fila("Héroe (a quién le hablás)", ctx.heroe,
+       "Tu página no dice para quién es. Sin eso el lector no puede reconocerse. Agregá un rasgo o una situación verificable arriba del titular.");
+  fila("Aspiración (el resultado)", ctx.aspiracion,
+       "El beneficio está implícito o dicho en negativo. Escribilo como resultado observable: qué va a poder hacer el lector que hoy no puede.");
+  fila("Urgencia (el plazo)", ctx.urgencia,
+       "No hay plazo. Decí en cuánto aparece el primer valor observable, medido desde un momento inequívoco (la compra, el alta, el primer uso).");
+  fila("Sin dolor (el obstáculo)", ctx.sinDolor,
+       "No nombrás el obstáculo que eliminás. Es lo que más frena la compra: decilo con un “sin” concreto.");
+  fila("Mecanismo único (el porqué)", ctx.mecanismo,
+       "No explicás por qué tu oferta produciría el resultado. Nombrá el método o el componente que hace el trabajo.");
+  fila("Entregable (qué recibe)", ctx.entregable,
+       "No queda claro qué recibe exactamente al pagar. Nombrá el artefacto concreto.");
+
+  /* Elementos que solo se reclaman si el tipo de oferta los usa */
+  var tieneGarantia = /\bgarant[íi]a\b|\bdevolu|\breembols|\bte devuelvo\b/.test(n);
+  var tienePrecio   = /\$\s?\d|\bprecio\b|\bpagás\b|\bpagas\b|\bcuesta\b/.test(n);
+  var tienePrueba   = /\btestimoni|\bcasos?\b|\bopinion|\brese[ñn]a|\bclientes\b|\balumnos\b|\bestrella/.test(n);
+  var tieneCTA      = /\bcomprar\b|\bquiero\b|\bempezar\b|\bacced|\bsumate\b|\banotate\b/.test(n);
+
+  filas.push({ rotulo:"Garantía o reversión del riesgo", ok:tieneGarantia, valor:tieneGarantia?"Detectada":"",
+    accion:"No hay reversión del riesgo. Definí qué pasa si no cumple: plazo, canal, remedio y exclusiones, junto al precio." });
+  filas.push({ rotulo:"Precio visible", ok:tienePrecio, valor:tienePrecio?"Detectado":"",
+    accion:"El precio no aparece. Mostralo antes del compromiso, con lo que incluye y lo que no." });
+  filas.push({ rotulo:"Prueba o credibilidad", ok:tienePrueba, valor:tienePrueba?"Detectada":"",
+    accion:"No hay prueba. Sumá un caso comparable, una demostración o una cifra de adopción que puedas respaldar." });
+  filas.push({ rotulo:"Llamada a la acción", ok:tieneCTA, valor:tieneCTA?"Detectada":"",
+    accion:"No se ve una acción principal. Una sola, repetida, sin alternativas que compitan." });
+
+  var logrados = filas.filter(function(f){ return f.ok; }).length;
+  return {
+    filas: filas,
+    logrados: logrados,
+    total: filas.length,
+    porcentaje: Math.round(logrados/filas.length*100),
+    faltantes: filas.filter(function(f){ return !f.ok; })
+  };
+}
+
 /* --- 3.7 Orquestador ---------------------------------------------------- */
 function generar(datos){
   var ctx = analizar(datos);
-  var haus = PLANTILLAS_HAUS.map(function(p){
+  /* Una variante que necesita un pilar inexistente no se muestra:
+     vale más entregar cuatro promesas limpias que seis con corchetes. */
+  var haus = PLANTILLAS_HAUS.filter(function(p){
+    return !p.requiere || !falta(ctx[p.requiere]);
+  }).map(function(p){
     return { etiqueta:p.etiqueta, texto:capitalizar(p.f(ctx)) };
   });
   var subpromesas = generarSubpromesas(ctx);
@@ -1374,6 +1543,7 @@ function generar(datos){
     mecanismos: generarPromesasMecanismo(ctx),
     subpromesas: subpromesas,
     pila: generarPila(ctx),
+    diagnostico: diagnosticar(ctx, ctx.textoOriginal),
     auditoria: auditar(ctx.textoOriginal),
     claridad: puntuarClaridad(ctx,datos)
   };
@@ -1399,8 +1569,47 @@ function marcarHuecos(htmlSeguro){
 }
 function texto(txt){ return marcarHuecos(esc(txt)); }
 
+/* Agrupa en un único bloque cerrado lo que la página todavía no sostiene:
+   sigue disponible, pero no compite con lo que sí se puede aplicar hoy. */
+function grupoPendiente(lista,palabra,explicacion){
+  if(!lista.length) return "";
+  var h = [];
+  h.push('<details class="acordeon" style="border-style:dashed">');
+  h.push('<summary style="color:var(--texto-suave)">💤 '+lista.length+' '+esc(palabra)+
+         (lista.length>1?'s':'')+' más, en pausa hasta que completes lo que falta</summary>');
+  h.push('<div class="acordeon-cuerpo"><p class="apoyo">'+esc(explicacion)+'</p>');
+  lista.forEach(function(m){
+    h.push('<p style="margin-top:1rem"><strong>'+m.icono+' '+m.id+'</strong> — '+esc(m.nombre)+'</p>');
+    h.push('<div class="promesa promesa-secundaria">'+texto(m.texto)+'</div>');
+  });
+  h.push('</div></details>');
+  return h.join("");
+}
+
 function render(res){
   var c = res.ctx, h = [];
+
+  /* ---- 4.-1 Diagnóstico de la página ---- */
+  var dg = res.diagnostico;
+  h.push('<div class="tarjeta seccion">');
+  h.push('<span class="etiqueta">Lo que encontramos</span>');
+  h.push('<h2 style="margin-top:.75rem">📊 Diagnóstico de tu página</h2>');
+  h.push('<p class="apoyo">Tu página tiene '+dg.logrados+' de los '+dg.total+
+         ' elementos que sostienen una promesa defendible.</p>');
+  h.push('<div class="medidor"><span style="width:'+dg.porcentaje+'%"></span></div>');
+  h.push('<div class="tabla-scroll" style="margin-top:1.25rem"><table><thead><tr>'+
+         '<th>Elemento</th><th>Estado</th><th>Qué encontramos / qué hacer</th></tr></thead><tbody>');
+  dg.filas.forEach(function(f){
+    h.push('<tr><td><strong>'+esc(f.rotulo)+'</strong></td><td>'+
+      (f.ok ? '<span class="etiqueta etiqueta-verde">está</span>'
+            : '<span class="etiqueta etiqueta-ambar">falta</span>')+'</td><td>'+
+      (f.ok ? texto(f.valor) : esc(f.accion))+'</td></tr>');
+  });
+  h.push('</tbody></table></div>');
+  if(dg.faltantes.length===0){
+    h.push('<div class="bloque bloque-prueba">✅ Tu página cubre los nueve elementos. Pasá directo a la promesa mejorada.</div>');
+  }
+  h.push('</div>');
 
   /* ---- 4.0 La promesa lista para aplicar (el entregable principal) ---- */
   var pf = res.promesaFinal;
@@ -1434,28 +1643,6 @@ function render(res){
   h.push('<p class="apoyo" style="margin:1rem 0 .25rem"><strong>✅ Ahora</strong> — con los cuatro pilares:</p>');
   h.push('<div class="promesa" style="font-size:1.1875rem">'+texto(res.haus[0].texto)+'</div>');
 
-  /* Pilares desglosados */
-  h.push('<div class="tabla-scroll" style="margin-top:1.25rem"><table><thead><tr>'+
-         '<th>Pilar</th><th>Contenido</th><th>Origen</th></tr></thead><tbody>');
-  [["H","Héroe","heroe"],["A","Aspiración","aspiracion"],["U","Urgencia","urgencia"],
-   ["S","Sin dolor","sinDolor"],["⚙️","Mecanismo único","mecanismo"]].forEach(function(fila){
-    var deducido = c.deducidos.indexOf(fila[2])!==-1;
-    var pendiente = String(c[fila[2]]).indexOf("[")===0;
-    var origen = pendiente ? '<span class="etiqueta etiqueta-ambar">completar</span>'
-               : deducido  ? '<span class="etiqueta">deducido</span>'
-                           : '<span class="etiqueta etiqueta-verde">tuyo</span>';
-    h.push('<tr><td><strong>'+fila[0]+'</strong> · '+fila[1]+'</td><td>'+texto(c[fila[2]])+'</td><td>'+origen+'</td></tr>');
-  });
-  h.push('</tbody></table></div>');
-
-  /* Medidor de claridad */
-  h.push('<h3 style="margin-top:1.5rem">Claridad de tu promesa: '+res.claridad.logrados+'/'+res.claridad.total+'</h3>');
-  h.push('<div class="medidor"><span style="width:'+res.claridad.porcentaje+'%"></span></div>');
-  h.push('<ul class="lista-check">');
-  res.claridad.criterios.forEach(function(cr){
-    h.push('<li class="'+(cr.ok?"ok":"")+'">'+esc(cr.texto)+'</li>');
-  });
-  h.push('</ul>');
   h.push('</div>');
 
   /* ---- 4.2 Variantes HAUS ---- */
@@ -1488,10 +1675,13 @@ function render(res){
   h.push('<div class="seccion">');
   h.push('<h2>⚙️ Promesas por mecanismo (P1–P7)</h2>');
   h.push('<p class="apoyo" style="margin-bottom:1rem">Cada mecanismo responde a una duda distinta del lector. Elige uno como titular; el resto sirve para bloques interiores.</p>');
-  res.mecanismos.forEach(function(m){
+  var aplicables = res.mecanismos.filter(function(m){ return m.aplicable; });
+  var pendientes = res.mecanismos.filter(function(m){ return !m.aplicable; });
+  aplicables.forEach(function(m){
     h.push('<details class="acordeon"'+(m.prioritario?" open":"")+'>');
     h.push('<summary>'+m.icono+' <strong>'+m.id+'</strong> — '+esc(m.nombre)+
-           (m.prioritario?' <span class="etiqueta etiqueta-verde">prioritario</span>':'')+'</summary>');
+           (m.prioritario?' <span class="etiqueta etiqueta-verde">prioritario</span>':'')+
+           (m.aplicable?'':' <span class="etiqueta etiqueta-ambar">faltan datos</span>')+'</summary>');
     h.push('<div class="acordeon-cuerpo">');
     h.push('<p class="apoyo"><em>'+esc(m.pregunta)+'</em></p>');
     h.push('<div class="promesa">'+texto(m.texto)+'</div>');
@@ -1500,13 +1690,15 @@ function render(res){
     h.push('<div class="bloque bloque-riesgo">⚠️ <strong>Límite:</strong> '+esc(m.limite)+'</div>');
     h.push('</div></details>');
   });
+  h.push(grupoPendiente(pendientes,
+    "mecanismo", "Estos necesitan datos que tu página todavía no tiene. Cuando completes lo que el diagnóstico reclama, quedan disponibles."));
   h.push('</div>');
 
   /* ---- 4.5 Subpromesas ---- */
   h.push('<div class="seccion">');
   h.push('<h2>🔎 Subpromesas (S1–S5)</h2>');
   h.push('<p class="apoyo" style="margin-bottom:1rem">La subpromesa no repite el titular: reduce la incertidumbre que queda después de leerlo.</p>');
-  res.subpromesas.forEach(function(s){
+  res.subpromesas.filter(function(x){ return x.aplicable; }).forEach(function(s){
     h.push('<details class="acordeon"'+(s.recomendada?" open":"")+'>');
     h.push('<summary>'+s.icono+' <strong>'+s.id+'</strong> — '+esc(s.nombre)+
            (s.recomendada?' <span class="etiqueta etiqueta-verde">recomendada</span>':'')+'</summary>');
@@ -1517,6 +1709,8 @@ function render(res){
     h.push('<div class="bloque bloque-riesgo">⚠️ <strong>Límite:</strong> '+esc(s.limite)+'</div>');
     h.push('</div></details>');
   });
+  h.push(grupoPendiente(res.subpromesas.filter(function(x){ return !x.aplicable; }),
+    "subpromesa", "Se activan cuando tu página aporte los datos que faltan."));
   h.push('</div>');
 
   /* ---- 4.6 Pila de microresultados ---- */
@@ -1530,9 +1724,9 @@ function render(res){
 
   /* ---- 4.7 Auditoría ---- */
   h.push('<div class="tarjeta seccion">');
-  h.push('<h2>🛡️ Auditoría de tu texto existente</h2>');
+  h.push('<h2>🛡️ Claims de tu página que conviene revisar</h2>');
   if(!c.textoOriginal){
-    h.push('<p class="apoyo">No pegaste un texto existente. Si quieres revisar tu copy actual, vuelve al formulario y pégalo en el campo 2: marcamos absolutos, cifras sin respaldo y promesas difíciles de defender.</p>');
+    h.push('<p class="apoyo">No hay texto que auditar.</p>');
   }else if(res.auditoria.length===0){
     h.push('<div class="bloque bloque-prueba">✅ No detectamos absolutos, falsa precisión ni claims de riesgo alto en tu texto. Aun así, revisa que cada afirmación tenga respaldo <em>antes</em> de publicar.</div>');
   }else{
@@ -1654,10 +1848,9 @@ var ultimoResultado = null;
 function $(id){ return document.getElementById(id); }
 var el = {
   pantallas:{ inicio:$("pantalla-inicio"), formulario:$("pantalla-formulario"), resultados:$("pantalla-resultados") },
-  descripcion:$("descripcion"), existente:$("existente"),
-  campoDescripcion:$("campo-descripcion"), campoExistente:$("campo-existente"),
-  errorDescripcion:$("error-descripcion"), errorExistente:$("error-existente"),
-  contadorDescripcion:$("contadorDescripcion"), contadorExistente:$("contadorExistente"),
+  fuente:$("fuente"), campoFuente:$("campo-fuente"),
+  errorFuente:$("error-fuente"), contadorFuente:$("contadorFuente"),
+  zonaSoltar:$("zonaSoltar"), archivo:$("archivo"), url:$("url"),
   h:$("haus-h"), a:$("haus-a"), u:$("haus-u"), s:$("haus-s"), m:$("haus-m"),
   tipo:$("tipo"), friccion:$("friccion"),
   btnGenerar:$("btnGenerar"), overlay:$("overlay"), textoCarga:$("textoCarga"),
@@ -1688,8 +1881,7 @@ function mostrar(nombre){
    la app debe seguir funcionando igual.                                   */
 function leerDatosFormulario(){
   return {
-    descripcion: el.descripcion.value,
-    existente:   el.existente.value,
+    fuente: el.fuente.value,
     h: el.h.value.trim(), a: el.a.value.trim(), u: el.u.value.trim(),
     s: el.s.value.trim(), m: el.m.value.trim(),
     tipo: el.tipo.value, friccion: el.friccion.value
@@ -1728,8 +1920,8 @@ function cargar(){
   if(!datos || !datos.formulario) return;
 
   var f = datos.formulario;
-  el.descripcion.value = f.descripcion || "";
-  el.existente.value   = f.existente || "";
+  /* Compatibilidad con sesiones guardadas por versiones anteriores */
+  el.fuente.value = f.fuente || [f.descripcion,f.existente].filter(Boolean).join("\n\n") || "";
   el.h.value = f.h || ""; el.a.value = f.a || ""; el.u.value = f.u || "";
   el.s.value = f.s || ""; el.m.value = f.m || "";
   if(f.tipo) el.tipo.value = f.tipo;
@@ -1749,50 +1941,70 @@ function cargar(){
 }
 
 /* --- 5.5 Validación ----------------------------------------------------- */
-var MIN_DESCRIPCION = 25, MAX_DESCRIPCION = 3000;
-var MIN_EXISTENTE   = 15, MAX_EXISTENTE   = 5000;
-
-function validarDescripcion(mostrarError){
-  var v = el.descripcion.value.trim(), mensaje = "";
-  if(v.length === 0)                     mensaje = "Este campo es obligatorio: describe tu producto o idea para poder generar promesas.";
-  else if(v.length < MIN_DESCRIPCION)    mensaje = "Necesitamos al menos "+MIN_DESCRIPCION+" caracteres. Te faltan "+(MIN_DESCRIPCION-v.length)+". Cuenta qué vendes, a quién y qué resultado entrega.";
-  else if(v.length > MAX_DESCRIPCION)    mensaje = "Máximo "+MAX_DESCRIPCION+" caracteres. Te sobran "+(v.length-MAX_DESCRIPCION)+".";
-
-  el.errorDescripcion.textContent = mensaje;
-  /* El error solo se PINTA si el usuario ya escribió algo o si forzamos
-     la revisión (blur / envío). Pero el estado siempre se recalcula:
-     al vaciar el campo hay que quitar el rojo anterior. */
-  var pintarError = !!mensaje && (mostrarError || v.length > 0);
-  el.campoDescripcion.classList.toggle("invalido", pintarError);
-  el.campoDescripcion.classList.toggle("valido", !mensaje && v.length > 0);
-  return !mensaje;
-}
-
-function validarExistente(mostrarError){
-  var v = el.existente.value.trim(), mensaje = "";
-  if(v.length > 0 && v.length < MIN_EXISTENTE) mensaje = "Si pegas un texto existente, incluye al menos "+MIN_EXISTENTE+" caracteres para poder auditarlo. También puedes dejarlo vacío.";
-  else if(v.length > MAX_EXISTENTE)            mensaje = "Máximo "+MAX_EXISTENTE+" caracteres. Te sobran "+(v.length-MAX_EXISTENTE)+".";
-
-  el.errorExistente.textContent = mensaje;
-  var pintarError = !!mensaje && (mostrarError || v.length > 0);
-  el.campoExistente.classList.toggle("invalido", pintarError);
-  el.campoExistente.classList.toggle("valido", !mensaje && v.length > 0);
-  return !mensaje;
-}
+var MIN_FUENTE = 40, MAX_FUENTE = 400000;
 
 function validarTodo(mostrarError){
-  /* Se evalúan SIEMPRE los dos campos: sin cortocircuito, para que el
-     segundo se marque aunque el primero ya sea inválido. */
-  var okDescripcion = validarDescripcion(mostrarError);
-  var okExistente   = validarExistente(mostrarError);
-  var ok = okDescripcion && okExistente;
-  el.btnGenerar.disabled = !ok;
-  return ok;
+  var v = el.fuente.value.trim(), mensaje = "";
+  if(v.length === 0)             mensaje = "Pegá el texto de tu página de ventas para poder analizarla.";
+  else if(v.length < MIN_FUENTE) mensaje = "Con "+v.length+" caracteres no alcanza para analizar una página. Pegá al menos "+MIN_FUENTE+".";
+  else if(v.length > MAX_FUENTE) mensaje = "El texto supera el máximo. Pegá solo la página de ventas.";
+
+  el.errorFuente.textContent = mensaje;
+  var pintarError = !!mensaje && (mostrarError || v.length > 0);
+  el.campoFuente.classList.toggle("invalido", pintarError);
+  el.campoFuente.classList.toggle("valido", !mensaje && v.length > 0);
+  el.btnGenerar.disabled = !!mensaje;
+  return !mensaje;
 }
 
 function actualizarContadores(){
-  el.contadorDescripcion.textContent = el.descripcion.value.length + " caracteres";
-  el.contadorExistente.textContent   = el.existente.value.length + " caracteres";
+  el.contadorFuente.textContent = el.fuente.value.length + " caracteres";
+}
+
+/* --- 5.5.b Carga de archivos ------------------------------------------- */
+function cargarArchivo(archivo){
+  if(!archivo) return;
+  el.textoCarga.textContent = "Leyendo " + archivo.name + "...";
+  el.overlay.classList.add("visible");
+  leerArchivo(archivo).then(function(txt){
+    el.fuente.value = txt;
+    actualizarContadores(); validarTodo(); guardar();
+    avisar("✅ " + archivo.name + " cargado (" + txt.length + " caracteres). Revisá que se haya leído bien.");
+  }).catch(function(e){
+    avisar(e.message || "No pudimos leer ese archivo.", true);
+  }).then(function(){
+    el.overlay.classList.remove("visible");
+  });
+}
+
+/* --- 5.5.c Traer una página por su dirección ----------------------------
+   El navegador solo permite leer otro sitio si ese sitio lo autoriza
+   (CORS). La mayoría no lo hace, así que el fallo es esperable y se
+   responde con la salida que sí funciona siempre: copiar y pegar.     */
+function traerURL(){
+  var direccion = (el.url.value||"").trim();
+  if(!direccion){ avisar("Escribí la dirección de tu página.", true); el.url.focus(); return; }
+  if(!/^https?:\/\//i.test(direccion)) direccion = "https://" + direccion;
+
+  el.textoCarga.textContent = "Trayendo la página...";
+  el.overlay.classList.add("visible");
+
+  fetch(direccion, { mode:"cors", credentials:"omit" })
+    .then(function(r){
+      if(!r.ok) throw new Error("El sitio respondió " + r.status + ".");
+      return r.text();
+    })
+    .then(function(html){
+      var plano = limpiarHTML(html);
+      if(plano.length < MIN_FUENTE) throw new Error("La página no devolvió texto suficiente.");
+      el.fuente.value = plano;
+      actualizarContadores(); validarTodo(); guardar();
+      avisar("✅ Página traída (" + plano.length + " caracteres).");
+    })
+    .catch(function(){
+      avisar("Ese sitio no permite leerlo desde acá. Abrilo, seleccioná todo (Ctrl+A), copiá y pegá el texto en el campo.", true);
+    })
+    .then(function(){ el.overlay.classList.remove("visible"); });
 }
 
 /* --- 5.6 Estados de carga ----------------------------------------------- */
@@ -1829,12 +2041,12 @@ function conCarga(trabajo){
 /* --- 5.7 Acciones ------------------------------------------------------- */
 function autocompletarHaus(){
   var datos = leerDatosFormulario();
-  if(datos.descripcion.trim().length < MIN_DESCRIPCION){
-    avisar("Escribe primero la descripción de tu producto (mínimo "+MIN_DESCRIPCION+" caracteres).", true);
-    el.descripcion.focus();
+  if(datos.fuente.trim().length < MIN_FUENTE){
+    avisar("Pegá primero tu página de ventas.", true);
+    el.fuente.focus();
     return;
   }
-  var ctx = analizar({ descripcion:datos.descripcion, existente:datos.existente, tipo:datos.tipo, friccion:datos.friccion });
+  var ctx = analizar({ fuente:datos.fuente, tipo:datos.tipo, friccion:datos.friccion });
   var rellenados = 0;
   [["h","heroe"],["a","aspiracion"],["u","urgencia"],["s","sinDolor"],["m","mecanismo"]].forEach(function(par){
     var valor = ctx[par[1]];
@@ -1851,8 +2063,7 @@ function autocompletarHaus(){
 function alGenerar(){
   if(!validarTodo(true)){
     avisar("Revisa los campos marcados en rojo.", true);
-    var primero = document.querySelector(".campo.invalido textarea");
-    if(primero) primero.focus();
+    el.fuente.focus();
     return;
   }
   var datos = leerDatosFormulario();
@@ -1868,15 +2079,14 @@ function alGenerar(){
 function generarDeNuevo(){
   /* Guardamos una copia por si el usuario quería editar en vez de empezar de cero */
   try{ localStorage.setItem(CLAVE_COPIA, JSON.stringify(leerDatosFormulario())); }catch(e){}
-  el.descripcion.value = ""; el.existente.value = "";
+  el.fuente.value = "";
   el.h.value = ""; el.a.value = ""; el.u.value = ""; el.s.value = ""; el.m.value = "";
   el.tipo.value = "auto"; el.friccion.value = "auto";
-  el.campoDescripcion.className = "campo"; el.campoExistente.className = "campo";
-  el.campoDescripcion.id = "campo-descripcion"; el.campoExistente.id = "campo-existente";
+  el.campoFuente.className = "campo"; el.campoFuente.id = "campo-fuente";
   actualizarContadores();
   validarTodo();
   mostrar("formulario");
-  el.descripcion.focus();
+  el.fuente.focus();
   avisar("Campos limpios. ¿Querías editar lo anterior? Pulsa “Recuperar último texto”.");
   mostrarRecuperar();
 }
@@ -1889,14 +2099,13 @@ function mostrarRecuperar(){
   enlace.type = "button";
   enlace.id = "enlaceRecuperar";
   enlace.className = "btn btn-fantasma btn-chico";
-  enlace.style.marginTop = ".75rem";
+  enlace.style.marginTop = ".5rem";
   enlace.textContent = "↩ Recuperar último texto";
   enlace.addEventListener("click", function(){
     try{
       var copia = JSON.parse(localStorage.getItem(CLAVE_COPIA) || "null");
       if(!copia){ avisar("No hay texto anterior guardado.", true); return; }
-      el.descripcion.value = copia.descripcion || "";
-      el.existente.value   = copia.existente || "";
+      el.fuente.value = copia.fuente || "";
       el.h.value = copia.h || ""; el.a.value = copia.a || ""; el.u.value = copia.u || "";
       el.s.value = copia.s || ""; el.m.value = copia.m || "";
       if(copia.tipo) el.tipo.value = copia.tipo;
@@ -1908,7 +2117,12 @@ function mostrarRecuperar(){
       avisar("No pudimos recuperar el texto anterior.", true);
     }
   });
-  el.btnGenerar.parentNode.parentNode.appendChild(enlace);
+  /* Va ARRIBA del campo. Debajo estaba el mensaje de error, que aparece al
+     perder el foco y empujaba el botón entre el mousedown y el mouseup: el
+     clic quedaba a medias y la restauración nunca ocurría. */
+  enlace.style.marginTop = "0";
+  enlace.style.marginBottom = ".6rem";
+  el.campoFuente.insertBefore(enlace, el.zonaSoltar);
 }
 
 /* Texto de la promesa final sola, para el botón del bloque destacado. */
@@ -1958,10 +2172,10 @@ function limpiarTodo(){
     localStorage.removeItem(CLAVE_COPIA);
   }catch(e){}
   ultimoResultado = null;
-  el.descripcion.value = ""; el.existente.value = "";
+  el.fuente.value = "";
   el.h.value = ""; el.a.value = ""; el.u.value = ""; el.s.value = ""; el.m.value = "";
   el.tipo.value = "auto"; el.friccion.value = "auto";
-  el.campoDescripcion.className = "campo"; el.campoExistente.className = "campo";
+  el.campoFuente.className = "campo";
   $("salida").innerHTML = "";
   el.avisoSesion.classList.remove("visible");
   var enlace = $("enlaceRecuperar"); if(enlace) enlace.remove();
@@ -1982,7 +2196,7 @@ function iniciar(){
   });
 
   /* Navegación */
-  $("btnComenzar").addEventListener("click", function(){ mostrar("formulario"); el.descripcion.focus(); });
+  $("btnComenzar").addEventListener("click", function(){ mostrar("formulario"); el.fuente.focus(); });
   $("btnVolverInicio").addEventListener("click", function(){ mostrar("inicio"); });
   $("btnInicioDesdeResultados").addEventListener("click", function(){ mostrar("inicio"); });
   $("btnVerGuardado").addEventListener("click", function(){
@@ -2003,9 +2217,22 @@ function iniciar(){
   $("btnLimpiar").addEventListener("click", limpiarTodo);
 
   /* Validación en tiempo real + autoguardado */
-  [el.descripcion, el.existente].forEach(function(campo){
-    campo.addEventListener("input", function(){ actualizarContadores(); validarTodo(); guardar(); });
-    campo.addEventListener("blur",  function(){ validarTodo(true); });
+  el.fuente.addEventListener("input", function(){ actualizarContadores(); validarTodo(); guardar(); });
+  el.fuente.addEventListener("blur",  function(){ validarTodo(true); });
+
+  /* Arrastrar y soltar, más el selector clásico */
+  $("btnTraer").addEventListener("click", traerURL);
+  el.url.addEventListener("keydown", function(e){ if(e.key==="Enter"){ e.preventDefault(); traerURL(); } });
+  $("btnExaminar").addEventListener("click", function(){ el.archivo.click(); });
+  el.archivo.addEventListener("change", function(){ cargarArchivo(el.archivo.files[0]); el.archivo.value=""; });
+  ["dragenter","dragover"].forEach(function(ev){
+    el.zonaSoltar.addEventListener(ev, function(e){ e.preventDefault(); el.zonaSoltar.classList.add("encima"); });
+  });
+  ["dragleave","drop"].forEach(function(ev){
+    el.zonaSoltar.addEventListener(ev, function(e){ e.preventDefault(); el.zonaSoltar.classList.remove("encima"); });
+  });
+  el.zonaSoltar.addEventListener("drop", function(e){
+    if(e.dataTransfer && e.dataTransfer.files.length) cargarArchivo(e.dataTransfer.files[0]);
   });
   [el.h, el.a, el.u, el.s, el.m, el.tipo, el.friccion].forEach(function(campo){
     campo.addEventListener("input",  guardar);
