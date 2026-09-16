@@ -2458,6 +2458,15 @@ function copiarHTML(){
 
 function descargarHTML(){
   if(!ultimoResultado){ avisar("Todavía no hay página que descargar.", true); return; }
+  /* Dentro de un visor incrustado la descarga se bloquea y no pasa nada.
+     Mejor decirlo que dejar un botón que aparenta funcionar. */
+  var incrustada = false;
+  try{ incrustada = (window.self !== window.top); }catch(e){ incrustada = true; }
+  if(incrustada){
+    copiarHTML();
+    avisar("La descarga no funciona dentro de una vista previa: copiamos el HTML al portapapeles.");
+    return;
+  }
   try{
     var blob = new Blob([htmlDeLaPagina()], {type:"text/html;charset=utf-8"});
     var url = URL.createObjectURL(blob);
