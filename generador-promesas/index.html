@@ -1204,7 +1204,12 @@ function detectarEntregable(texto){
     ["auditor","tu auditoría entregada"],["dieta","tu plan semanal armado"],
     ["rutina","tu rutina programada"],["portafolio","tu portafolio publicado"]
   ];
-  for(var i=0;i<mapa.length;i++){ if(n.indexOf(mapa[i][0])!==-1) return mapa[i][1]; }
+  /* Con indexOf, "mitiendax.com" hacía coincidir "tienda" y proponía
+     "tu tienda publicada" para una app de mantenimiento de autos. */
+  for(var i=0;i<mapa.length;i++){
+    var re = new RegExp("\\b"+mapa[i][0].replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"i");
+    if(re.test(n)) return mapa[i][1];
+  }
   return "";
 }
 
@@ -1219,7 +1224,12 @@ function detectarSituacionActual(texto){
     ["no vende","publicar sin vender"],["sin clientes","publicar sin que llegue un solo cliente"],
     ["copiar","copiar plantillas genéricas que no encajan"],["adivin","adivinar qué decir en cada publicación"]
   ];
-  for(var i=0;i<mapa.length;i++){ if(n.indexOf(mapa[i][0])!==-1) return mapa[i][1]; }
+  /* Con indexOf, "mitiendax.com" hacía coincidir "tienda" y proponía
+     "tu tienda publicada" para una app de mantenimiento de autos. */
+  for(var i=0;i<mapa.length;i++){
+    var re = new RegExp("\\b"+mapa[i][0].replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"i");
+    if(re.test(n)) return mapa[i][1];
+  }
   return "";
 }
 
@@ -1259,7 +1269,10 @@ function detectarGarantiaDias(t){
 }
 function detectarObjeciones(t){
   var fuera = [], vistas = {};
-  var re = /\b(?:incluso\s+si|aunque|y\s+si)\s+([^.,;:\n()]{5,55})/gi, m, guardia = 0;
+  /* "aunque" en prosa suele explicar, no anticipar una objeción
+     ("aunque te acuerdes del kilometraje, el calendario sigue"). Solo
+     se acepta "incluso si", que sí introduce una objeción. */
+  var re = /\bincluso\s+si\s+([^.,;:\n()]{5,55})/gi, m, guardia = 0;
   while((m = re.exec(t)) !== null && guardia++ < 20){
     var c = limpiarFragmento(m[1],9);
     if(c.length>4 && !vistas[normalizar(c)]){ vistas[normalizar(c)] = 1; fuera.push(c.toLowerCase()); }
@@ -1282,10 +1295,13 @@ function detectarMecanismoViejo(t){
   return m ? limpiarFragmento(m[1],8).toLowerCase() : "";
 }
 function detectarBonos(t){
-  var bonos = [], re = /\bbono\s*#?\s*\d?\s*[:.\-–]?\s*([^.\n]{6,70})/gi, m, guardia = 0;
+  /* Solo bonos NUMERADOS o con dos puntos: "Bono 1: X", "Bono #2 — Y".
+     Antes, la palabra "bonos" en "Tres bonos para arrancar" dejaba el
+     fragmento "s para arrancar sin excusas" como nombre de bono. */
+  var bonos = [], re = /\bbono\s*#?\s*\d{1,2}\s*[:.\-–]\s*([^.\n]{6,70})/gi, m, guardia = 0;
   while((m = re.exec(t)) !== null && guardia++ < 12){
     var c = limpiarFragmento(m[1],12);
-    if(c.length>5) bonos.push(c);
+    if(c.length>5 && !/^s\b/i.test(c)) bonos.push(c);
   }
   return bonos.slice(0,3);
 }
@@ -1296,7 +1312,9 @@ function detectarTipo(texto){
   var señales = {
     infoproducto:["curso","ebook","membresia","mentoria","modulo","modulos","clases","leccion","masterclass","taller","formacion","alumnos","comunidad de pago","infoproducto"],
     servicio:["servicio","agencia","consultoria","implementamos","gestionamos","para clientes","honorarios","proyecto","auditoria","acompanamiento","freelance"],
-    saas:["app","software","plataforma","saas","suscripcion mensual","integracion","dashboard","panel","api","usuarios activos","herramienta web"],
+    saas:["app","aplicacion","software","plataforma","saas","suscripcion mensual","integracion",
+          "dashboard","panel","api","usuarios activos","herramienta web","pantalla de inicio",
+          "navegador","sin conexion","funciona sin internet","instalar","pwa"],
     ecommerce:["envio","envios","stock","talle","tienda online","producto fisico","carrito","checkout","devolucion del producto","unidades","material"]
   };
   for(var clave in señales){
@@ -1619,7 +1637,8 @@ function puntuarClaridad(ctx,datos){
    Lo que el usuario quiere saber primero: qué tiene, qué le falta y qué
    hacer al respecto. Los elementos que no aplican a su oferta no se
    reclaman.                                                            */
-function diagnosticar(ctx,texto){
+function diagnosticar(pagina,texto){
+  var ctx = pagina;
   var n = normalizar(texto);
   var filas = [];
 
@@ -1902,6 +1921,19 @@ var ANTONIMOS = [
   [/\bfallar\b/gi, "acertar"], [/\bvencid[oa]s?\b/gi, "al día"]
 ];
 
+/* La aspiración se usa siempre detrás de un verbo ("Ayudo a X a ___",
+   "que busca ___"), así que tiene que ser una frase en infinitivo. Una
+   forma conjugada produce engendros como "Ayudo a X a enterás cuando ya
+   es a tiempo". Si no valida, se descarta: mejor la propuesta del rubro
+   que una frase rota. */
+function aspiracionValida(frase){
+  if(!frase) return false;
+  var f = frase.trim();
+  if(/\bcuando\s+ya\b|\bya\s+es\b/.test(normalizar(f))) return false;  /* subordinada sin sentido */
+  var primera = normalizar(f).split(" ")[0] || "";
+  return /(ar|er|ir)$/.test(primera) && primera.length > 3;
+}
+
 function positivar(frase){
   if(!frase) return "";
   var f = frase.trim();
@@ -1915,7 +1947,11 @@ function positivar(frase){
   for(var i=0;i<ANTONIMOS.length;i++){
     if(ANTONIMOS[i][0].test(cambiado)){ cambiado = cambiado.replace(ANTONIMOS[i][0], ANTONIMOS[i][1]); hubo = true; }
   }
-  return hubo ? cambiado.replace(/\s+/g," ").trim() : "";
+  if(!hubo) return "";
+  var salida = cambiado.replace(/\s+/g," ").trim();
+  /* Se corta la subordinada que queda colgando y se valida la forma */
+  salida = salida.replace(/\s+(cuando|porque|aunque|si)\s+.*$/i,"").trim();
+  return aspiracionValida(salida) ? salida : "";
 }
 
 /* "Aprende a usar el Business Manager" no es una aspiración: es una
@@ -1980,6 +2016,10 @@ function transformar(ctx){
   }else if(!aspiracionOriginal && desdeNegativo){
     pilar("aspiracion", desdeNegativo, true, false,
       "Tu beneficio estaba dicho en negativo. Un resultado observable se puede comprobar; la ausencia de un problema, no.");
+  }else if(aspiracionOriginal && !aspiracionValida(aspiracionOriginal)){
+    /* Estaba, pero en una forma que no encaja en ninguna plantilla. */
+    pilar("aspiracion", base ? base.aspiracion : "conseguir el primer resultado con tu método", true, false,
+      "Tu página nombra el beneficio en una forma que no se puede usar como promesa. Esta es la versión utilizable: confirmá que tu oferta la entrega.");
   }else if(aspiracionOriginal){
     pilar("aspiracion", aspiracionOriginal, false, false,
       "Distinguí lo que entregás vos de lo que depende del cliente o del mercado, y decilo en la página.");
@@ -2249,9 +2289,17 @@ function analizarConIA(texto,clave,modelo){
 function generar(datos){
   var ctx = analizar(datos);
 
-  /* Los cuatro pilares se resuelven primero: lo tuyo se respeta, lo
-     débil se reescribe y lo que falta se propone. Todo lo que se
-     construya después parte de pilares completos, no de huecos. */
+  /* Se guarda lo que la página traía ANTES de tocar nada: el
+     diagnóstico tiene que puntuar tu página, no el trabajo que la
+     herramienta hizo encima. Si no, siempre daría casi perfecto. */
+  var original = {
+    heroe: ctx.heroe, aspiracion: ctx.aspiracion, urgencia: ctx.urgencia,
+    sinDolor: ctx.sinDolor, mecanismo: ctx.mecanismo, entregable: ctx.entregable
+  };
+
+  /* Los cuatro pilares se resuelven: lo tuyo se respeta, lo débil se
+     reescribe y lo que falta se propone. Todo lo que se construya
+     después parte de pilares completos, no de huecos. */
   var trans = transformar(ctx);
   ctx.transformacion = trans;
   ctx.heroe      = trans.heroe.valor;
@@ -2282,7 +2330,7 @@ function generar(datos){
     conciencia: analizarConciencia(ctx, ctx.textoOriginal),
     esqueleto: construirEsqueleto(ctx),
     reglas: REGLAS_COPY,
-    diagnostico: diagnosticar(ctx, ctx.textoOriginal),
+    diagnostico: diagnosticar(original, ctx.textoOriginal),
     auditoria: auditar(ctx.textoOriginal),
     claridad: puntuarClaridad(ctx,datos)
   };
@@ -2333,8 +2381,9 @@ function render(res){
   h.push('<div class="tarjeta seccion">');
   h.push('<span class="etiqueta">Lo que encontramos</span>');
   h.push('<h2 style="margin-top:.75rem">📊 Diagnóstico de tu página</h2>');
-  h.push('<p class="apoyo">Tu página tiene '+dg.logrados+' de los '+dg.total+
-         ' elementos que sostienen una promesa defendible.</p>');
+  h.push('<p class="apoyo">Tu página, tal como está hoy, trae '+dg.logrados+' de los '+dg.total+
+         ' elementos que sostienen una promesa defendible. Lo que falta ya lo resolvimos arriba: '+
+         'acá ves de dónde partías.</p>');
   h.push('<div class="medidor"><span style="width:'+dg.porcentaje+'%"></span></div>');
   h.push('<div class="tabla-scroll" style="margin-top:1.25rem"><table><thead><tr>'+
          '<th>Elemento</th><th>Estado</th><th>Qué encontramos / qué hacer</th></tr></thead><tbody>');
