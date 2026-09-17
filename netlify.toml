@@ -19,10 +19,10 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "geolocation=(), microphone=(), camera=(), interest-cohort=()"
-    # La app es 100% local: esta política le impide hacer cualquier petición de red.
-    # Es la garantía técnica de la promesa "tus datos nunca salen de tu navegador".
+    # La app trabaja en local; la única salida permitida es la API de Gemini,
+    # y solo cuando el usuario carga su propia clave. Ningún otro destino es posible.
     # 'unsafe-inline' es necesario porque el CSS y el JS van embebidos en el HTML.
-    Content-Security-Policy = "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; frame-ancestors 'none'"
+    Content-Security-Policy = "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src https://generativelanguage.googleapis.com; form-action 'none'; base-uri 'none'; frame-ancestors 'none'"
 
 # -----------------------------------------------------------------------------
 # Caché: el HTML debe revalidarse para que tus cambios se vean al instante

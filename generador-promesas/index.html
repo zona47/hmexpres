@@ -155,6 +155,10 @@ strong{font-weight:700}
 .traer .btn{flex:0 0 auto;white-space:nowrap}
 @media (max-width:768px){ .traer{flex-direction:column} .traer .btn{width:100%} }
 
+/* El bloque de IA se destaca cuando hay una clave cargada */
+#bloqueIA.con-ia{border-color:var(--secundario)}
+#bloqueIA.con-ia>summary{background:var(--secundario-suave)}
+
 /* Zona para soltar archivos */
 .soltar{
   border:2px dashed var(--borde);border-radius:var(--radio-sm);
@@ -508,6 +512,33 @@ tbody tr:last-child td{border-bottom:none}
             <p class="ayuda">El puente entre el punto A y el punto B. Ejemplo: “el método de 3 anuncios semilla”, “auditoría + plantillas + revisión semanal”.</p>
             <input type="text" id="haus-m" placeholder="el sistema de 3 pasos que...">
           </div>
+        </div>
+      </details>
+
+      <!-- MODO IA -->
+      <details class="plegable" id="bloqueIA">
+        <summary>⚡ Modo IA con Gemini (opcional, mejora mucho el resultado)</summary>
+        <div class="plegable-cuerpo">
+          <p class="ayuda" style="margin-bottom:1rem">
+            Sin clave, la app analiza con reglas: funciona sin internet pero la aspiración le queda genérica.
+            Con clave, Gemini lee tu página entendiendo el sentido y escribe la promesa afilada.
+            <strong>Tu clave se guarda solo en este navegador y viaja únicamente a Google.</strong>
+          </p>
+          <div class="campo">
+            <label for="iaClave">Tu clave de Gemini</label>
+            <p class="ayuda">Se saca gratis en aistudio.google.com/apikey</p>
+            <input type="password" id="iaClave" placeholder="AIza..." autocomplete="off" spellcheck="false">
+          </div>
+          <div class="rejilla-2">
+            <div class="campo">
+              <label for="iaModelo">Modelo</label>
+              <input type="text" id="iaModelo" placeholder="gemini-2.5-flash" value="gemini-2.5-flash">
+            </div>
+            <div class="campo" style="display:flex;align-items:flex-end">
+              <button type="button" class="btn btn-contorno" id="btnProbarIA">🔌 Probar conexión</button>
+            </div>
+          </div>
+          <p class="apoyo" id="estadoIA">Sin clave: se usarán las reglas.</p>
         </div>
       </details>
 
@@ -1196,6 +1227,26 @@ function detectarSituacionActual(texto){
 /* Precio, garantía, objeciones, bonos y mecanismo de la competencia:
    los elementos que la arquitectura de una página de ventas necesita y
    que hasta ahora la herramienta no buscaba. */
+/* La frase en negativo que suele esconder la verdadera aspiración:
+   "no volvés a enterarte tarde". */
+function detectarBeneficioNegativo(t){
+  var m = (t||"").match(/\b(?:y\s+)?(no\s+(?:vuelvas?|volv[ée]s)\s+a\s+[^.,;:\n()]{4,45})/i)
+       || (t||"").match(/\b(nunca\s+m[áa]s\s+[^.,;:\n()]{4,45})/i)
+       || (t||"").match(/\b(dej[áa]\s+de\s+[^.,;:\n()]{4,45})/i)
+       || (t||"").match(/\b(no\s+(?:te|se)\s+[^.,;:\n()]{4,45})/i);
+  return m ? limpiarFragmento(m[1],10) : "";
+}
+
+/* El titular de la página, para poder mostrar el contraste ❌ / ✅. */
+function detectarTitularOriginal(t){
+  var lineas = (t||"").split(/\n/);
+  for(var i=0;i<lineas.length && i<40;i++){
+    var l = lineas[i].trim();
+    if(l.length > 18 && l.length < 130 && !/^https?:/.test(l)) return l;
+  }
+  return "";
+}
+
 function detectarPrecio(t){
   var m = (t||"").match(/(?:US\s*)?\$\s?\d[\d.,]{1,11}/);
   return m ? m[0].replace(/\s+/g," ").trim() : "";
@@ -1316,17 +1367,24 @@ function analizar(datos){
     tipoPlantilla: tipo,
     pagoUnico: pagoUnico,
     friccion: filaFriccion,
-    heroe:       datos.h || extraer(detectarHeroe),
-    aspiracion:  datos.a || extraer(detectarAspiracion),
-    urgencia:    datos.u || extraer(detectarUrgencia),
-    sinDolor:    datos.s || extraer(detectarSinDolor),
-    mecanismo:   datos.m || extraer(detectarMecanismo),
-    entregable:  extraer(detectarEntregable),
-    situacion:   extraer(detectarSituacionActual),
+    /* Prioridad: lo que corrigió el usuario, después la IA, después las reglas. */
+    heroe:       datos.h || (datos.ia && datos.ia.heroe)      || extraer(detectarHeroe),
+    aspiracion:  datos.a || (datos.ia && datos.ia.aspiracion) || extraer(detectarAspiracion),
+    urgencia:    datos.u || (datos.ia && datos.ia.urgencia)   || extraer(detectarUrgencia),
+    sinDolor:    datos.s || (datos.ia && datos.ia.sinDolor)   || extraer(detectarSinDolor),
+    mecanismo:   datos.m || (datos.ia && datos.ia.mecanismo)  || extraer(detectarMecanismo),
+    fuenteAnalisis: datos.ia ? "gemini" : "reglas",
+    propuestosIA: (datos.ia && datos.ia.propuestos) || [],
+    entregable:  (datos.ia && datos.ia.entregable) || extraer(detectarEntregable),
+    situacion:   (datos.ia && datos.ia.situacion) || extraer(detectarSituacionActual),
     producto:    detectarProducto(texto),
+    nicho:       detectarNicho(texto),
+    beneficioNegativo: extraer(detectarBeneficioNegativo),
+    titularOriginal:   (datos.ia && datos.ia.titularOriginal) || detectarTitularOriginal(texto),
     precio:      detectarPrecio(texto),
     garantiaDias:detectarGarantiaDias(texto),
-    objeciones:  detectarObjeciones(texto),
+    objeciones:  (datos.ia && datos.ia.objeciones && datos.ia.objeciones.length)
+                   ? datos.ia.objeciones : detectarObjeciones(texto),
     mecanismoViejo: detectarMecanismoViejo(texto),
     bonos:       detectarBonos(texto),
     textoOriginal: texto.trim(),
@@ -1772,6 +1830,198 @@ function lowTicketAHTML(lt,ctx){
   ].join("\n");
 }
 
+/* --- 3.6.c-bis MOTOR DE TRANSFORMACIÓN (❌ novato → ✅ HAUS) -------------
+   El corazón de la herramienta. No alcanza con extraer lo que la página
+   dice: una promesa de novato hay que REESCRIBIRLA. En los ejemplos de
+   la fórmula, "aprende a usar el Business Manager" se convierte en
+   "lograr su primera venta online", y "3 meses" se convierte en "30
+   días": el plazo no estaba, lo propone la fórmula.
+
+   La investigación entra como la otra mitad: cada valor propuesto viene
+   con lo que hay que tener a mano para poder sostenerlo antes de
+   publicarlo. HAUS escribe; la investigación marca el respaldo.        */
+
+var NICHOS = {
+  dinero:{
+    claves:["anuncio","anuncios","ads","facebook","meta","business manager","campaña","vender","ventas",
+            "clientes","agencia","ecommerce","dropship","freelance","factura","embudo","infoproducto"],
+    aspiracion:"conseguir tus primeras ventas con anuncios que sí funcionan",
+    urgencia:"7 días o menos",
+    sinDolor:"salir en cámara ni tener seguidores",
+    mecanismo:"método de 3 campañas semilla"
+  },
+  salud:{
+    claves:["kilo","kilos","grasa","adelgaz","nutricion","nutrición","entrenamiento","gimnasio","dieta",
+            "peso","musculo","músculo","abdominal","calorias","calorías","rutina"],
+    aspiracion:"perder los primeros kilos sin rebote",
+    urgencia:"30 días",
+    sinDolor:"dejar de comer lo que te gusta ni pasar horas en el gimnasio",
+    mecanismo:"método de 3 comidas ancla"
+  },
+  control:{
+    claves:["organiz","control","recordatorio","vencimiento","mantenimiento","agenda","historial",
+            "registro","seguimiento","planilla","memoria","service","tramite","trámite"],
+    aspiracion:"tener todo bajo control sin depender de tu memoria",
+    urgencia:"5 minutos de carga inicial",
+    sinDolor:"planillas sueltas ni papeles en la guantera",
+    mecanismo:"sistema de control en una sola pantalla"
+  },
+  contenido:{
+    claves:["contenido","reels","instagram","tiktok","seguidores","posteo","guion","guión","video","marca personal"],
+    aspiracion:"publicar sin quedarte en blanco y que te empiecen a escribir",
+    urgencia:"14 días",
+    sinDolor:"grabar todos los días ni bailar para el algoritmo",
+    mecanismo:"sistema de 5 guiones madre"
+  },
+  habilidad:{
+    claves:["aprender","curso","clase","modulo","módulo","leccion","lección","taller","formacion","formación","alumno"],
+    aspiracion:"terminar tu primer proyecto real, no solo entender la teoría",
+    urgencia:"21 días",
+    sinDolor:"empezar de cero ni tener conocimientos previos",
+    mecanismo:"ruta de 5 entregables"
+  }
+};
+
+function detectarNicho(texto){
+  var n = normalizar(texto), mejor = "", max = 0;
+  for(var k in NICHOS){
+    if(!NICHOS.hasOwnProperty(k)) continue;
+    var p = 0, c = NICHOS[k].claves;
+    for(var i=0;i<c.length;i++){ if(n.indexOf(normalizar(c[i])) !== -1) p++; }
+    if(p > max){ max = p; mejor = k; }
+  }
+  return max >= 2 ? mejor : "";
+}
+
+/* Convierte un beneficio dicho en negativo en un resultado observable.
+   "no volvés a enterarte tarde" -> "enterarte a tiempo".               */
+var ANTONIMOS = [
+  [/\btarde\b/gi, "a tiempo"], [/\bolvidar(te|se)?\b/gi, "tener registrado"],
+  [/\bperder\b/gi, "conservar"], [/\bimprovisar\b/gi, "seguir un plan"],
+  [/\bdudar\b/gi, "decidir con datos"], [/\badivinar\b/gi, "saber"],
+  [/\bfallar\b/gi, "acertar"], [/\bvencid[oa]s?\b/gi, "al día"]
+];
+
+function positivar(frase){
+  if(!frase) return "";
+  var f = frase.trim();
+  var m = f.match(/\bno\s+(?:vuelvas?|volv[ée]s)\s+a\s+(.+)$/i)
+       || f.match(/\bnunca\s+m[áa]s\s+(.+)$/i)
+       || f.match(/\bdej[áa]\s+de\s+(.+)$/i)
+       || f.match(/\bno\s+(?:te|se|vas\s+a)\s+(.+)$/i);
+  if(!m) return "";
+  var nucleo = m[1].trim();
+  var cambiado = nucleo, hubo = false;
+  for(var i=0;i<ANTONIMOS.length;i++){
+    if(ANTONIMOS[i][0].test(cambiado)){ cambiado = cambiado.replace(ANTONIMOS[i][0], ANTONIMOS[i][1]); hubo = true; }
+  }
+  return hubo ? cambiado.replace(/\s+/g," ").trim() : "";
+}
+
+/* "Aprende a usar el Business Manager" no es una aspiración: es una
+   tarea. La aspiración es lo que esa tarea produce.                    */
+function aResultado(frase,nicho){
+  if(!frase) return "";
+  var m = frase.match(/^(?:aprend[eé]r?|aprend[eé]\s+a|domina[rt]?|entender|conocer|usar|manejar)\s+(?:a\s+)?(.+)$/i);
+  if(!m) return "";
+  var tema = limpiarFragmento(m[1],8);
+  if(nicho && NICHOS[nicho]) return NICHOS[nicho].aspiracion;
+  return "conseguir tu primer resultado con "+tema;
+}
+
+/* Un plazo de meses mata el deseo. Se propone el plazo del PRIMER hito,
+   que además es el único que la oferta controla de verdad.            */
+function afilarUrgencia(urgencia,nicho,tipo){
+  var lento = /\b(\d+)\s*(meses|años|anos)\b/i.exec(urgencia||"");
+  if(!urgencia || lento){
+    if(nicho && NICHOS[nicho]) return { valor:NICHOS[nicho].urgencia, cambio:!!lento };
+    var porTipo = { infoproducto:"14 días", servicio:"los primeros 7 días hábiles",
+                    saas:"los primeros 10 minutos", ecommerce:"48 a 72 horas" };
+    return { valor: porTipo[tipo] || "14 días", cambio:!!lento };
+  }
+  return { valor:urgencia, cambio:false };
+}
+
+/* Los cuatro pilares, resueltos: lo tuyo se respeta, lo débil se
+   reescribe y lo que falta se propone. Nada queda vacío.              */
+function transformar(ctx){
+  var nicho = ctx.nicho;
+  var base = nicho && NICHOS[nicho] ? NICHOS[nicho] : null;
+  var out = {};
+
+  function pilar(clave,valor,reescrito,propuesto,respaldo){
+    /* Si el análisis vino de la IA, ella misma declara qué campos tuvo
+       que proponer porque no estaban en la página. */
+    var loPropusoLaIA = (ctx.propuestosIA||[]).indexOf(clave) !== -1;
+    /* "Tuyo" solo si el texto aparece tal cual en la página. Si el
+       análisis lo reformuló, decirlo: el usuario tiene que saber qué
+       revisar. */
+    var literal = valor && ctx.textoOriginal &&
+                  normalizar(ctx.textoOriginal).indexOf(normalizar(valor)) !== -1;
+    var origen = (propuesto || loPropusoLaIA) ? "propuesto"
+               : (reescrito || !literal)      ? "reescrito"
+                                              : "tuyo";
+    out[clave] = { valor: valor, origen: origen, respaldo: respaldo };
+  }
+
+  /* H — Héroe */
+  if(!falta(ctx.heroe)) pilar("heroe", ctx.heroe, false, false,
+    "Confirmá que ese rasgo se puede verificar: quien no se reconoce, no compra.");
+  else pilar("heroe", base ? "[el público que ya compra tu oferta]" : "[a quién le hablás]", false, true,
+    "Definí a tu héroe por una situación observable, no por una edad o un rubro.");
+
+  /* A — Aspiración: el pilar que más se reescribe */
+  var aspiracionOriginal = falta(ctx.aspiracion) ? "" : ctx.aspiracion;
+  var desdeNegativo = positivar(ctx.beneficioNegativo || "");
+  var desdeTarea    = aResultado(aspiracionOriginal, nicho);
+  if(desdeTarea){
+    pilar("aspiracion", desdeTarea, true, false,
+      "Tu página promete aprender algo. Nadie quiere aprender: quiere el resultado. Verificá que tu oferta sí lo entrega.");
+  }else if(!aspiracionOriginal && desdeNegativo){
+    pilar("aspiracion", desdeNegativo, true, false,
+      "Tu beneficio estaba dicho en negativo. Un resultado observable se puede comprobar; la ausencia de un problema, no.");
+  }else if(aspiracionOriginal){
+    pilar("aspiracion", aspiracionOriginal, false, false,
+      "Distinguí lo que entregás vos de lo que depende del cliente o del mercado, y decilo en la página.");
+  }else{
+    pilar("aspiracion", base ? base.aspiracion : "conseguir el primer resultado con tu método", false, true,
+      "Es una propuesta según tu rubro. Cambiala por el resultado que tu oferta sí produce y que puedas demostrar.");
+  }
+
+  /* U — Urgencia */
+  var u = afilarUrgencia(falta(ctx.urgencia) ? "" : ctx.urgencia, nicho, ctx.tipo);
+  pilar("urgencia", u.valor, u.cambio, falta(ctx.urgencia),
+    "Medilo desde un momento inequívoco (el pago, el alta, el primer uso) hasta el primer valor observable. Guardá la mediana antes de publicarlo.");
+
+  /* S — Sin dolor */
+  if(!falta(ctx.sinDolor)) pilar("sinDolor", ctx.sinDolor, false, false,
+    "No uses absolutos: si queda algún esfuerzo, decilo. Tu producto tiene que controlar ese obstáculo de verdad.");
+  else pilar("sinDolor", base ? base.sinDolor : "[el sacrificio que más odian]", false, true,
+    "Sacalo de lo que te dicen tus clientes, no de lo que imaginás.");
+
+  /* Mecanismo único */
+  if(!falta(ctx.mecanismo)) pilar("mecanismo", ctx.mecanismo, false, false,
+    "Necesitás dos capas de prueba: una visible (demo o captura) y una empírica (protocolo, datos o casos).");
+  else pilar("mecanismo", base ? base.mecanismo : "método de 3 fases", false, true,
+    "Ponele un nombre propio y que describa lo que realmente hace. Sin inventar estudios ni ingredientes.");
+
+  return out;
+}
+
+/* La promesa HAUS con los pilares ya resueltos, y el contraste con lo
+   que la página decía antes. */
+function promesaTransformada(t,ctx){
+  return {
+    antes: ctx.titularOriginal || "",
+    despues: contraer("Ayudo a "+t.heroe.valor+" a "+t.aspiracion.valor+
+             " en "+t.urgencia.valor+" "+fraseSin(t.sinDolor.valor)+"."),
+    conMecanismo: contraer("Para "+t.heroe.valor+", que busca "+t.aspiracion.valor+
+             " en "+t.urgencia.valor+' con el "'+t.mecanismo.valor+'", '+fraseSin(t.sinDolor.valor)+"."),
+    reescritos: ["heroe","aspiracion","urgencia","sinDolor","mecanismo"]
+      .filter(function(k){ return t[k].origen !== "tuyo"; }).length
+  };
+}
+
 /* --- 3.6.d Nivel de conciencia y ángulo de venta -------------------------
    El análisis automático que pide el sistema C.R.E.A.D.O.R.: dónde está
    la cabeza del lector cuando llega, porque eso decide por dónde se
@@ -1912,9 +2162,103 @@ var REGLAS_COPY = [
   { regla:"El riesgo lo corrés vos",        detalle:"En precio de entrada, la garantía no es un adorno: es lo que destraba la compra." }
 ];
 
+/* --- 3.6.h Análisis con Gemini ------------------------------------------
+   Las reglas llegan hasta donde llega una expresión regular: reconocen
+   "bajar de peso" pero no lo convierten en "perder 5 kilos de grasa
+   abdominal". Eso pide entender el texto. El modelo recibe las dos
+   fuentes: la fórmula HAUS para escribir, y los límites de la
+   investigación para no prometer lo que no se puede sostener.         */
+var INSTRUCCION_IA = [
+"Sos un copywriter de respuesta directa. Te paso el texto de una página de ventas y devolvés JSON.",
+"",
+"FÓRMULA HAUS — los cuatro pilares de una promesa irresistible:",
+"H (Héroe): a quién le habla exactamente, el avatar.",
+"A (Aspiración): el resultado final y soñado que quiere, el deseo.",
+"U (Urgencia): en cuánto tiempo lo logra, la velocidad.",
+"S (Sin dolor): la objeción o el miedo principal que se elimina, el obstáculo.",
+"Más el MECANISMO ÚNICO: por qué esta oferta produciría ese resultado.",
+"",
+"EJEMPLOS DE LA TRANSFORMACIÓN QUE TENÉS QUE HACER:",
+'NOVATO: "Aprende a usar el Business Manager de Facebook paso a paso con mi curso completo."',
+'HAUS:   heroe="emprendedores novatos", aspiracion="lograr su primera venta online",',
+'        urgencia="7 días o menos", sinDolor="salir en cámara ni tener seguidores"',
+'NOVATO: "Plan de nutrición y ejercicios de 3 meses para estar saludable."',
+'HAUS:   heroe="madres ocupadas", aspiracion="perder 5 kilos de grasa abdominal",',
+'        urgencia="30 días", sinDolor="dejar de comer carbohidratos ni pasar horas en el gimnasio"',
+"",
+"REGLAS DE ESCRITURA:",
+"1. La aspiración es CONCRETA y OBSERVABLE. Nunca 'ser saludable' ni 'mejorar': siempre el resultado medible.",
+"2. Si el beneficio está dicho en negativo ('no volvés a enterarte tarde'), convertilo en positivo observable.",
+"3. Si la página promete APRENDER algo, la aspiración es el RESULTADO que ese aprendizaje produce.",
+"4. Si el plazo es de meses, proponé el plazo del PRIMER hito, que es más rápido y más honesto.",
+"5. El sinDolor se escribe sin la palabra 'sin' adelante: esa la pone la plantilla.",
+"6. Español rioplatense, voseo, directo y sin adornos.",
+"",
+"LÍMITES QUE NO PODÉS CRUZAR (de la investigación sobre promesas):",
+"- No inventes cifras de resultados, porcentajes, cantidad de clientes ni estudios.",
+"- No uses absolutos: 'garantizado', 'sin riesgo', 'sin esfuerzo', '100% efectivo'.",
+"- Distinguí lo que la oferta entrega de lo que depende del cliente o del mercado.",
+"- Un plazo propuesto es una hipótesis a verificar, no un dato. Marcalo en 'propuestos'.",
+"",
+"DEVOLVÉ SOLO ESTE JSON, sin texto alrededor y sin markdown:",
+'{"heroe":"","aspiracion":"","urgencia":"","sinDolor":"","mecanismo":"","entregable":"",',
+'"situacion":"","objeciones":["",""],"titularOriginal":"","propuestos":["urgencia"],"nota":""}',
+"",
+"'propuestos' lista los campos que NO estaban en la página y tuviste que proponer.",
+"'titularOriginal' es el titular textual de la página, tal cual está."
+].join("\n");
+
+function analizarConIA(texto,clave,modelo){
+  var url = "https://generativelanguage.googleapis.com/v1beta/models/"+
+            encodeURIComponent(modelo||"gemini-2.5-flash")+":generateContent?key="+encodeURIComponent(clave);
+  var cuerpo = {
+    systemInstruction:{ parts:[{ text: INSTRUCCION_IA }] },
+    contents:[{ role:"user", parts:[{ text:"PÁGINA DE VENTAS:\n\n"+texto.slice(0,24000) }] }],
+    generationConfig:{ temperature:0.4, responseMimeType:"application/json" }
+  };
+  return fetch(url,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify(cuerpo)
+  }).then(function(r){
+    if(!r.ok) return r.text().then(function(t){
+      var detalle = "";
+      try{ detalle = (JSON.parse(t).error||{}).message || ""; }catch(e){ detalle = t.slice(0,120); }
+      throw new Error("Gemini respondió "+r.status+(detalle ? ": "+detalle : ""));
+    });
+    return r.json();
+  }).then(function(d){
+    var partes = (((d.candidates||[])[0]||{}).content||{}).parts||[];
+    var crudo = partes.map(function(x){ return x.text||""; }).join("").trim();
+    if(!crudo) throw new Error("Gemini no devolvió contenido.");
+    crudo = crudo.replace(/^```(?:json)?\s*/i,"").replace(/```\s*$/,"").trim();
+    var j = JSON.parse(crudo);
+    /* Nunca se confía a ciegas: se normaliza lo que llega. */
+    function txt(v){ return (typeof v === "string" ? v : "").trim().slice(0,220); }
+    return {
+      heroe:txt(j.heroe), aspiracion:txt(j.aspiracion), urgencia:txt(j.urgencia),
+      sinDolor:txt(j.sinDolor), mecanismo:txt(j.mecanismo), entregable:txt(j.entregable),
+      situacion:txt(j.situacion), titularOriginal:txt(j.titularOriginal), nota:txt(j.nota),
+      objeciones:(Array.isArray(j.objeciones)?j.objeciones:[]).map(txt).filter(Boolean).slice(0,2),
+      propuestos:(Array.isArray(j.propuestos)?j.propuestos:[]).map(txt).filter(Boolean)
+    };
+  });
+}
+
 /* --- 3.7 Orquestador ---------------------------------------------------- */
 function generar(datos){
   var ctx = analizar(datos);
+
+  /* Los cuatro pilares se resuelven primero: lo tuyo se respeta, lo
+     débil se reescribe y lo que falta se propone. Todo lo que se
+     construya después parte de pilares completos, no de huecos. */
+  var trans = transformar(ctx);
+  ctx.transformacion = trans;
+  ctx.heroe      = trans.heroe.valor;
+  ctx.aspiracion = trans.aspiracion.valor;
+  ctx.urgencia   = trans.urgencia.valor;
+  ctx.sinDolor   = trans.sinDolor.valor;
+  ctx.mecanismo  = trans.mecanismo.valor;
   /* Una variante que necesita un pilar inexistente no se muestra:
      vale más entregar cuatro promesas limpias que seis con corchetes. */
   var haus = PLANTILLAS_HAUS.filter(function(p){
@@ -1931,6 +2275,8 @@ function generar(datos){
     mecanismos: generarPromesasMecanismo(ctx),
     subpromesas: subpromesas,
     pila: generarPila(ctx),
+    transformacion: trans,
+    promesaHaus: promesaTransformada(trans, ctx),
     pagina: construirPagina(ctx),
     lowTicket: construirLowTicket(ctx),
     conciencia: analizarConciencia(ctx, ctx.textoOriginal),
@@ -2003,6 +2349,50 @@ function render(res){
     h.push('<div class="bloque bloque-prueba">✅ Tu página cubre los nueve elementos. Pasá directo a la promesa mejorada.</div>');
   }
   h.push('</div>');
+
+  /* ---- 4.-0.5 El contraste: lo que tenías y lo que deberías decir ---- */
+  var ph = res.promesaHaus, tr = res.transformacion;
+  h.push('<div class="final seccion">');
+  h.push('<span class="etiqueta">La transformación</span>');
+  h.push('<h2 style="margin-top:.75rem">🔄 De lo que decís a lo que vende</h2>');
+  if(ph.antes){
+    h.push('<div class="final-campo"><span class="rotulo">❌ Lo que tenías</span>');
+    h.push('<div class="final-subtitulo" style="opacity:.85">'+texto(ph.antes)+'</div></div>');
+  }
+  h.push('<div class="final-campo"><span class="rotulo">✅ Con la fórmula HAUS</span>');
+  h.push('<div class="final-titular">'+texto(ph.despues)+'</div></div>');
+  h.push('<div class="final-campo"><span class="rotulo">✅ Con tu mecanismo único al frente</span>');
+  h.push('<div class="final-subtitulo">'+texto(ph.conMecanismo)+'</div></div>');
+
+  h.push('<div class="tabla-scroll" style="margin-top:1.25rem"><table><thead><tr>'+
+         '<th>Pilar</th><th>Resuelto</th><th>Origen</th></tr></thead><tbody>');
+  [["H","Héroe","heroe"],["A","Aspiración","aspiracion"],["U","Urgencia","urgencia"],
+   ["S","Sin dolor","sinDolor"],["⚙️","Mecanismo","mecanismo"]].forEach(function(f){
+    var d = tr[f[2]];
+    var et = d.origen==="tuyo"      ? '<span class="etiqueta etiqueta-verde">tuyo</span>'
+           : d.origen==="reescrito" ? '<span class="etiqueta">reescrito</span>'
+                                    : '<span class="etiqueta etiqueta-ambar">propuesto</span>';
+    h.push('<tr><td><strong>'+f[0]+'</strong> · '+f[1]+'</td><td>'+texto(d.valor)+'</td><td>'+et+'</td></tr>');
+  });
+  h.push('</tbody></table></div>');
+  h.push('<p class="final-porque"><strong>Qué significa cada origen:</strong> ' +
+         '<em>tuyo</em>, estaba en tu página y se respeta. ' +
+         '<em>reescrito</em>, estaba pero en una forma que no vende y se corrigió. ' +
+         '<em>propuesto</em>, no estaba: es una propuesta según tu rubro, confirmala o cambiala.</p>');
+  h.push('<button type="button" class="btn btn-copiar" data-copiar="final">📋 Copiar esta promesa</button>');
+  h.push('</div>');
+
+  /* Qué hay que poder respaldar antes de publicarla */
+  h.push('<div class="tarjeta seccion">');
+  h.push('<h2>🔬 Antes de publicar esa promesa, tené a mano</h2>');
+  h.push('<p class="apoyo">La fórmula la hace irresistible. Esto la hace defendible.</p>');
+  h.push('<div class="tabla-scroll" style="margin-top:1rem"><table><thead><tr>'+
+         '<th>Pilar</th><th>Qué necesitás para sostenerlo</th></tr></thead><tbody>');
+  [["Héroe","heroe"],["Aspiración","aspiracion"],["Urgencia","urgencia"],
+   ["Sin dolor","sinDolor"],["Mecanismo","mecanismo"]].forEach(function(f){
+    h.push('<tr><td><strong>'+esc(f[0])+'</strong></td><td>'+esc(tr[f[1]].respaldo)+'</td></tr>');
+  });
+  h.push('</tbody></table></div></div>');
 
   /* ---- 4.0 La promesa lista para aplicar (el entregable principal) ---- */
   var pf = res.promesaFinal;
@@ -2358,6 +2748,7 @@ function aTextoPlano(res){
 
 var CLAVE        = "generadorPromesas.v1";
 var CLAVE_COPIA  = "generadorPromesas.copia.v1";
+var CLAVE_IA     = "generadorPromesas.ia.v1";
 var ultimoResultado = null;
 
 /* --- 5.1 Atajos del DOM ------------------------------------------------- */
@@ -2367,6 +2758,7 @@ var el = {
   fuente:$("fuente"), campoFuente:$("campo-fuente"),
   errorFuente:$("error-fuente"), contadorFuente:$("contadorFuente"),
   zonaSoltar:$("zonaSoltar"), archivo:$("archivo"), url:$("url"),
+  iaClave:$("iaClave"), iaModelo:$("iaModelo"), estadoIA:$("estadoIA"),
   h:$("haus-h"), a:$("haus-a"), u:$("haus-u"), s:$("haus-s"), m:$("haus-m"),
   tipo:$("tipo"), friccion:$("friccion"),
   btnGenerar:$("btnGenerar"), overlay:$("overlay"), textoCarga:$("textoCarga"),
@@ -2477,6 +2869,43 @@ function actualizarContadores(){
   el.contadorFuente.textContent = el.fuente.value.length + " caracteres";
 }
 
+/* --- 5.5.a-bis Clave de Gemini ------------------------------------------
+   Se guarda solo en este navegador. Nunca viaja a ningún lado que no sea
+   Google, y no queda escrita dentro del archivo. */
+function guardarIA(){
+  try{
+    localStorage.setItem(CLAVE_IA, JSON.stringify({
+      clave: el.iaClave.value.trim(), modelo: el.iaModelo.value.trim()
+    }));
+  }catch(e){}
+  pintarEstadoIA();
+}
+function cargarIA(){
+  try{
+    var d = JSON.parse(localStorage.getItem(CLAVE_IA) || "null");
+    if(d){ el.iaClave.value = d.clave || ""; if(d.modelo) el.iaModelo.value = d.modelo; }
+  }catch(e){}
+  pintarEstadoIA();
+}
+function pintarEstadoIA(){
+  var hay = !!el.iaClave.value.trim();
+  el.estadoIA.textContent = hay
+    ? "✅ Con clave: Gemini va a leer tu página y escribir la promesa."
+    : "Sin clave: se usarán las reglas. Funciona sin internet, pero la aspiración queda más genérica.";
+  if(hay) $("bloqueIA").classList.add("con-ia"); else $("bloqueIA").classList.remove("con-ia");
+}
+function probarIA(){
+  var clave = el.iaClave.value.trim();
+  if(!clave){ avisar("Pegá tu clave de Gemini primero.", true); el.iaClave.focus(); return; }
+  el.textoCarga.textContent = "Probando la conexión con Gemini...";
+  el.overlay.classList.add("visible");
+  analizarConIA("Curso para emprendedores que quieren su primera venta online sin salir en cámara.",
+                clave, el.iaModelo.value.trim())
+    .then(function(r){ avisar("✅ Conexión correcta. Devolvió: “"+(r.aspiracion||"(sin aspiración)")+"”"); })
+    .catch(function(e){ avisar(e.message || "No pudimos conectar con Gemini.", true); })
+    .then(function(){ el.overlay.classList.remove("visible"); });
+}
+
 /* --- 5.5.b Carga de archivos ------------------------------------------- */
 function cargarArchivo(archivo){
   if(!archivo) return;
@@ -2583,13 +3012,40 @@ function alGenerar(){
     return;
   }
   var datos = leerDatosFormulario();
-  conCarga(function(){
-    ultimoResultado = generar(datos);
-    render(ultimoResultado);
-    mostrar("resultados");
-    el.avisoSesion.classList.remove("visible");
-    guardar();
-  });
+  var clave = el.iaClave.value.trim();
+
+  function terminar(ia){
+    datos.ia = ia || null;
+    try{
+      ultimoResultado = generar(datos);
+      render(ultimoResultado);
+      mostrar("resultados");
+      el.avisoSesion.classList.remove("visible");
+      guardar();
+    }catch(e){
+      avisar("No pudimos generar el informe. Revisá el texto e intentá de nuevo.", true);
+      if(window.console && console.error) console.error(e);
+    }
+    el.overlay.classList.remove("visible");
+  }
+
+  if(!clave){ conCarga(function(){ terminar(null); }); return; }
+
+  /* Con clave, el análisis lo hace Gemini. Si algo falla, no se rompe
+     nada: se cae a las reglas y se avisa por qué. */
+  var paso = 0, pasos = ["Leyendo tu página...","Gemini está entendiendo tu oferta...",
+                         "Escribiendo la promesa...","Aplicando los límites de la investigación..."];
+  el.textoCarga.textContent = pasos[0];
+  el.overlay.classList.add("visible");
+  var reloj = setInterval(function(){ paso = (paso+1)%pasos.length; el.textoCarga.textContent = pasos[paso]; }, 700);
+
+  analizarConIA(limpiarHTML(datos.fuente), clave, el.iaModelo.value.trim())
+    .then(function(ia){ clearInterval(reloj); terminar(ia); })
+    .catch(function(e){
+      clearInterval(reloj);
+      avisar((e.message||"Falló la conexión con Gemini")+" — analizamos con reglas.", true);
+      terminar(null);
+    });
 }
 
 function generarDeNuevo(){
@@ -2792,6 +3248,11 @@ function iniciar(){
   el.fuente.addEventListener("blur",  function(){ validarTodo(true); });
 
   /* Arrastrar y soltar, más el selector clásico */
+  $("btnProbarIA").addEventListener("click", probarIA);
+  [el.iaClave, el.iaModelo].forEach(function(c){
+    c.addEventListener("input", guardarIA);
+    c.addEventListener("change", guardarIA);
+  });
   $("btnTraer").addEventListener("click", traerURL);
   el.url.addEventListener("keydown", function(e){ if(e.key==="Enter"){ e.preventDefault(); traerURL(); } });
   $("btnExaminar").addEventListener("click", function(){ el.archivo.click(); });
@@ -2820,6 +3281,7 @@ function iniciar(){
   });
 
   cargar();
+  cargarIA();
   actualizarContadores();
   validarTodo();
 }
