@@ -702,7 +702,7 @@ var MECANISMOS_P = {
     plantillas:{
       infoproducto:"En [número] sesiones de [duración], completarás {entregable} y demostrarás [criterio de dominio]. {aspiracion} depende de [factores].",
       servicio:"En los primeros [días], entregamos {primerHito} y reportamos [métrica] para {heroe}, bajo [dependencias].",
-      saas:"{heroe} obtiene {entregable} en [rango] desde la conexión, medido en [entorno] y sujeto a [límites].",
+      saas:"{heroe} {verboObtener} {entregable} en [rango] desde el alta, medido en [entorno] y sujeto a [límites].",
       ecommerce:"Hasta [cifra] de [unidad o resultado] en [escenario de prueba]; el resultado real varía según [variables]. Consulta [método]."
     },
     prueba:"Guarda la especificación, el protocolo, la cohorte, la fecha, el denominador y la fuente antes de publicar.",
@@ -780,7 +780,7 @@ var MECANISMOS_P = {
     plantillas:{
       infoproducto:"Aprende [habilidad] para actuar como [rol observable]. Al terminar podrás {entregable}, no solo sentirte [etiqueta].",
       servicio:"Logra {aspiracion} para trabajar o presentarte como [rol reputacional], mediante {mecanismo} y [entregables].",
-      saas:"{aspiracion} para equipos que [conducta identitaria], con [registro, control o estándar] que lo demuestra.",
+      saas:"{aspiracion} para {heroe}, que [conducta identitaria], con [registro, control o estándar] que lo demuestra.",
       ecommerce:"{aspiracion} para quienes [conducta identitaria], con [material, prueba, reparación o garantía]."
     },
     prueba:"Demostración, casos comparables, propósito operativo y resultados típicos, no excepcionales.",
@@ -1408,7 +1408,7 @@ function analizar(datos){
     propuestosIA: (datos.ia && datos.ia.propuestos) || [],
     entregable:  (datos.ia && datos.ia.entregable) || extraer(detectarEntregable),
     situacion:   (datos.ia && datos.ia.situacion) || extraer(detectarSituacionActual),
-    producto:    detectarProducto(texto),
+    producto:    (datos.ia && datos.ia.producto) || detectarProducto(texto),
     nicho:       detectarNicho(texto),
     beneficioNegativo: extraer(detectarBeneficioNegativo),
     titularOriginal:   (datos.ia && datos.ia.titularOriginal) || detectarTitularOriginal(texto),
@@ -1454,7 +1454,9 @@ function rellenar(plantilla,ctx){
   var mapa = {
     heroe: ctx.heroe, aspiracion: ctx.aspiracion, urgencia: ctx.urgencia,
     obstaculo: ctx.sinDolor, mecanismo: ctx.mecanismo, entregable: ctx.entregable,
-    situacionActual: ctx.situacion, producto: ctx.producto, primerHito: ctx.primerHito
+    situacionActual: ctx.situacion, producto: ctx.producto, primerHito: ctx.primerHito,
+    verboObtener: conjugar(ctx.heroe,"obtiene","obtienen"),
+    verboPoder: conjugar(ctx.heroe,"pueda","puedan")
   };
   return contraer(plantilla.replace(/\{(\w+)\}/g,function(todo,clave){
     return Object.prototype.hasOwnProperty.call(mapa,clave) ? mapa[clave] : todo;
@@ -1467,6 +1469,21 @@ function contraer(txt){
   return String(txt||"")
     .replace(/\ba\s+el\s+/gi, function(m){ return m[0]==="A" ? "Al " : "al "; })
     .replace(/\bde\s+el\s+/gi, function(m){ return m[0]==="D" ? "Del " : "del "; });
+}
+
+/* El héroe puede ser singular ("el que lleva el auto de memoria") o
+   plural ("dueños de auto"). Conjugar mal delata al instante que el
+   texto lo escribió una máquina. */
+function esPlural(heroe){
+  var pal = normalizar(heroe||"").split(/[\s,]+/).filter(Boolean);
+  if(!pal.length) return false;
+  var primera = pal[0];
+  if(["los","las","unos","unas","quienes"].indexOf(primera) !== -1) return true;
+  if(["el","la","un","una","quien","cada"].indexOf(primera) !== -1) return false;
+  return /s$/.test(primera);   /* el núcleo del sintagma va primero */
+}
+function conjugar(heroe,singular,plural){
+  return esPlural(heroe) ? plural : singular;
 }
 
 /* Mayúscula inicial respetando signos de apertura. */
@@ -1493,7 +1510,7 @@ var PLANTILLAS_HAUS = [
     f:function(c){ return "Ayudo a "+c.heroe+" a "+c.aspiracion+
         opcional(" en ",c.urgencia)+opcional(" sin ",c.sinDolor)+"."; } },
   { etiqueta:"Segmentada (arranca por el héroe)",
-    f:function(c){ return "Para "+c.heroe+", que busca "+c.aspiracion+
+    f:function(c){ return "Para "+c.heroe+", que "+conjugar(c.heroe,"busca","buscan")+" "+c.aspiracion+
         opcional(" en ",c.urgencia)+opcional(" sin ",c.sinDolor)+"."; } },
   { etiqueta:"Resultado primero (para titulares)",
     f:function(c){ return capitalizar(c.aspiracion)+opcional(" en ",c.urgencia)+
@@ -1581,6 +1598,14 @@ function generarSubpromesas(ctx){
        devolución, no una prueba con renovación automática. */
     var clave = (id==="S4" && ctx.pagoUnico) ? "infoproducto" : ctx.tipoPlantilla;
     var plantilla = m.plantillas[clave] || m.plantillas.infoproducto;
+    /* Si la página declara el plazo de garantía y el precio, la
+       subpromesa de riesgo tiene que usarlos: dejarlos como datos a
+       completar cuando ya están escritos es el peor error del informe. */
+    if(id==="S4" && ctx.garantiaDias){
+      plantilla = "Probalo "+ctx.garantiaDias+" días. Si no cumple, escribís y te devolvemos "+
+                  (ctx.precio ? "los "+ctx.precio : "el importe completo")+
+                  ", sin formularios ni preguntas.";
+    }
     salida.push({
       id:id, nombre:m.nombre, icono:m.icono, pregunta:m.pregunta, idea:m.idea,
       texto: capitalizar(rellenar(plantilla,ctx)),
@@ -1743,7 +1768,15 @@ function construirPagina(ctx){
     bonos:      bonos,
     valorTotal: "[suma de los valores de arriba]",
     precio:     ctx.precio || "[precio de hoy]",
-    cta:        "Sí, quiero "+(falta(ctx.aspiracion) ? "acceder" : aspir)+" ahora",
+    /* Un botón se lee de un vistazo. Si la aspiración entra entera, va
+       entera; si no entra, va el entregable, que es concreto. Nunca un
+       recorte a la mitad. */
+    cta:        (function(){
+                  var a = falta(ctx.aspiracion) ? "" : aspir.split(/,/)[0].trim();
+                  if(a && a.split(/\s+/).length <= 7) return "Sí, quiero "+a+" ahora";
+                  if(!falta(ctx.entregable)) return "Sí, quiero "+ctx.entregable.charAt(0).toLowerCase()+ctx.entregable.slice(1)+" ahora";
+                  return "Sí, quiero empezar ahora";
+                })(),
     garantia:   ctx.garantiaDias
                   ? "Garantía de "+ctx.garantiaDias+" días: si no cumple, escribís y te devolvemos el importe completo."
                   : "Garantía de [N] días: si no cumple [criterio], escribís a [canal] y te devolvemos el importe completo.",
@@ -2068,7 +2101,8 @@ function promesaTransformada(t,ctx){
     antes: ctx.titularOriginal || "",
     despues: contraer("Ayudo a "+t.heroe.valor+" a "+t.aspiracion.valor+
              " en "+t.urgencia.valor+" "+fraseSin(t.sinDolor.valor)+"."),
-    conMecanismo: contraer("Para "+t.heroe.valor+", que busca "+t.aspiracion.valor+
+    conMecanismo: contraer("Para "+t.heroe.valor+", que "+
+             conjugar(t.heroe.valor,"busca","buscan")+" "+t.aspiracion.valor+
              " en "+t.urgencia.valor+' con el "'+t.mecanismo.valor+'", '+fraseSin(t.sinDolor.valor)+"."),
     reescritos: ["heroe","aspiracion","urgencia","sinDolor","mecanismo"]
       .filter(function(k){ return t[k].origen !== "tuyo"; }).length
@@ -2184,7 +2218,8 @@ function construirLowTicket(ctx,pagina){
   var mec   = falta(ctx.mecanismo) ? "[tu mecanismo único]" : ctx.mecanismo;
 
   return {
-    preTitular: contraer("Atención "+ctx.heroe+": si estás harto de "+sit),
+    preTitular: contraer("Atención "+ctx.heroe+": si "+
+                conjugar(ctx.heroe,"estás harto","están hartos")+" de "+sit),
     titular:    contraer("Cómo conseguir "+aspir+" en "+(falta(ctx.urgencia)?"[tiempo récord]":ctx.urgencia)+
                          " "+fraseSin(ctx.sinDolor)),
     subtitular: contraer("Descubrí el método exacto, y poco conocido, que usamos para "+aspir+" de forma predecible."),
@@ -2239,6 +2274,23 @@ var INSTRUCCION_IA = [
 'HAUS:   heroe="madres ocupadas", aspiracion="perder 5 kilos de grasa abdominal",',
 '        urgencia="30 días", sinDolor="dejar de comer carbohidratos ni pasar horas en el gimnasio"',
 "",
+"LONGITUD — ESTO ES LO MÁS IMPORTANTE. Cada campo entra en una plantilla:",
+"heroe: máximo 6 palabras. 'dueños de auto que llevan todo de memoria', NO una descripción.",
+"aspiracion: máximo 8 palabras, en infinitivo, SIN comas ni subordinadas.",
+"  MAL: 'saber de un vistazo qué le falta al auto, para evitar multas y arreglos caros'",
+"  BIEN: 'saber siempre qué le falta a tu auto'",
+"mecanismo: SOLO EL NOMBRE, máximo 5 palabras. 'Sistema Doble Reloj', NO su explicación.",
+"mecanismoExplicacion: aparte, una línea, qué hace ese mecanismo.",
+"entregable: UNO SOLO, el principal, máximo 6 palabras. NO una lista de todo lo que incluye.",
+"sinDolor: máximo 8 palabras, sin la palabra 'sin' adelante.",
+"situacion: SINTAGMA EN INFINITIVO, va detrás de 'cansado de'. Máximo 8 palabras.",
+"  MAL: 'Llevás el mantenimiento de memoria y perdés valor al vender'",
+"  BIEN: 'llevar el mantenimiento de memoria'",
+"objeciones: MIEDOS del comprador antes de pagar, en minúscula, máximo 7 palabras cada uno.",
+"  NO copies preguntas del FAQ. MAL: 'No me manda notificaciones'. BIEN: 'no te acordás de los services viejos'.",
+"producto: el nombre comercial tal como aparece en la página.",
+"heroePlural: true si el héroe es plural, false si es singular.",
+"",
 "REGLAS DE ESCRITURA:",
 "1. La aspiración es CONCRETA y OBSERVABLE. Nunca 'ser saludable' ni 'mejorar': siempre el resultado medible.",
 "2. Si el beneficio está dicho en negativo ('no volvés a enterarte tarde'), convertilo en positivo observable.",
@@ -2254,8 +2306,9 @@ var INSTRUCCION_IA = [
 "- Un plazo propuesto es una hipótesis a verificar, no un dato. Marcalo en 'propuestos'.",
 "",
 "DEVOLVÉ SOLO ESTE JSON, sin texto alrededor y sin markdown:",
-'{"heroe":"","aspiracion":"","urgencia":"","sinDolor":"","mecanismo":"","entregable":"",',
-'"situacion":"","objeciones":["",""],"titularOriginal":"","propuestos":["urgencia"],"nota":""}',
+'{"heroe":"","heroePlural":true,"aspiracion":"","urgencia":"","sinDolor":"","mecanismo":"",',
+'"mecanismoExplicacion":"","entregable":"","producto":"","situacion":"","objeciones":["",""],',
+'"titularOriginal":"","propuestos":["urgencia"],"nota":""}',
 "",
 "'propuestos' lista los campos que NO estaban en la página y tuviste que proponer.",
 "'titularOriginal' es el titular textual de la página, tal cual está."
@@ -2287,12 +2340,61 @@ function analizarConIA(texto,clave,modelo){
     crudo = crudo.replace(/^```(?:json)?\s*/i,"").replace(/```\s*$/,"").trim();
     var j = JSON.parse(crudo);
     /* Nunca se confía a ciegas: se normaliza lo que llega. */
-    function txt(v){ return (typeof v === "string" ? v : "").trim().slice(0,220); }
+    function txt(v){ return (typeof v === "string" ? v : "").trim().slice(0,300); }
+    /* El modelo no siempre respeta el límite de palabras. Estos campos
+       entran en plantillas: si vienen largos, la promesa se vuelve
+       ilegible. Se recortan acá, no se confía. */
+    /* Recortar por cantidad de palabras parte la frase a la mitad y deja
+       colgando una preposición ("el mantenimiento de"). Se corta en
+       límites naturales; si no hay ninguno, se prefiere la frase larga
+       antes que una rota. */
+    /* "dueños de auto que llevan el mantenimiento" -> "dueños de auto".
+       Solo si lo que queda delante del "que" ya es un sintagma completo:
+       en "el que lleva el auto" el núcleo está DESPUÉS del "que". */
+    function cortarRelativa(t){
+      var m = (t||"").match(/^(.+?)\s+que\s+/i);
+      if(m && m[1].trim().split(/\s+/).length >= 3) return m[1].trim();
+      return t;
+    }
+    var COLGANTES = ["de","del","a","al","en","con","por","para","y","o","que","la","el",
+                     "los","las","un","una","tu","su","mi","lo","le","se","sin","sobre"];
+    function corto(v,maxPalabras){
+      var t = txt(v);
+      if(!t) return "";
+      var completo = t.replace(/[.,;:]+$/,"").trim();
+
+      /* 1. Fuera la aclaración entre paréntesis o tras un guion largo */
+      t = t.split(/\s+[—–]\s+|\s*\(/)[0];
+      /* 2. Fuera la subordinada que explica o justifica */
+      t = t.split(/,\s*(?:para|porque|que|con|y)\s/)[0];
+      t = t.split(/\s+(?:para\s+(?:evitar|lograr|que)|porque)\s/)[0];
+      t = t.split(/,/)[0];
+      t = t.replace(/[.,;:]+$/,"").trim();
+
+      var pal = t.split(/\s+/);
+      if(pal.length > maxPalabras){
+        /* 3. Se busca el último corte que NO deje una palabra colgando */
+        var corte = -1;
+        for(var i = Math.min(maxPalabras, pal.length); i >= 3; i--){
+          if(COLGANTES.indexOf(normalizar(pal[i-1])) === -1){ corte = i; break; }
+        }
+        /* 4. Sin corte limpio, vale más la frase entera que un muñón */
+        if(corte === -1) return completo;
+        pal = pal.slice(0,corte);
+      }
+      var salida = pal.join(" ").replace(/[.,;:]+$/,"").trim();
+      return salida.split(/\s+/).length < 2 ? completo : salida;
+    }
     return {
-      heroe:txt(j.heroe), aspiracion:txt(j.aspiracion), urgencia:txt(j.urgencia),
-      sinDolor:txt(j.sinDolor), mecanismo:txt(j.mecanismo), entregable:txt(j.entregable),
-      situacion:txt(j.situacion), titularOriginal:txt(j.titularOriginal), nota:txt(j.nota),
-      objeciones:(Array.isArray(j.objeciones)?j.objeciones:[]).map(txt).filter(Boolean).slice(0,2),
+      heroe:corto(cortarRelativa(txt(j.heroe)),6), heroePlural:(j.heroePlural !== false),
+      aspiracion:corto(j.aspiracion,8), urgencia:corto(j.urgencia,5),
+      sinDolor:corto(j.sinDolor,9),
+      mecanismo:corto(txt(j.mecanismo).split(/\s+que\s+|\s+para\s+|\s*:\s*/)[0],6),
+      mecanismoExplicacion:txt(j.mecanismoExplicacion),
+      entregable:corto(j.entregable,7), producto:corto(j.producto,5),
+      situacion:corto(j.situacion,9), titularOriginal:txt(j.titularOriginal), nota:txt(j.nota),
+      objeciones:(Array.isArray(j.objeciones)?j.objeciones:[])
+        .map(function(o){ return corto(o,8).toLowerCase(); }).filter(Boolean).slice(0,2),
       propuestos:(Array.isArray(j.propuestos)?j.propuestos:[]).map(txt).filter(Boolean)
     };
   });
