@@ -2400,8 +2400,110 @@ function analizarConIA(texto,clave,modelo){
   });
 }
 
+/* --- 3.6.i Afirmaciones bloqueadas --------------------------------------
+   Una auditoría de evidencia sobre una página real dejó claro que la
+   herramienta reproducía, en el texto que ella misma escribe, varias
+   afirmaciones que no se pueden sostener sin prueba. Detectar los claims
+   del usuario no alcanza: hay que auditar la propia salida.          */
+var BLOQUEOS = [
+  { id:"mecanismo-unico", re:/\b(único|única|exclusiv\w+|patentad\w+|el\s+único)\b|™|®/gi,
+    titulo:"Exclusividad del mecanismo",
+    porque:"Decir que un método es único o exclusivo es una comparación con todo el mercado.",
+    validar:"Definí el universo comparado, una búsqueda reproducible, la fecha y la evidencia. Sin eso, describí el mecanismo sin adjetivarlo." },
+
+  { id:"plazo", re:/\b(?:en\s+)?(?:\d{1,3}|cinco|diez|quince|treinta)\s*(?:minutos?|horas?|d[íi]as?)\b/gi,
+    titulo:"Plazo prometido",
+    porque:"Un plazo publicado es una afirmación medible, y se lee como resultado típico.",
+    validar:"Definí el evento de inicio y el de fin, la muestra, la tasa de éxito, la mediana, el percentil 90 y las causas de demora." },
+
+  { id:"vitalicio", re:/\b(de\s+por\s+vida|vitalici\w+|para\s+siempre|acceso\s+permanente)\b/gi,
+    titulo:"Acceso perpetuo",
+    porque:"Compromete continuidad indefinida del servicio, del soporte y del acceso a los datos.",
+    validar:"Definí el plazo contractual, qué pasa si se discontinúa, hasta cuándo hay soporte y cómo se recuperan los datos al final." },
+
+  { id:"garantia", re:/\bgarant[íi]a\s+de\s+\d+\s*d[íi]as|\bte\s+devolvemos\b|\breembolsa\w*\b|\bsin\s+preguntas\b/gi,
+    titulo:"Garantía ofrecida",
+    porque:"Una garantía publicada crea una obligación comercial exigible, no es un adorno.",
+    validar:"Aprobá plazo, canal, requisitos, exclusiones, plazo de acreditación y quién la ejecuta. Revisalo con un profesional de tu jurisdicción." },
+
+  { id:"urgencia", re:/\bcupos?\b|\bel\s+precio\s+sube\b|\b[úu]ltimas?\s+(horas|plazas|unidades)\b|\bfecha\s+l[íi]mite\b/gi,
+    titulo:"Urgencia",
+    porque:"Una escasez que no existe se detecta y cuesta la confianza de toda la página.",
+    validar:"Documentá la causa real: stock, fecha de cierre o cambio de precio ya decidido, con su comprobante." },
+
+  { id:"consecuencia", re:/\b(evitar|evitá|evita)\s+(multas|sanciones|infracciones)\b|\bsin\s+multas\b|\bahorr\w+\s+(dinero|plata)\b|\bprevenir\s+(averías|fallas|roturas)\b/gi,
+    titulo:"Consecuencia evitada",
+    porque:"Prometer que se evita una multa, una avería o un gasto es prometer un resultado que no controlás.",
+    validar:"Separá lo que la herramienta entrega de lo que depende del usuario, del taller, del mercado o de la autoridad." },
+
+  { id:"privacidad", re:/\btus\s+datos\s+no\s+salen\b|\bnadie\s+puede\s+ver\b|\b100\s*%\s*(privad|segur)\w*|\bni\s+siquiera\s+\w+\s+puede\s+ver\b/gi,
+    titulo:"Privacidad o seguridad",
+    porque:"Es una afirmación técnica verificable, y de las más caras de sostener si falla.",
+    validar:"Inventario de datos, política aprobada, controles implementados, pruebas y revisión jurídica local." },
+
+  { id:"exactitud", re:/\b(exact\w+|precis\w+|sin\s+errores|infalible|siempre\s+acertad\w+|100\s*%\s*confiable)\b/gi,
+    titulo:"Exactitud",
+    porque:"Afirmar precisión o ausencia de errores exige un conjunto de prueba y una tasa medida.",
+    validar:"Conjunto de prueba representativo, método documentado, tasa de error, límites conocidos y fuentes versionadas." },
+
+  { id:"diagnostico", re:/\bdiagn[óo]stic\w+\b|\bcertifica\w*\b|\bapto\s+para\s+circular\b|\bestá\s+en\s+condiciones\b/gi,
+    titulo:"Diagnóstico implícito",
+    porque:"Un estado calculado sobre fechas no es una inspección ni una certificación.",
+    validar:"Aclarará que describe calendario y datos cargados, no una revisión técnica ni una habilitación." }
+];
+
+/* Audita el texto que la propia herramienta escribió. */
+function auditarSalida(bloques){
+  var texto = bloques.join("\n"), hallazgos = [], vistos = {};
+  for(var i=0;i<BLOQUEOS.length;i++){
+    var b = BLOQUEOS[i], re = new RegExp(b.re.source, b.re.flags), m, guardia = 0, ejemplos = [];
+    while((m = re.exec(texto)) !== null && guardia++ < 30){
+      if(m[0].length === 0){ re.lastIndex++; continue; }
+      var k = normalizar(m[0]);
+      if(!vistos[b.id+"|"+k]){ vistos[b.id+"|"+k] = 1; ejemplos.push(m[0].trim()); }
+      if(ejemplos.length >= 3) break;
+    }
+    if(ejemplos.length) hallazgos.push({
+      id:b.id, titulo:b.titulo, porque:b.porque, validar:b.validar, ejemplos:ejemplos
+    });
+  }
+  return hallazgos;
+}
+
+/* Lo que no se puede defender de ninguna manera se saca del texto, no se
+   señala: un símbolo de marca registrada ajeno o un "único" sin sustento
+   no deberían salir nunca de la herramienta. */
+function quitarExclusividad(t){
+  /* Ojo: en JavaScript \b se define sobre [A-Za-z0-9_], así que NO hay
+     límite de palabra delante de una vocal acentuada. Un patrón con \b
+     antes de "único" no coincide nunca. Se ancla con espacio o inicio. */
+  return String(t||"")
+    .replace(/[™®]/g,"")
+    .replace(/(^|\s)(?:absolutamente\s+|realmente\s+)?(?:únicas?|únicos?|único|única|exclusiv[oa]s?|patentad[oa]s?|inigualable|revolucionari[oa])(?=$|[\s.,;:)])/gi,"$1")
+    .replace(/\s*[-–—:]\s*$/,"")
+    .replace(/\s{2,}/g," ").trim();
+}
+
 /* --- 3.7 Orquestador ---------------------------------------------------- */
 function generar(datos){
+  var res = construirTodo(datos);
+  /* La auditoría se hace sobre el texto YA escrito por la herramienta:
+     es el único momento en que se puede ver lo que realmente va a
+     publicar el usuario. */
+  res.bloqueos = auditarSalida([
+    res.promesaHaus.despues, res.promesaHaus.conMecanismo,
+    res.promesaFinal.titular, res.promesaFinal.subtitulo, res.promesaFinal.condicion,
+    res.pagina.preTitular, res.pagina.titular, res.pagina.subtitular,
+    res.pagina.cta, res.pagina.garantia, res.pagina.urgencia, res.pagina.core,
+    res.lowTicket.titular, res.lowTicket.cta, res.lowTicket.urgencia, res.lowTicket.garantia,
+    res.haus.map(function(h){ return h.texto; }).join(" "),
+    res.mecanismos.map(function(m){ return m.texto; }).join(" "),
+    res.subpromesas.map(function(x){ return x.texto; }).join(" ")
+  ]);
+  return res;
+}
+
+function construirTodo(datos){
   var ctx = analizar(datos);
 
   /* Se guarda lo que la página traía ANTES de tocar nada: el
@@ -2421,7 +2523,12 @@ function generar(datos){
   ctx.aspiracion = trans.aspiracion.valor;
   ctx.urgencia   = trans.urgencia.valor;
   ctx.sinDolor   = trans.sinDolor.valor;
-  ctx.mecanismo  = trans.mecanismo.valor;
+  ctx.mecanismo  = quitarExclusividad(trans.mecanismo.valor);
+  trans.mecanismo.valor = ctx.mecanismo;
+  ctx.entregable = quitarExclusividad(ctx.entregable);
+  ctx.producto   = quitarExclusividad(ctx.producto);
+  ctx.aspiracion = quitarExclusividad(ctx.aspiracion);
+  trans.aspiracion.valor = ctx.aspiracion;
   /* Una variante que necesita un pilar inexistente no se muestra:
      vale más entregar cuatro promesas limpias que seis con corchetes. */
   var haus = PLANTILLAS_HAUS.filter(function(p){
@@ -2446,6 +2553,7 @@ function generar(datos){
     esqueleto: construirEsqueleto(ctx),
     reglas: REGLAS_COPY,
     diagnostico: diagnosticar(original, ctx.textoOriginal),
+    bloqueos: null,   /* se completa abajo, cuando ya existe todo el texto */
     auditoria: auditar(ctx.textoOriginal),
     claridad: puntuarClaridad(ctx,datos)
   };
@@ -2773,6 +2881,32 @@ function render(res){
   });
   h.push('</div>');
 
+  /* ---- 4.6.b Afirmaciones que esta herramienta escribió y no podés
+         sostener todavía ---- */
+  if(res.bloqueos && res.bloqueos.length){
+    h.push('<div class="tarjeta seccion" style="border-color:var(--aviso);border-width:2px">');
+    h.push('<span class="etiqueta etiqueta-ambar">Antes de publicar</span>');
+    h.push('<h2 style="margin-top:.75rem">🚧 '+res.bloqueos.length+
+           ' afirmaciones de este informe necesitan respaldo</h2>');
+    h.push('<p class="apoyo">Esto no audita tu página: audita <strong>el texto que acabamos de escribirte</strong>. '+
+           'Cada una de estas frases es una afirmación verificable. Publicarla sin tener con qué respaldarla '+
+           'es lo que después no se puede defender ante un comprador, una plataforma de pago o un organismo.</p>');
+    res.bloqueos.forEach(function(b){
+      h.push('<div class="bloque-pagina" style="border-left-color:var(--aviso)">');
+      h.push('<span class="rotulo-bloque" style="color:#92400E">'+esc(b.titulo)+'</span>');
+      h.push('<div class="contenido-bloque">'+b.ejemplos.map(function(e){
+        return '<span class="hueco">'+esc(e)+'</span>';
+      }).join(" · ")+'</div>');
+      h.push('<p class="nota-mecanismo"><b>Por qué:</b> '+esc(b.porque)+'</p>');
+      h.push('<p class="nota-mecanismo"><b>Qué validar antes:</b> '+esc(b.validar)+'</p>');
+      h.push('</div>');
+    });
+    h.push('<div class="bloque bloque-riesgo" style="margin-top:1.25rem">⚠️ Mientras no tengas el respaldo, '+
+           'la salida honesta es sacar la afirmación, no suavizarla. Un “hasta” o un “puede” no corrigen '+
+           'una impresión general que promete un resultado.</div>');
+    h.push('</div>');
+  }
+
   /* ---- 4.7 Auditoría ---- */
   h.push('<div class="tarjeta seccion">');
   h.push('<h2>🛡️ Claims de tu página que conviene revisar</h2>');
@@ -2891,6 +3025,17 @@ function aTextoPlano(res){
   l.push("");
   l.push("PILA DE MICRORESULTADOS (S5)");
   res.pila.forEach(function(b,i){ l.push((i+1)+". "+b.texto); });
+  if(res.bloqueos && res.bloqueos.length){
+    l.push("");
+    l.push("== ANTES DE PUBLICAR: "+res.bloqueos.length+" AFIRMACIONES DE ESTE INFORME NECESITAN RESPALDO ==");
+    l.push("(esto audita el texto que la herramienta escribió, no tu página)");
+    res.bloqueos.forEach(function(b){
+      l.push("");
+      l.push("- "+b.titulo+": "+b.ejemplos.join(" / "));
+      l.push("  Por qué: "+b.porque);
+      l.push("  Qué validar: "+b.validar);
+    });
+  }
   if(res.auditoria.length){
     l.push("");
     l.push("AUDITORÍA DEL TEXTO EXISTENTE");
