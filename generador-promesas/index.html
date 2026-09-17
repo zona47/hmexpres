@@ -155,9 +155,18 @@ strong{font-weight:700}
 .traer .btn{flex:0 0 auto;white-space:nowrap}
 @media (max-width:768px){ .traer{flex-direction:column} .traer .btn{width:100%} }
 
-/* El bloque de IA se destaca cuando hay una clave cargada */
-#bloqueIA.con-ia{border-color:var(--secundario)}
-#bloqueIA.con-ia>summary{background:var(--secundario-suave)}
+/* Caja de la clave de API: va primero y siempre visible, porque sin
+   clave el resultado es notoriamente peor y el usuario debe saberlo. */
+.caja-api{
+  border:2px solid var(--borde);border-radius:var(--radio);
+  padding:1.25rem;margin-bottom:2rem;background:var(--fondo);
+  transition:border-color var(--transicion),background var(--transicion);
+}
+.caja-api.con-ia{border-color:var(--secundario);background:var(--secundario-suave)}
+.caja-api-cabecera{display:flex;gap:.85rem;align-items:flex-start;margin-bottom:1.1rem}
+.caja-api-ico{font-size:1.75rem;line-height:1;flex:0 0 auto}
+.caja-api h3{font-size:1.0625rem}
+@media (max-width:768px){ .caja-api{padding:1rem} }
 
 /* Zona para soltar archivos */
 .soltar{
@@ -454,6 +463,37 @@ tbody tr:last-child td{border-bottom:none}
 
     <form id="formulario" novalidate>
 
+      <!-- CLAVE DE API — lo primero, porque sin ella el resultado es genérico -->
+      <div class="caja-api" id="bloqueIA">
+        <div class="caja-api-cabecera">
+          <span class="caja-api-ico" aria-hidden="true">🔑</span>
+          <div>
+            <h3 style="margin:0">Tu clave de API (Gemini)</h3>
+            <p class="apoyo" style="margin:.15rem 0 0">Sin clave funciona igual, pero el texto sale genérico. Con clave, escribe tu promesa de verdad.</p>
+          </div>
+        </div>
+
+        <div class="campo" style="margin-bottom:.85rem">
+          <label for="iaClave">Pegá tu clave acá</label>
+          <input type="password" id="iaClave" placeholder="AIza..." autocomplete="off" spellcheck="false">
+          <p class="ayuda" style="margin:.35rem 0 0">
+            Es gratis. Se saca en <span class="mono">aistudio.google.com/apikey</span> ·
+            Queda guardada solo en este navegador y viaja únicamente a Google.
+          </p>
+        </div>
+
+        <div class="rejilla-2">
+          <div class="campo" style="margin-bottom:0">
+            <label for="iaModelo">Modelo</label>
+            <input type="text" id="iaModelo" placeholder="gemini-2.5-flash" value="gemini-2.5-flash">
+          </div>
+          <div class="campo" style="margin-bottom:0;display:flex;align-items:flex-end">
+            <button type="button" class="btn btn-contorno" id="btnProbarIA">🔌 Probar mi clave</button>
+          </div>
+        </div>
+        <p class="apoyo" id="estadoIA" style="margin-top:.85rem">Sin clave: se usarán las reglas.</p>
+      </div>
+
       <!-- CAMPO ÚNICO: pegar o soltar la página de ventas -->
       <div class="campo" id="campo-fuente">
         <label for="fuente">
@@ -512,33 +552,6 @@ tbody tr:last-child td{border-bottom:none}
             <p class="ayuda">El puente entre el punto A y el punto B. Ejemplo: “el método de 3 anuncios semilla”, “auditoría + plantillas + revisión semanal”.</p>
             <input type="text" id="haus-m" placeholder="el sistema de 3 pasos que...">
           </div>
-        </div>
-      </details>
-
-      <!-- MODO IA -->
-      <details class="plegable" id="bloqueIA">
-        <summary>⚡ Modo IA con Gemini (opcional, mejora mucho el resultado)</summary>
-        <div class="plegable-cuerpo">
-          <p class="ayuda" style="margin-bottom:1rem">
-            Sin clave, la app analiza con reglas: funciona sin internet pero la aspiración le queda genérica.
-            Con clave, Gemini lee tu página entendiendo el sentido y escribe la promesa afilada.
-            <strong>Tu clave se guarda solo en este navegador y viaja únicamente a Google.</strong>
-          </p>
-          <div class="campo">
-            <label for="iaClave">Tu clave de Gemini</label>
-            <p class="ayuda">Se saca gratis en aistudio.google.com/apikey</p>
-            <input type="password" id="iaClave" placeholder="AIza..." autocomplete="off" spellcheck="false">
-          </div>
-          <div class="rejilla-2">
-            <div class="campo">
-              <label for="iaModelo">Modelo</label>
-              <input type="text" id="iaModelo" placeholder="gemini-2.5-flash" value="gemini-2.5-flash">
-            </div>
-            <div class="campo" style="display:flex;align-items:flex-end">
-              <button type="button" class="btn btn-contorno" id="btnProbarIA">🔌 Probar conexión</button>
-            </div>
-          </div>
-          <p class="apoyo" id="estadoIA">Sin clave: se usarán las reglas.</p>
         </div>
       </details>
 
