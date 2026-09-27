@@ -1,0 +1,1239 @@
+{
+ "expected": {
+  "Supuestos!D17": 603.9,
+  "Supuestos!D26": 0.91,
+  "Supuestos!D34": 105.252576,
+  "Supuestos!D40": 8300,
+  "Economia Unitaria!D10": 519.4,
+  "Economia Unitaria!D11": 31.04,
+  "Economia Unitaria!D12": 53.46,
+  "Economia Unitaria!D13": 603.9,
+  "Economia Unitaria!D14": -54.351,
+  "Economia Unitaria!D15": 549.549,
+  "Economia Unitaria!D16": -25.215705,
+  "Economia Unitaria!D17": 524.333295,
+  "Economia Unitaria!D18": -38.46843,
+  "Economia Unitaria!D19": 485.864865,
+  "Economia Unitaria!D20": 105.252576,
+  "Economia Unitaria!D21": 591.117441,
+  "Economia Unitaria!D26": 180,
+  "Economia Unitaria!D27": 2.69924925,
+  "Economia Unitaria!D28": 3.28398578333333,
+  "Economia Unitaria!D29": 0.80454523099851,
+  "Economia Unitaria!D30": 11.1142014765772,
+  "Economia Unitaria!D31": 3.355,
+  "Economia Unitaria!D32": 1.24293819846389,
+  "Economia Unitaria!D33": 485.864865,
+  "Economia Unitaria!D34": 276.059582386364,
+  "Economia Unitaria!D35": 379.58192578125,
+  "Economia Unitaria!D36": 485.864865,
+  "Economia Unitaria!D37": 202.44369375,
+  "Economia Unitaria!C40": "El AOV bruto de referencia es $603.9 y la contribución CM1 es $485.9 por cliente, después de reembolsos, tarifas y COGS.",
+  "Economia Unitaria!C41": "El aMER de referencia es 2.7x frente a un objetivo de MER de 3.4x; el margen permite soportar un CAC hasta $485.9 en break-even.",
+  "Economia Unitaria!C42": "La expansión backend añade $105.3 por cliente en 12 meses y lleva el LTV:CAC a 3.3x con el CAC objetivo.",
+  "Economia Unitaria!C43": "CAC objetivo: $180 USD es un objetivo de operación dentro del Nivel A verde; el umbral de escalado del Nivel B es más exigente: aMER marginal >= 2.85x (CAC marginal <= $170 USD).",
+  "Economia Unitaria!C44": "Recuperación del CAC: inmediata; al ser una venta de pago único, CM1 ($485.9) supera al CAC objetivo ($180) en la primera transacción.",
+  "Estrategia de Medios!D17": 1,
+  "Estrategia de Medios!E17": 1,
+  "Estrategia de Medios!F17": 1,
+  "Estrategia de Medios!D25": 6750,
+  "Estrategia de Medios!E25": 21600,
+  "Estrategia de Medios!F25": 75000,
+  "Estrategia de Medios!D26": 3300,
+  "Estrategia de Medios!E26": 9000,
+  "Estrategia de Medios!F26": 27000,
+  "Estrategia de Medios!D27": 1950,
+  "Estrategia de Medios!E27": 5850,
+  "Estrategia de Medios!F27": 19500,
+  "Estrategia de Medios!D28": 1200,
+  "Estrategia de Medios!E28": 4050,
+  "Estrategia de Medios!F28": 15000,
+  "Estrategia de Medios!D29": 900,
+  "Estrategia de Medios!E29": 2250,
+  "Estrategia de Medios!F29": 6000,
+  "Estrategia de Medios!D30": 450,
+  "Estrategia de Medios!E30": 1350,
+  "Estrategia de Medios!F30": 6000,
+  "Estrategia de Medios!D31": 450,
+  "Estrategia de Medios!E31": 900,
+  "Estrategia de Medios!F31": 1500,
+  "Estrategia de Medios!D32": 15000,
+  "Estrategia de Medios!E32": 45000,
+  "Estrategia de Medios!F32": 150000,
+  "Estrategia de Medios!F37": 1500,
+  "Estrategia de Medios!G37": 4500,
+  "Estrategia de Medios!H37": 276.059582386364,
+  "Estrategia de Medios!I37": 11250,
+  "Estrategia de Medios!F38": 9000,
+  "Estrategia de Medios!G38": 21000,
+  "Estrategia de Medios!H38": 276.059582386364,
+  "Estrategia de Medios!I38": 52500,
+  "Estrategia de Medios!F39": 30000,
+  "Estrategia de Medios!G39": 75000,
+  "Estrategia de Medios!H39": 276.059582386364,
+  "Estrategia de Medios!I39": 187500,
+  "Estrategia de Medios!F40": 120000,
+  "Estrategia de Medios!G40": 360000,
+  "Estrategia de Medios!H40": 276.059582386364,
+  "Estrategia de Medios!I40": 900000,
+  "Escalado!C18": 1,
+  "Escalado!D18": "Fase 1 Aprendizaje",
+  "Escalado!E18": 15000,
+  "Escalado!F18": 15000,
+  "Escalado!G18": 73.1707317073171,
+  "Escalado!J18": 42073.1707317073,
+  "Escalado!K18": 2.80487804878049,
+  "Escalado!L18": 35551.0876829268,
+  "Escalado!M18": 35551.0876829268,
+  "Escalado!N18": 1.37007251219512,
+  "Escalado!O18": 73.1707317073171,
+  "Escalado!P18": 14986.5853658537,
+  "Escalado!C19": 2,
+  "Escalado!D19": "Fase 1 Aprendizaje",
+  "Escalado!E19": 16500,
+  "Escalado!F19": 31500,
+  "Escalado!G19": 84.6153846153846,
+  "Escalado!J19": 49500,
+  "Escalado!K19": 3,
+  "Escalado!L19": 41111.6424230769,
+  "Escalado!M19": 76662.7301060038,
+  "Escalado!N19": 1.43373746368266,
+  "Escalado!O19": 157.786116322702,
+  "Escalado!P19": 20245,
+  "Escalado!C20": 3,
+  "Escalado!D20": "Fase 2 Escalado",
+  "Escalado!E20": 19800,
+  "Escalado!F20": 51300,
+  "Escalado!G20": 110,
+  "Escalado!J20": 65450,
+  "Escalado!K20": 3.30555555555556,
+  "Escalado!L20": 53445.13515,
+  "Escalado!M20": 130107.865256004,
+  "Escalado!N20": 1.53621569699812,
+  "Escalado!O20": 267.786116322702,
+  "Escalado!P20": 31459.5,
+  "Escalado!C21": 4,
+  "Escalado!D21": "Fase 2 Escalado",
+  "Escalado!E21": 23760,
+  "Escalado!F21": 75060,
+  "Escalado!G21": 144,
+  "Escalado!J21": 87408,
+  "Escalado!K21": 3.67878787878788,
+  "Escalado!L21": 69964.54056,
+  "Escalado!M21": 200072.405816004,
+  "Escalado!N21": 1.66549967780447,
+  "Escalado!O21": 411.786116322702,
+  "Escalado!P21": 47481.28,
+  "Escalado!C22": 5,
+  "Escalado!D22": "Fase 2 Escalado",
+  "Escalado!E22": 28512,
+  "Escalado!F22": 103572,
+  "Escalado!G22": 187.578947368421,
+  "Escalado!J22": 116298.947368421,
+  "Escalado!K22": 4.07894736842105,
+  "Escalado!L22": 91138.01994,
+  "Escalado!M22": 291210.425756004,
+  "Escalado!N22": 1.81167135669876,
+  "Escalado!O22": 599.365063691123,
+  "Escalado!P22": 69020.0421052631,
+  "Escalado!C23": 6,
+  "Escalado!D23": "Fase 2 Escalado",
+  "Escalado!E23": 34214.4,
+  "Escalado!F23": 137786.4,
+  "Escalado!G23": 220.738064516129,
+  "Escalado!J23": 139506.456774194,
+  "Escalado!K23": 4.07741935483871,
+  "Escalado!L23": 107248.86991649,
+  "Escalado!M23": 398459.295672494,
+  "Escalado!N23": 1.89186230043382,
+  "Escalado!O23": 820.103128207252,
+  "Escalado!P23": 84436.4756645162,
+  "Escalado!C24": 7,
+  "Escalado!D24": "Fase 3 Dominio",
+  "Escalado!E24": 41057.28,
+  "Escalado!F24": 178843.68,
+  "Escalado!G24": 256.608,
+  "Escalado!J24": 165512.16,
+  "Escalado!K24": 4.03125,
+  "Escalado!L24": 124676.81127792,
+  "Escalado!M24": 523136.106950414,
+  "Escalado!N24": 1.92510256415219,
+  "Escalado!O24": 1076.71112820725,
+  "Escalado!P24": 101258.7856,
+  "Escalado!C25": 8,
+  "Escalado!D25": "Fase 3 Dominio",
+  "Escalado!E25": 49268.736,
+  "Escalado!F25": 228112.416,
+  "Escalado!G25": 296.799614457831,
+  "Escalado!J25": 193810.148240964,
+  "Escalado!K25": 3.93373493975904,
+  "Escalado!L25": 144204.504610606,
+  "Escalado!M25": 667340.61156102,
+  "Escalado!N25": 1.92549008626089,
+  "Escalado!O25": 1373.51074266508,
+  "Escalado!P25": 118798.498899277,
+  "Escalado!C26": 9,
+  "Escalado!D26": "Fase 3 Dominio",
+  "Escalado!E26": 59122.4832,
+  "Escalado!F26": 287234.8992,
+  "Escalado!G26": 341.748457803468,
+  "Escalado!J26": 225553.982150289,
+  "Escalado!K26": 3.8150289017341,
+  "Escalado!L26": 166043.56831464,
+  "Escalado!M26": 833384.179875661,
+  "Escalado!N26": 1.90140293605263,
+  "Escalado!O26": 1715.25920046855,
+  "Escalado!P26": 137831.640556763,
+  "Escalado!C27": 10,
+  "Escalado!D27": "Fase 3 Dominio",
+  "Escalado!E27": 70946.97984,
+  "Escalado!F27": 358181.87904,
+  "Escalado!G27": 391.972264309392,
+  "Escalado!J27": 261445.500294365,
+  "Escalado!K27": 3.68508287292818,
+  "Escalado!L27": 190445.551282427,
+  "Escalado!M27": 1023829.73115809,
+  "Escalado!N27": 1.85840739319968,
+  "Escalado!O27": 2107.23146477794,
+  "Escalado!P27": 158668.425427872,
+  "Escalado!C28": 11,
+  "Escalado!D28": "Fase 3 Dominio",
+  "Escalado!E28": 85136.375808,
+  "Escalado!F28": 443318.254848,
+  "Escalado!G28": 450.457014857143,
+  "Escalado!J28": 303157.570998857,
+  "Escalado!K28": 3.56084656084656,
+  "Escalado!L28": 218861.236711869,
+  "Escalado!M28": 1242690.96786996,
+  "Escalado!N28": 1.8031576734778,
+  "Escalado!O28": 2557.68847963509,
+  "Escalado!P28": 182437.01380096,
+  "Escalado!C29": 12,
+  "Escalado!D29": "Fase 3 Dominio",
+  "Escalado!E29": 102163.6509696,
+  "Escalado!F29": 545481.9058176,
+  "Escalado!G29": 521.243117191837,
+  "Escalado!J29": 353924.076573257,
+  "Escalado!K29": 3.46428571428572,
+  "Escalado!L29": 253253.716766591,
+  "Escalado!M29": 1495944.68463655,
+  "Escalado!N29": 1.74242769316855,
+  "Escalado!O29": 3078.93159682692,
+  "Escalado!P29": 211607.258712064,
+  "Escalado!E35": 105.62279673913,
+  "Escalado!F35": "Elite",
+  "Escalado!E36": 119.966633333333,
+  "Escalado!F36": "Elite",
+  "Escalado!E37": 136.863342253521,
+  "Escalado!F37": "Escalar",
+  "Escalado!E38": 151.8327703125,
+  "Escalado!F38": "Escalar",
+  "Escalado!E39": 164.699954237288,
+  "Escalado!F39": "Escalar",
+  "Escalado!E40": 186.871101923077,
+  "Escalado!F40": "Mantener",
+  "Escalado!E41": 206.751006382979,
+  "Escalado!F41": "Mantener",
+  "Escalado!E42": 237.007251219512,
+  "Escalado!F42": "Reducir",
+  "Escalado!E43": 262.629656756757,
+  "Escalado!F43": "Reducir",
+  "Escalado!E44": 299.916583333333,
+  "Escalado!F44": "Reducir",
+  "Escalado!E45": 335.079217241379,
+  "Escalado!F45": "Reducir",
+  "Escalado!E46": 352.075989130435,
+  "Escalado!F46": "Apagar",
+  "Guardian de Pausas!D10": 3,
+  "Guardian de Pausas!E10": 1.6,
+  "Guardian de Pausas!D11": 414.089373579545,
+  "Guardian de Pausas!E11": 379.58192578125,
+  "Guardian de Pausas!C35": "Nota de guardavías: el CAC objetivo de $180 USD es un objetivo de operación del Nivel A verde (MER >= 3.0x); el umbral de escalado es más exigente: Nivel B con aMER marginal >= 2.85x y CAC marginal <= $170 USD.",
+  "Guardian de Pausas!D41": 2.06666666666667,
+  "Guardian de Pausas!D42": "Continuar",
+  "Sensibilidad!D10": 4.527294675,
+  "Sensibilidad!E10": 4.766505075,
+  "Sensibilidad!F10": 4.925978675,
+  "Sensibilidad!G10": 5.085452275,
+  "Sensibilidad!H10": 5.324662675,
+  "Sensibilidad!I10": 5.643609875,
+  "Sensibilidad!D11": 3.62183574,
+  "Sensibilidad!E11": 3.81320406,
+  "Sensibilidad!F11": 3.94078294,
+  "Sensibilidad!G11": 4.06836182,
+  "Sensibilidad!H11": 4.25973014,
+  "Sensibilidad!I11": 4.5148879,
+  "Sensibilidad!D12": 3.01819645,
+  "Sensibilidad!E12": 3.17767005,
+  "Sensibilidad!F12": 3.28398578333333,
+  "Sensibilidad!G12": 3.39030151666667,
+  "Sensibilidad!H12": 3.54977511666667,
+  "Sensibilidad!I12": 3.76240658333333,
+  "Sensibilidad!D13": 2.58702552857143,
+  "Sensibilidad!E13": 2.72371718571429,
+  "Sensibilidad!F13": 2.81484495714286,
+  "Sensibilidad!G13": 2.90597272857143,
+  "Sensibilidad!H13": 3.04266438571429,
+  "Sensibilidad!I13": 3.22491992857143,
+  "Sensibilidad!D14": 2.2636473375,
+  "Sensibilidad!E14": 2.3832525375,
+  "Sensibilidad!F14": 2.4629893375,
+  "Sensibilidad!G14": 2.5427261375,
+  "Sensibilidad!H14": 2.6623313375,
+  "Sensibilidad!I14": 2.8218049375,
+  "Sensibilidad!D15": 1.94026914642857,
+  "Sensibilidad!E15": 2.04278788928571,
+  "Sensibilidad!F15": 2.11113371785714,
+  "Sensibilidad!G15": 2.17947954642857,
+  "Sensibilidad!H15": 2.28199828928571,
+  "Sensibilidad!I15": 2.41868994642857,
+  "Sensibilidad!D16": 1.64628897272727,
+  "Sensibilidad!E16": 1.73327457272727,
+  "Sensibilidad!F16": 1.79126497272727,
+  "Sensibilidad!G16": 1.84925537272727,
+  "Sensibilidad!H16": 1.93624097272727,
+  "Sensibilidad!I16": 2.05222177272727,
+  "Sensibilidad!D17": 1.3581884025,
+  "Sensibilidad!E17": 1.4299515225,
+  "Sensibilidad!F17": 1.4777936025,
+  "Sensibilidad!G17": 1.5256356825,
+  "Sensibilidad!H17": 1.5973988025,
+  "Sensibilidad!I17": 1.6930829625,
+  "Sensibilidad!D23": 2.15678571428571,
+  "Sensibilidad!E23": 1.77617647058824,
+  "Sensibilidad!F23": 1.50975,
+  "Sensibilidad!G23": 1.258125,
+  "Sensibilidad!H23": 1.07839285714286,
+  "Sensibilidad!D24": 2.69598214285714,
+  "Sensibilidad!E24": 2.22022058823529,
+  "Sensibilidad!F24": 1.8871875,
+  "Sensibilidad!G24": 1.57265625,
+  "Sensibilidad!H24": 1.34799107142857,
+  "Sensibilidad!D25": 3.23517857142857,
+  "Sensibilidad!E25": 2.66426470588235,
+  "Sensibilidad!F25": 2.264625,
+  "Sensibilidad!G25": 1.8871875,
+  "Sensibilidad!H25": 1.61758928571429,
+  "Sensibilidad!D26": 3.774375,
+  "Sensibilidad!E26": 3.10830882352941,
+  "Sensibilidad!F26": 2.6420625,
+  "Sensibilidad!G26": 2.20171875,
+  "Sensibilidad!H26": 1.8871875,
+  "Sensibilidad!D27": 4.31357142857143,
+  "Sensibilidad!E27": 3.55235294117647,
+  "Sensibilidad!F27": 3.0195,
+  "Sensibilidad!G27": 2.51625,
+  "Sensibilidad!H27": 2.15678571428571,
+  "Sensibilidad!D28": 4.85276785714286,
+  "Sensibilidad!E28": 3.99639705882353,
+  "Sensibilidad!F28": 3.3969375,
+  "Sensibilidad!G28": 2.83078125,
+  "Sensibilidad!H28": 2.42638392857143,
+  "Validacion!H10": 100,
+  "Validacion!I10": 8,
+  "Validacion!H11": 77.7777777777778,
+  "Validacion!I11": 7.77777777777778,
+  "Validacion!H12": 72,
+  "Validacion!I12": 5.76,
+  "Validacion!H13": 62.5,
+  "Validacion!I13": 6.25,
+  "Validacion!H14": 100,
+  "Validacion!I14": 10,
+  "Validacion!H15": 80,
+  "Validacion!I15": 6.4,
+  "Validacion!H16": 80,
+  "Validacion!I16": 6.4,
+  "Validacion!H17": 71.4285714285714,
+  "Validacion!I17": 4.28571428571429,
+  "Validacion!H18": 100,
+  "Validacion!I18": 12,
+  "Validacion!H19": 62.5,
+  "Validacion!I19": 6.25,
+  "Validacion!H20": 75,
+  "Validacion!I20": 4.5,
+  "Validacion!H21": 80,
+  "Validacion!I21": 3.2,
+  "Validacion!D22": 1,
+  "Validacion!I22": 80.8234920634921,
+  "Validacion!D26": 80.8234920634921,
+  "Validacion!F26": "GO"
+ },
+ "inputs": {
+  "Supuestos!D10": {
+   "v": 497,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Supuestos!D11": {
+   "v": 561,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Supuestos!D12": {
+   "v": 0.65,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Supuestos!D13": {
+   "v": 97,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Supuestos!D14": {
+   "v": 0.32,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Supuestos!D15": {
+   "v": 297,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Supuestos!D16": {
+   "v": 0.18,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Supuestos!D21": {
+   "v": 0.09,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Supuestos!D22": {
+   "v": 0.045,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Supuestos!D23": {
+   "v": 0.3,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Supuestos!D24": {
+   "v": 1.62,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Supuestos!D25": {
+   "v": 0.07,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Supuestos!D30": {
+   "v": 697,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Supuestos!D31": {
+   "v": 0.22,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Supuestos!D32": {
+   "v": 0.78,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Supuestos!D33": {
+   "v": 0.88,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Supuestos!D38": {
+   "v": 1800,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Supuestos!D39": {
+   "v": 6500,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Supuestos!D44": {
+   "v": 16.8,
+   "src": "Fuente: WordStream/LocaliQ, Google Ads Benchmarks 2026 (13,000+ campañas, abril 2025-marzo 2026), tabla CPC/CPM/CVR por industria; complementado por el brief del usuario."
+  },
+  "Supuestos!D45": {
+   "v": 0.0219,
+   "src": "Fuente: WordStream/LocaliQ, Google Ads Benchmarks 2026 (13,000+ campañas, abril 2025-marzo 2026), tabla CPC/CPM/CVR por industria; complementado por el brief del usuario."
+  },
+  "Supuestos!D46": {
+   "v": 0.016,
+   "src": "Fuente: WordStream/LocaliQ, Google Ads Benchmarks 2026 (13,000+ campañas, abril 2025-marzo 2026), tabla CPC/CPM/CVR por industria; complementado por el brief del usuario."
+  },
+  "Supuestos!D47": {
+   "v": 9.16,
+   "src": "Fuente: WordStream/LocaliQ, Google Ads Benchmarks 2026 (13,000+ campañas, abril 2025-marzo 2026), tabla CPC/CPM/CVR por industria; complementado por el brief del usuario."
+  },
+  "Supuestos!D48": {
+   "v": 1.02,
+   "src": "Fuente: WordStream/LocaliQ, Google Ads Benchmarks 2026 (13,000+ campañas, abril 2025-marzo 2026), tabla CPC/CPM/CVR por industria; complementado por el brief del usuario."
+  },
+  "Supuestos!D49": {
+   "v": 0.018,
+   "src": "Fuente: WordStream/LocaliQ, Google Ads Benchmarks 2026 (13,000+ campañas, abril 2025-marzo 2026), tabla CPC/CPM/CVR por industria; complementado por el brief del usuario."
+  },
+  "Supuestos!D50": {
+   "v": 5.42,
+   "src": "Fuente: WordStream/LocaliQ, Google Ads Benchmarks 2026 (13,000+ campañas, abril 2025-marzo 2026), tabla CPC/CPM/CVR por industria; complementado por el brief del usuario."
+  },
+  "Supuestos!D51": {
+   "v": 0.0818,
+   "src": "Fuente: WordStream/LocaliQ, Google Ads Benchmarks 2026 (13,000+ campañas, abril 2025-marzo 2026), tabla CPC/CPM/CVR por industria; complementado por el brief del usuario."
+  },
+  "Supuestos!D52": {
+   "v": 66.69,
+   "src": "Fuente: WordStream/LocaliQ, Google Ads Benchmarks 2026 (13,000+ campañas, abril 2025-marzo 2026), tabla CPC/CPM/CVR por industria; complementado por el brief del usuario."
+  },
+  "Supuestos!D53": {
+   "v": 9.39,
+   "src": "Fuente: WordStream/LocaliQ, Google Ads Benchmarks 2026 (13,000+ campañas, abril 2025-marzo 2026), tabla CPC/CPM/CVR por industria; complementado por el brief del usuario."
+  },
+  "Supuestos!D54": {
+   "v": 202,
+   "src": "Fuente: WordStream/LocaliQ, Google Ads Benchmarks 2026 (13,000+ campañas, abril 2025-marzo 2026), tabla CPC/CPM/CVR por industria; complementado por el brief del usuario."
+  },
+  "Supuestos!D55": {
+   "v": 0.059,
+   "src": "Fuente: WordStream/LocaliQ, Google Ads Benchmarks 2026 (13,000+ campañas, abril 2025-marzo 2026), tabla CPC/CPM/CVR por industria; complementado por el brief del usuario."
+  },
+  "Supuestos!D56": {
+   "v": 18.5,
+   "src": "Fuente: WordStream/LocaliQ, Google Ads Benchmarks 2026 (13,000+ campañas, abril 2025-marzo 2026), tabla CPC/CPM/CVR por industria; complementado por el brief del usuario."
+  },
+  "Supuestos!D57": {
+   "v": 6.4,
+   "src": "Fuente: WordStream/LocaliQ, Google Ads Benchmarks 2026 (13,000+ campañas, abril 2025-marzo 2026), tabla CPC/CPM/CVR por industria; complementado por el brief del usuario."
+  },
+  "Supuestos!D58": {
+   "v": 0.34,
+   "src": "Fuente: WordStream/LocaliQ, Google Ads Benchmarks 2026 (13,000+ campañas, abril 2025-marzo 2026), tabla CPC/CPM/CVR por industria; complementado por el brief del usuario."
+  },
+  "Supuestos!D59": {
+   "v": 0.032,
+   "src": "Fuente: WordStream/LocaliQ, Google Ads Benchmarks 2026 (13,000+ campañas, abril 2025-marzo 2026), tabla CPC/CPM/CVR por industria; complementado por el brief del usuario."
+  },
+  "Supuestos!D64": {
+   "v": 180,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Supuestos!D65": {
+   "v": 3,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Supuestos!D66": {
+   "v": 2.85,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Supuestos!D67": {
+   "v": 2.2,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Supuestos!D68": {
+   "v": 1.4,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Supuestos!D69": {
+   "v": 0.2,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Supuestos!D70": {
+   "v": "7d click / 1d view",
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Supuestos!D74": {
+   "v": 2.4,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Supuestos!D75": {
+   "v": 1.76,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Supuestos!D76": {
+   "v": 1.28,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Supuestos!D77": {
+   "v": 1,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Supuestos!D78": {
+   "v": 1.6,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Supuestos!D79": {
+   "v": 3.6,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Estrategia de Medios!D10": {
+   "v": 0.45,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!E10": {
+   "v": 0.48,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!F10": {
+   "v": 0.5,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!D11": {
+   "v": 0.22,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!E11": {
+   "v": 0.2,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!F11": {
+   "v": 0.18,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!D12": {
+   "v": 0.13,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!E12": {
+   "v": 0.13,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!F12": {
+   "v": 0.13,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!D13": {
+   "v": 0.08,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!E13": {
+   "v": 0.09,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!F13": {
+   "v": 0.1,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!D14": {
+   "v": 0.06,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!E14": {
+   "v": 0.05,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!F14": {
+   "v": 0.04,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!D15": {
+   "v": 0.03,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!E15": {
+   "v": 0.03,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!F15": {
+   "v": 0.04,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!D16": {
+   "v": 0.03,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!E16": {
+   "v": 0.02,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!F16": {
+   "v": 0.01,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!D22": {
+   "v": 15000,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!E22": {
+   "v": 45000,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!F22": {
+   "v": 150000,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!D37": {
+   "v": 50,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!E37": {
+   "v": 150,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!D38": {
+   "v": 300,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!E38": {
+   "v": 700,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!D39": {
+   "v": 1000,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!E39": {
+   "v": 2500,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!D40": {
+   "v": 4000,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Estrategia de Medios!E40": {
+   "v": 12000,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección Estrategia de Medios."
+  },
+  "Escalado!D10": {
+   "v": 15000,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!D11": {
+   "v": 0.1,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!D12": {
+   "v": 0.2,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!D13": {
+   "v": 0.2,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!H18": {
+   "v": 205,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!I18": {
+   "v": 575,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!H19": {
+   "v": 195,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!I19": {
+   "v": 585,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!H20": {
+   "v": 180,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!I20": {
+   "v": 595,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!H21": {
+   "v": 165,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!I21": {
+   "v": 607,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!H22": {
+   "v": 152,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!I22": {
+   "v": 620,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!H23": {
+   "v": 155,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!I23": {
+   "v": 632,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!H24": {
+   "v": 160,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!I24": {
+   "v": 645,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!H25": {
+   "v": 166,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!I25": {
+   "v": 653,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!H26": {
+   "v": 173,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!I26": {
+   "v": 660,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!H27": {
+   "v": 181,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!I27": {
+   "v": 667,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!H28": {
+   "v": 189,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!I28": {
+   "v": 673,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!H29": {
+   "v": 196,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!I29": {
+   "v": 679,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!C35": {
+   "v": 100,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!D35": {
+   "v": 4.6,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!C36": {
+   "v": 250,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!D36": {
+   "v": 4.05,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!C37": {
+   "v": 500,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!D37": {
+   "v": 3.55,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!C38": {
+   "v": 750,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!D38": {
+   "v": 3.2,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!C39": {
+   "v": 1000,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!D39": {
+   "v": 2.95,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!C40": {
+   "v": 1500,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!D40": {
+   "v": 2.6,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!C41": {
+   "v": 2000,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!D41": {
+   "v": 2.35,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!C42": {
+   "v": 3000,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!D42": {
+   "v": 2.05,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!C43": {
+   "v": 4000,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!D43": {
+   "v": 1.85,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!C44": {
+   "v": 5000,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!D44": {
+   "v": 1.62,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!C45": {
+   "v": 7000,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!D45": {
+   "v": 1.45,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!C46": {
+   "v": 9000,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Escalado!D46": {
+   "v": 1.38,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), ruta de sanidad y curva de escalado."
+  },
+  "Guardian de Pausas!D12": {
+   "v": 0.1,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Guardian de Pausas!E12": {
+   "v": 0.2,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Guardian de Pausas!D13": {
+   "v": 0.15,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Guardian de Pausas!E13": {
+   "v": 0.25,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Guardian de Pausas!D14": {
+   "v": 3,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Guardian de Pausas!E14": {
+   "v": 4,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Guardian de Pausas!D15": {
+   "v": 2.2,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Guardian de Pausas!E15": {
+   "v": 1.4,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Guardian de Pausas!D16": {
+   "v": 7,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Guardian de Pausas!E16": {
+   "v": 5,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Guardian de Pausas!D17": {
+   "v": 0.12,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Guardian de Pausas!E17": {
+   "v": 0.16,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Guardian de Pausas!D18": {
+   "v": 0.2,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Guardian de Pausas!E18": {
+   "v": 0.15,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Guardian de Pausas!D19": {
+   "v": 14,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Guardian de Pausas!E19": {
+   "v": 21,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Guardian de Pausas!D20": {
+   "v": 0.6,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Guardian de Pausas!E20": {
+   "v": 0.75,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Guardian de Pausas!D21": {
+   "v": 0.25,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Guardian de Pausas!E21": {
+   "v": 0.4,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Guardian de Pausas!D22": {
+   "v": 2,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Guardian de Pausas!E22": {
+   "v": 1.5,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Guardian de Pausas!D23": {
+   "v": 30,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Guardian de Pausas!E23": {
+   "v": 45,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Guardian de Pausas!D39": {
+   "v": 30000,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Guardian de Pausas!D40": {
+   "v": 62000,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), Guardian de Pausas y guardavías."
+  },
+  "Sensibilidad!C10": {
+   "v": 120,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Sensibilidad!C11": {
+   "v": 150,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Sensibilidad!C12": {
+   "v": 180,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Sensibilidad!C13": {
+   "v": 210,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Sensibilidad!C14": {
+   "v": 240,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Sensibilidad!C15": {
+   "v": 280,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Sensibilidad!C16": {
+   "v": 330,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Sensibilidad!C17": {
+   "v": 400,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Sensibilidad!C23": {
+   "v": 0.016,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Sensibilidad!C24": {
+   "v": 0.02,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Sensibilidad!C25": {
+   "v": 0.024,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Sensibilidad!C26": {
+   "v": 0.028,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Sensibilidad!C27": {
+   "v": 0.032,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Sensibilidad!C28": {
+   "v": 0.036,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), sección de supuestos de referencia."
+  },
+  "Validacion!D10": {
+   "v": 0.08,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!E10": {
+   "v": 0.7,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!F10": {
+   "v": 0.5,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!G10": {
+   "v": 0.72,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!D11": {
+   "v": 0.1,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!E11": {
+   "v": 0.34,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!F11": {
+   "v": 0.25,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!G11": {
+   "v": 0.32,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!D12": {
+   "v": 0.08,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!E12": {
+   "v": 40,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!F12": {
+   "v": 65,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!G12": {
+   "v": 47,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!D13": {
+   "v": 0.1,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!E13": {
+   "v": 0.032,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!F13": {
+   "v": 0.024,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!G13": {
+   "v": 0.029,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!D14": {
+   "v": 0.1,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!E14": {
+   "v": 50,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!F14": {
+   "v": 25,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!G14": {
+   "v": 55,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!D15": {
+   "v": 0.08,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!E15": {
+   "v": 0.08,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!F15": {
+   "v": 0.12,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!G15": {
+   "v": 0.088,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!D16": {
+   "v": 0.08,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!E16": {
+   "v": 50,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!F16": {
+   "v": 30,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!G16": {
+   "v": 46,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!D17": {
+   "v": 0.06,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!E17": {
+   "v": 0.15,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!F17": {
+   "v": 0.08,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!G17": {
+   "v": 0.13,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!D18": {
+   "v": 0.12,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!E18": {
+   "v": 0.75,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!F18": {
+   "v": 0.65,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!G18": {
+   "v": 0.785,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!D19": {
+   "v": 0.1,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!E19": {
+   "v": 180,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!F19": {
+   "v": 220,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!G19": {
+   "v": 195,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!D20": {
+   "v": 0.06,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!E20": {
+   "v": 0.7,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!F20": {
+   "v": 0.5,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!G20": {
+   "v": 0.65,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!D21": {
+   "v": 0.04,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!E21": {
+   "v": 4,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!F21": {
+   "v": 3,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  },
+  "Validacion!G21": {
+   "v": 3.8,
+   "src": "Fuente: Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026), scorecard de validación."
+  }
+ }
+}

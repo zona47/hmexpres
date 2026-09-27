@@ -1,0 +1,607 @@
+{
+ "fecha": "2026-09-27T21:42:58.980Z",
+ "total": 100,
+ "fallidas": 0,
+ "results": [
+  {
+   "area": "HTML",
+   "name": "html-validate sin errores",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Seguridad",
+   "name": "Hash CSP coincide con el script en línea",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Seguridad",
+   "name": "Sin innerHTML / outerHTML / insertAdjacentHTML / document.write / eval",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Seguridad",
+   "name": "Sin recursos externos (todo en línea, funciona sin red)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Seguridad",
+   "name": "CSP bloquea conexiones, formularios y base-uri",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Paridad Excel",
+   "name": "357 fórmulas reproducen el valor del Excel",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Paridad Excel",
+   "name": "219 entradas por defecto iguales al Excel",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Paridad Excel",
+   "name": "Recalcula CM1 con reembolso 12 % (cálculo manual independiente)",
+   "ok": true,
+   "detail": "469.83132 vs 469.83132"
+  },
+  {
+   "area": "Paridad Excel",
+   "name": "Recalcula aMER con CAC 200",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Coherencia Playbook",
+   "name": "AOV bruto 603,9",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Coherencia Playbook",
+   "name": "CM1 485,9",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Coherencia Playbook",
+   "name": "CM12 591,1",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Coherencia Playbook",
+   "name": "aMER 2,70x",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Coherencia Playbook",
+   "name": "LTV:CAC 3,28x",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Coherencia Playbook",
+   "name": "MER de break-even 1,24x",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Coherencia Playbook",
+   "name": "MER objetivo 3,36x (Excel 3,355)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Coherencia Playbook",
+   "name": "Índice de validación 80,8 → GO",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Coherencia Playbook",
+   "name": "Inversión 12 m 545.482",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Coherencia Playbook",
+   "name": "Contribución 12 m 1.495.945",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Coherencia Playbook",
+   "name": "Clientes 12 m 3.079",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Coherencia Playbook",
+   "name": "ROI acumulado mes 12 1,74x",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Coherencia Playbook",
+   "name": "Pico ROI 1,93x en meses 7-8",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Coherencia Playbook",
+   "name": "ROI sobre LTV 2,34x",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Coherencia Playbook",
+   "name": "Punto óptimo 1.000 USD/día → 2,95x, CAC 165 (Escalar)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Coherencia Playbook",
+   "name": "9.000 USD/día → Apagar",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Reglas",
+   "name": "Calculadora de corte (Playbook §5.6): 2,5 / 2,4 / 2,07 / 1,2 / 1,19",
+   "ok": true,
+   "detail": "[\"Continuar\",\"Continuar\",\"Pausar y reestructurar\",\"Pausar y reestructurar\",\"Apagar\"]"
+  },
+  {
+   "area": "Reglas",
+   "name": "aMER marginal = Δcontribución ÷ Δgasto (600/200 = 3,0 → Escalar)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Reglas",
+   "name": "Nivel B: 1,8 → Reducir con gasto −30 %",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Reglas",
+   "name": "Nivel B: 1,2 → Apagar · 2,5 → Mantener · 3,7 → Élite",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Reglas",
+   "name": "Sin incremento de gasto el aMER marginal no aplica",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Reglas",
+   "name": "EMQ < 7 bloquea decisiones",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Reglas",
+   "name": "Aprendizaje: < 7 días o < 50 conversiones",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Reglas",
+   "name": "MER 3,5 → verde · aMER 2,9 → verde",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Reglas",
+   "name": "Frecuencia > 3 = saturación · caída CTR > 10 % = fatiga",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Reglas",
+   "name": "Alertas Playbook §5.2 (CAC, EMQ, opt-in, reembolso, MER, días)",
+   "ok": true,
+   "detail": "[\"warning\",\"critical\",\"warning\",\"critical\",\"warning\",\"critical\",\"good\",\"good\",\"critical\"]"
+  },
+  {
+   "area": "Reglas",
+   "name": "Tarea 4 del arranque: 581 de ingreso → techo ≈ 438,7 (manual: «unos 440»)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Reglas",
+   "name": "Tarea 4: objetivo 60 % = 263,2 · 40 % = 175,5",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Reglas",
+   "name": "Día 7: cobrado > gastado / ≥ mitad / < mitad / sin gasto",
+   "ok": true,
+   "detail": "[\"good\",\"warning\",\"warning\",\"critical\",null]"
+  },
+  {
+   "area": "Reglas",
+   "name": "Día 21: escala / mantén / optimiza / para",
+   "ok": true,
+   "detail": "[\"Escala\",\"Mantén\",\"Optimiza una semana más\",\"Para\"]"
+  },
+  {
+   "area": "Interfaz",
+   "name": "Las 14 pestañas muestran solo su panel",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Interfaz",
+   "name": "Navegación con flechas entre pestañas",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Interfaz",
+   "name": "Cambiar reembolso a 12 % actualiza el CM1 del resumen",
+   "ok": true,
+   "detail": "469,8 USD vs 469,8 USD"
+  },
+  {
+   "area": "Interfaz",
+   "name": "El cambio persiste tras recargar (localStorage)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Interfaz",
+   "name": "Restablecer vuelve al caso de referencia",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Interfaz",
+   "name": "Entrada no válida se marca y no altera el modelo",
+   "ok": true,
+   "detail": "{\"a\":\"true\",\"v\":497}"
+  },
+  {
+   "area": "Interfaz",
+   "name": "CAC objetivo 0 se rechaza (evita división por cero)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Interfaz",
+   "name": "Rutina: aMER marginal 3,0 sin condiciones marcadas → no escala",
+   "ok": true,
+   "detail": "El incremento rinde, pero faltan condiciones para escalar"
+  },
+  {
+   "area": "Interfaz",
+   "name": "Rutina: con las 5 condiciones → escalar hasta 20 %",
+   "ok": true,
+   "detail": "Escalar: sube hasta un 20 %"
+  },
+  {
+   "area": "Interfaz",
+   "name": "Rutina: EMQ 6 → bloqueo",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Interfaz",
+   "name": "Registrar decisión abre el cuaderno precargado",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Seguridad",
+   "name": "Texto del cuaderno se muestra como texto (sin XSS)",
+   "ok": true,
+   "detail": "{\"imgs\":0,\"txt\":true}"
+  },
+  {
+   "area": "Seguridad",
+   "name": "CSV neutraliza fórmulas (=, +, @) y escapa comillas",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Interfaz",
+   "name": "Exportar CSV descarga cuaderno-decisiones.csv",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Interfaz",
+   "name": "Anotar resultado a 30 días",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Interfaz",
+   "name": "Eliminar registro (con confirmación)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Seguridad",
+   "name": "Importación: descarta tipos no válidos, claves desconocidas y prototipos",
+   "ok": true,
+   "detail": "{\"inputs\":{\"Supuestos!D10\":497,\"Supuestos!D11\":561,\"Supuestos!D12\":0.65,\"Supuestos!D13\":97,\"Supuestos!D14\":0.32,\"Supuestos!D15\":297,\"Supuestos!D16\":0.18,\"Supuestos!D21\":0.1,\"Supuestos!D22\":0.045,\"Supuestos!D23\":0.3,\"Supuestos!D24\":1.62,\"Supuestos!D25\":0.07,\"Supuestos!D30\":697,\"Supuestos!D31\":0.22,\"S"
+  },
+  {
+   "area": "Interfaz",
+   "name": "Promesa: avisa de público amplio y resultado sin cifra",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Interfaz",
+   "name": "Garantía se genera con el resultado de la promesa",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Interfaz",
+   "name": "Tarea 4 con el ejemplo del manual → techo 438,7 USD",
+   "ok": true,
+   "detail": "438,7 USD"
+  },
+  {
+   "area": "Interfaz",
+   "name": "Día 7: 300 cobrado / 420 gastado → interés, falla el cierre",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Interfaz",
+   "name": "Panel de 5 números: coste por cliente 70 USD → Escala",
+   "ok": true,
+   "detail": "2026-09-211401.100 ✓270 USD—EscalaEliminar"
+  },
+  {
+   "area": "Interfaz",
+   "name": "Contador de la prueba: lanzamiento hace 9 días → día 10",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Interfaz",
+   "name": "Curva de escalado: 12 puntos accesibles por teclado",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Interfaz",
+   "name": "Tooltip al enfocar un punto",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Informe CSV",
+   "name": "Números: 1.755 / 1.234,56 / 1,234.56 / 2,5 / vacío / hora",
+   "ok": true,
+   "detail": "[1.755,1234.56,1234.56,2.5,0,null]"
+  },
+  {
+   "area": "Informe CSV",
+   "name": "Cabeceras de tu exportación de Meta: 3 filas, nivel conjunto, diario",
+   "ok": true,
+   "detail": "{\"n\":3,\"nivel\":\"Conjunto\",\"ini\":\"2026-09-20\",\"fin\":\"2026-09-20\",\"name0\":\"Conjunto A, \\\"dolor\\\"\",\"a\":{\"gasto\":70.75,\"presupuesto\":9,\"impr\":1750,\"alcance\":1600,\"clics\":45,\"lp\":32,\"checkouts\":7,\"compras\":3,\"valor\":1491,\"cpm\":40.42857142857143,\"ctr\":0.025714285714285714,\"cpc\":1.5722222222222222,\"connect"
+  },
+  {
+   "area": "Informe CSV",
+   "name": "Campos entrecomillados con comas y comillas",
+   "ok": true,
+   "detail": "Conjunto A, \"dolor\""
+  },
+  {
+   "area": "Informe CSV",
+   "name": "Totales recalculados (gasto 70,75 · compras 3 · CPM · CTR · CAC)",
+   "ok": true,
+   "detail": "{\"gasto\":70.75,\"presupuesto\":9,\"impr\":1750,\"alcance\":1600,\"clics\":45,\"lp\":32,\"checkouts\":7,\"compras\":3,\"valor\":1491,\"cpm\":40.42857142857143,\"ctr\":0.025714285714285714,\"cpc\":1.5722222222222222,\"connect\":0.7111111111111111,\"lpToCheckout\":0.21875,\"checkoutToCompra\":0.42857142857142855,\"cvr\":0.06666666666666667,\"costCheckout\":10.107142857142858,\"cac\":23.583333333333332,\"roas\":21.074204946996467,\"freq\":1.09375}"
+  },
+  {
+   "area": "Informe CSV",
+   "name": "Exportación en inglés, separador «;» y decimales con coma (acumulado)",
+   "ok": true,
+   "detail": "{\"r\":[\"2026-09-01\",\"2026-09-21\",2],\"a\":{\"gasto\":2000,\"presupuesto\":0,\"impr\":150000,\"alcance\":65000,\"clics\":2800,\"lp\":2000,\"checkouts\":80,\"compras\":10,\"valor\":5500,\"cpm\":13.333333333333334,\"ctr\":0.018666666666666668,\"cpc\":0.7142857142857143,\"connect\":0.7142857142857143,\"lpToCheckout\":0.04,\"checkoutToCompra\":0.125,\"cvr\":0.0035714285714285713,\"costCheckout\":25,\"cac\":200,\"roas\":2.75,\"freq\":2.3076923076923075}}"
+  },
+  {
+   "area": "Informe CSV",
+   "name": "Diagnóstico: aMER = compras × CM1 ÷ gasto; CAC 200 ≤ 202,4 → zona verde",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Informe CSV",
+   "name": "Diagnóstico: < 7 días o < 50 compras = aprendizaje",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Informe CSV",
+   "name": "Diagnóstico: gasto > techo sin compras = alerta crítica",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Informe CSV",
+   "name": "Benchmarks: CPM 13,3 media · CTR 1,87 % media · frecuencia 2,3 OK",
+   "ok": true,
+   "detail": "{\"learning\":true,\"contrib\":4858.64865,\"amer\":2.429324325,\"zoneAmer\":\"verde\",\"cacZone\":\"good\",\"sinComprasSobreTecho\":false,\"cpm\":\"warning\",\"ctr\":\"warning\",\"cvr\":\"serious\",\"freq\":\"good\"}"
+  },
+  {
+   "area": "Informe CSV",
+   "name": "Carga de 2 informes diarios + opción «suma de diarios»",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Informe CSV",
+   "name": "Suma de diarios: periodo 2026-09-20 → 2026-09-21, evolución diaria y mejor conjunto",
+   "ok": true,
+   "detail": "{\"h\":\"Suma de 2 informes diarios · 2026-09-20 → 2026-09-21 (2 días)\",\"evo\":true,\"best\":\"Conjunto A, \\\"dolor\\\" Mejor\",\"imgs\":0}"
+  },
+  {
+   "area": "Seguridad",
+   "name": "Nombres del CSV se muestran como texto (sin XSS)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Informe CSV",
+   "name": "Enviar a la rutina semanal copia gasto, compras y contribución",
+   "ok": true,
+   "detail": "{\"gasto\":132.75,\"contrib\":2915.18919,\"ingreso\":2982,\"freq\":1.1130136986301369,\"dias\":2,\"conv\":6}"
+  },
+  {
+   "area": "Informe CSV",
+   "name": "Añadir al panel de 5 números",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Informe CSV",
+   "name": "Archivo que no es de Meta: mensaje claro y no se añade",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Informe CSV",
+   "name": "Los informes persisten tras recargar",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Informe CSV",
+   "name": "Quitar un informe",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Robustez",
+   "name": "Funciona con localStorage bloqueado (modo privado)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Responsive",
+   "name": "light 360px: campos editables en tablas con ancho legible (≥ 80 px)",
+   "ok": true,
+   "detail": "0 campos estrechos"
+  },
+  {
+   "area": "Responsive",
+   "name": "light 360px: sin scroll horizontal de página en 14 pestañas",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Accesibilidad",
+   "name": "light 360px: axe-core sin violaciones",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Responsive",
+   "name": "light 768px: campos editables en tablas con ancho legible (≥ 80 px)",
+   "ok": true,
+   "detail": "0 campos estrechos"
+  },
+  {
+   "area": "Responsive",
+   "name": "light 768px: sin scroll horizontal de página en 14 pestañas",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Responsive",
+   "name": "light 1280px: campos editables en tablas con ancho legible (≥ 80 px)",
+   "ok": true,
+   "detail": "0 campos estrechos"
+  },
+  {
+   "area": "Responsive",
+   "name": "light 1280px: sin scroll horizontal de página en 14 pestañas",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Accesibilidad",
+   "name": "light 1280px: axe-core sin violaciones",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Responsive",
+   "name": "dark 360px: campos editables en tablas con ancho legible (≥ 80 px)",
+   "ok": true,
+   "detail": "0 campos estrechos"
+  },
+  {
+   "area": "Responsive",
+   "name": "dark 360px: sin scroll horizontal de página en 14 pestañas",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Accesibilidad",
+   "name": "dark 360px: axe-core sin violaciones",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Responsive",
+   "name": "dark 768px: campos editables en tablas con ancho legible (≥ 80 px)",
+   "ok": true,
+   "detail": "0 campos estrechos"
+  },
+  {
+   "area": "Responsive",
+   "name": "dark 768px: sin scroll horizontal de página en 14 pestañas",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Responsive",
+   "name": "dark 1280px: campos editables en tablas con ancho legible (≥ 80 px)",
+   "ok": true,
+   "detail": "0 campos estrechos"
+  },
+  {
+   "area": "Responsive",
+   "name": "dark 1280px: sin scroll horizontal de página en 14 pestañas",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Accesibilidad",
+   "name": "dark 1280px: axe-core sin violaciones",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Seguridad",
+   "name": "Sin violaciones de CSP en consola",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Consola",
+   "name": "Sin errores ni avisos de JavaScript",
+   "ok": true,
+   "detail": ""
+  }
+ ]
+}

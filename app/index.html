@@ -1,0 +1,1948 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-n6TPrV3jlIutKK3q4XUxJCjNnD3L/fy7tPfHGY92r8s='; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="description" content="Sistema Integral de Campañas, Edición Andromeda 2026: economía unitaria, validación, escalado y guardián de pausas.">
+<meta name="color-scheme" content="light dark">
+<title>Sistema Andromeda 2026</title>
+<style>
+:root{
+  --page:#f9f9f7;--surface:#fcfcfb;--surface-2:#f1f0ec;--ink:#0b0b0b;--ink-2:#52514e;--muted:#6f6d68;
+  --grid:#e1e0d9;--axis:#c3c2b7;--border:rgba(11,11,11,.12);--accent:#2a78d6;--accent-ink:#1c5fb0;
+  --input-ink:#1d4ed8;--input-bg:#eef4fd;--neg:#8a8882;
+  --good:#0ca30c;--warning:#fab219;--serious:#ec835a;--critical:#d03b3b;--good-ink:#006300;
+  --focus:#2a78d6;--radius:10px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --page:#0d0d0d;--surface:#1a1a19;--surface-2:#232321;--ink:#fff;--ink-2:#c3c2b7;--muted:#a3a19a;
+    --grid:#2c2c2a;--axis:#383835;--border:rgba(255,255,255,.12);--accent:#3987e5;--accent-ink:#8fbbf2;
+    --input-ink:#9cc3f5;--input-bg:#15263d;--neg:#8a8882;--good-ink:#0ca30c;--focus:#8fbbf2;
+  }
+}
+:root[data-theme="dark"]{
+  --page:#0d0d0d;--surface:#1a1a19;--surface-2:#232321;--ink:#fff;--ink-2:#c3c2b7;--muted:#a3a19a;
+  --grid:#2c2c2a;--axis:#383835;--border:rgba(255,255,255,.12);--accent:#3987e5;--accent-ink:#8fbbf2;
+  --input-ink:#9cc3f5;--input-bg:#15263d;--neg:#8a8882;--good-ink:#0ca30c;--focus:#8fbbf2;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--page);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,sans-serif}
+a{color:var(--accent-ink)}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.skip{position:absolute;left:-9999px}.skip:focus{left:16px;top:8px;background:var(--surface);padding:8px;z-index:10}
+header.top{padding:20px 16px 8px;max-width:1200px;margin:0 auto}
+header.top h1{margin:0;font-size:1.35rem;letter-spacing:-.01em}
+header.top p{margin:4px 0 0;color:var(--ink-2);font-size:.9rem}
+.rule{margin:12px 0 0;padding:10px 12px;border-left:3px solid var(--accent);background:var(--surface);border-radius:6px;font-weight:600}
+nav.tabs{position:sticky;top:0;z-index:5;background:var(--page);border-bottom:1px solid var(--border)}
+nav.tabs .inner{max-width:1200px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;padding:8px 16px;scrollbar-width:thin}
+nav.tabs button{flex:0 0 auto;border:1px solid transparent;background:none;color:var(--ink-2);padding:8px 12px;border-radius:999px;font:inherit;font-size:.9rem;cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{background:var(--ink);color:var(--page)}
+nav.tabs button:hover{border-color:var(--border)}
+main{max-width:1200px;margin:0 auto;padding:16px}
+section[role="tabpanel"]{display:none}
+section[role="tabpanel"].active{display:block}
+h2{font-size:1.2rem;margin:4px 0 4px}
+h3{font-size:1rem;margin:20px 0 8px}
+p.lead{color:var(--ink-2);margin:0 0 16px;max-width:75ch}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin:0 0 16px}
+.grid{display:grid;gap:12px}
+.kpis{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
+.two{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px}
+.kpi .l{color:var(--ink-2);font-size:.8rem}
+.kpi .v{font-size:1.45rem;font-weight:650;font-variant-numeric:tabular-nums;margin-top:2px}
+.kpi .s{font-size:.8rem;color:var(--muted);margin-top:2px}
+.tw{position:relative;overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 0 8px}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:.9rem}
+th,td{padding:7px 8px;border-bottom:1px solid var(--grid);text-align:left;vertical-align:middle}
+th{font-weight:600;color:var(--ink-2);font-size:.8rem}
+td.n,th.n{text-align:right;white-space:nowrap}
+tr.total td{font-weight:650;border-top:1px solid var(--axis)}
+caption{text-align:left;color:var(--ink-2);font-size:.85rem;padding:0 0 6px}
+input.in,select.in,textarea.in{font:inherit;font-variant-numeric:tabular-nums;color:var(--input-ink);background:var(--input-bg);border:1px solid var(--border);border-radius:6px;padding:5px 8px;width:100%;min-width:0}
+input.in{max-width:130px;text-align:right}
+table input.in{width:92px;min-width:92px}
+td.n{white-space:nowrap}
+input.in[aria-invalid="true"]{border-color:var(--critical);box-shadow:0 0 0 1px var(--critical)}
+textarea.in{min-height:60px;resize:vertical}
+select.in{max-width:none}
+.field{display:grid;grid-template-columns:1fr auto auto;gap:6px 10px;align-items:center;padding:6px 0;border-bottom:1px solid var(--grid)}
+.field label{font-size:.9rem}
+.field .u{color:var(--muted);font-size:.8rem;min-width:52px}
+.src{font-size:.75rem;color:var(--muted);grid-column:1/-1;margin-top:-2px}
+.legend-in{display:inline-block;padding:1px 6px;border-radius:4px;color:var(--input-ink);background:var(--input-bg);border:1px solid var(--border);font-size:.8rem}
+.btn{font:inherit;font-size:.9rem;border:1px solid var(--border);background:var(--surface);color:var(--ink);padding:8px 12px;border-radius:8px;cursor:pointer}
+.btn.primary{background:var(--ink);color:var(--page);border-color:var(--ink)}
+.btn:hover{border-color:var(--ink-2)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:2px 10px 2px 8px;border-radius:999px;font-size:.85rem;font-weight:600;border:1px solid var(--border);background:var(--surface-2);white-space:nowrap}
+.badge::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--c,var(--neg));flex:0 0 auto}
+.z-good{--c:var(--good)}.z-warning{--c:var(--warning)}.z-serious{--c:var(--serious)}.z-critical{--c:var(--critical)}.z-neutral{--c:var(--neg)}
+.verdict{display:flex;gap:14px;align-items:flex-start;padding:14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);border-left:6px solid var(--c,var(--neg))}
+.verdict .t{font-weight:700;font-size:1.1rem}
+.verdict .d{color:var(--ink-2);font-size:.9rem;margin-top:2px}
+.note{font-size:.85rem;color:var(--ink-2)}
+.warnbox{border:1px solid var(--border);border-left:4px solid var(--warning);background:var(--surface);padding:10px 12px;border-radius:8px;font-size:.88rem;margin:8px 0}
+.bar{height:10px;border-radius:0 4px 4px 0;background:var(--accent);min-width:1px}
+.bar.neg{background:var(--neg)}
+.barcell{width:40%;min-width:90px}
+.meter{position:relative;height:14px;border-radius:7px;background:var(--surface-2);border:1px solid var(--border);overflow:hidden}
+.meter i{position:absolute;left:0;top:0;bottom:0;background:var(--c,var(--accent));border-radius:0 4px 4px 0}
+.meter b{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--ink-2)}
+.chart{width:100%;height:auto;display:block}
+.chart text{fill:var(--muted);font-size:11px;font-family:inherit}
+.chart .gl{stroke:var(--grid);stroke-width:1}
+.chart .ax{stroke:var(--axis);stroke-width:1}
+.chart .th{stroke-width:1.5;stroke-dasharray:4 4}
+.chart .ln{fill:none;stroke:var(--ink-2);stroke-width:2}
+.chart circle{stroke:var(--surface);stroke-width:2}
+.chart circle:focus{outline:none;stroke:var(--ink);stroke-width:3}
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--page);padding:6px 9px;border-radius:6px;font-size:.8rem;z-index:20;display:none;max-width:240px}
+ol.check,ul.check{list-style:none;padding:0;margin:0}
+ol.check li,ul.check li{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--grid)}
+ol.check input,ul.check input{margin-top:4px;width:18px;height:18px;flex:0 0 auto}
+.gate{font-size:.75rem;font-weight:700;color:var(--ink);background:var(--surface-2);border:1px solid var(--critical);border-radius:4px;padding:0 5px;margin-left:6px;white-space:nowrap}
+.log-entry{border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin:0 0 10px;background:var(--surface)}
+.log-entry dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 12px;margin:6px 0 0;font-size:.9rem}
+.log-entry dt{color:var(--ink-2)}
+.log-entry dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.form-grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.form-grid label{display:grid;gap:4px;font-size:.85rem;color:var(--ink-2)}
+.form-grid input.in{max-width:none;text-align:left}
+details summary{cursor:pointer;font-weight:600}
+.tpl{position:relative;margin:0 0 10px}
+.tpl pre{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:12px;font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.tpl h4{margin:0 0 6px;font-size:.9rem}
+.tpl .btn{margin-top:6px;font-size:.8rem;padding:4px 10px}
+footer{max-width:1200px;margin:0 auto;padding:8px 16px 32px;color:var(--muted);font-size:.8rem}
+.sr{position:absolute;left:0;top:0;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+@media (max-width:560px){
+  .field{grid-template-columns:1fr auto}
+  .field .u{grid-column:2;text-align:right}
+  .field input.in{grid-column:2;grid-row:1}
+  .field label{grid-row:1/3}
+  .kpi .v{font-size:1.25rem}
+}
+@media print{nav.tabs,.row .btn{display:none}section[role="tabpanel"]{display:block!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+<header class="top">
+  <h1>Sistema Integral de Campañas · Andromeda 2026</h1>
+  <p>Economía unitaria, validación, escalado marginal y guardián de pausas. Las celdas <span class="legend-in">azules</span> son tus datos: al cambiarlas se recalcula todo.</p>
+  <div class="rule">Nunca comprar un cliente por encima de su contribución de break-even.</div>
+</header>
+<nav class="tabs" aria-label="Secciones">
+  <div class="inner" role="tablist" id="tablist">
+    <button type="button" role="tab" id="t-resumen" aria-controls="p-resumen" aria-selected="true">Resumen</button>
+    <button type="button" role="tab" id="t-arranque" aria-controls="p-arranque" aria-selected="false" tabindex="-1">Arranque (3 días)</button>
+    <button type="button" role="tab" id="t-prueba" aria-controls="p-prueba" aria-selected="false" tabindex="-1">Prueba de 21 días</button>
+    <button type="button" role="tab" id="t-informe" aria-controls="p-informe" aria-selected="false" tabindex="-1">Informe de campaña</button>
+    <button type="button" role="tab" id="t-supuestos" aria-controls="p-supuestos" aria-selected="false" tabindex="-1">Supuestos</button>
+    <button type="button" role="tab" id="t-economia" aria-controls="p-economia" aria-selected="false" tabindex="-1">Economía unitaria</button>
+    <button type="button" role="tab" id="t-validacion" aria-controls="p-validacion" aria-selected="false" tabindex="-1">Validación</button>
+    <button type="button" role="tab" id="t-medios" aria-controls="p-medios" aria-selected="false" tabindex="-1">Medios</button>
+    <button type="button" role="tab" id="t-escalado" aria-controls="p-escalado" aria-selected="false" tabindex="-1">Escalado</button>
+    <button type="button" role="tab" id="t-rutina" aria-controls="p-rutina" aria-selected="false" tabindex="-1">Rutina semanal</button>
+    <button type="button" role="tab" id="t-guardian" aria-controls="p-guardian" aria-selected="false" tabindex="-1">Guardián de pausas</button>
+    <button type="button" role="tab" id="t-sensibilidad" aria-controls="p-sensibilidad" aria-selected="false" tabindex="-1">Sensibilidad</button>
+    <button type="button" role="tab" id="t-cuaderno" aria-controls="p-cuaderno" aria-selected="false" tabindex="-1">Cuaderno</button>
+    <button type="button" role="tab" id="t-plan" aria-controls="p-plan" aria-selected="false" tabindex="-1">Plan de aplicación</button>
+  </div>
+</nav>
+<main id="main">
+
+<section role="tabpanel" id="p-resumen" aria-labelledby="t-resumen" class="active">
+  <h2>Resumen: ¿soporta tu economía la publicidad pagada?</h2>
+  <p class="lead">Lectura directa de las tres cifras de la hoja Economía Unitaria y del índice de validación, con los umbrales del manual del operador.</p>
+  <div id="sum-verdict"></div>
+  <div class="grid kpis" id="sum-kpis" style="margin-top:12px"></div>
+  <h3>Checklist de viabilidad</h3>
+  <div class="card"><div class="tw"><table id="sum-checks"><caption>Criterios del manual (sección 2) y del playbook (sección 3.2)</caption><thead><tr><th scope="col">Cifra</th><th class="n" scope="col">Valor</th><th scope="col">Criterio</th><th scope="col">Estado</th><th scope="col">Si no se cumple</th></tr></thead><tbody></tbody></table></div></div>
+  <h3>Criterios aplicados donde los documentos se contradicen</h3>
+  <div class="card note" id="sum-conflicts">
+    <p style="margin-top:0">El Excel, el Playbook y el manual no coinciden en algunos umbrales. La app aplica esta regla: <strong>los cálculos siguen al Excel</strong> (motor de decisión) y <strong>los umbrales de decisión siguen al Playbook</strong> cuando el Excel no los define o se contradice. El detalle está en <code>AUDITORIA.md</code>.</p>
+    <ul>
+      <li><strong>Calculadora de corte:</strong> se usa la regla del Playbook §5.6 (≥ 2,40x continuar · 1,20x–2,39x pausar · &lt; 1,20x apagar). La fórmula del Excel compara contra el MER de break-even (1,24x) y declara «Continuar» el caso de referencia de 2,07x; se muestra aparte para trazabilidad.</li>
+      <li><strong>Indicadores de alerta:</strong> se usan los 14 del Playbook §5.2. En el Excel, el umbral crítico de CAC (379,6 USD) es menor que el de alerta (414,1 USD).</li>
+      <li><strong>CAC crítico y de apagado:</strong> se usan los del Nivel A (CM1 ÷ 1,28 y CM1 ÷ 1,00), coherentes con el Excel y con el Playbook §3.3. El resumen del Playbook (338 y 193 USD) contradice su propia tabla.</li>
+      <li><strong>CAC objetivo en el Manual de arranque:</strong> la regla dice 60 % del techo, pero su ejemplo da 175–185 USD (40 %, igual que el Excel). La pestaña Arranque muestra las dos cifras; el porcentaje es editable.</li>
+      <li><strong>Orden de la instrumentación:</strong> el manual la sitúa antes de la preventa y el Playbook después. Se sigue el manual: sin EMQ &gt; 7 no se gasta.</li>
+      <li><strong>MER frente a aMER:</strong> el manual llama «MER» a contribución ÷ gasto. La app calcula ambos por separado: MER = ingreso ÷ gasto y aMER = contribución ÷ gasto, cada uno con sus zonas.</li>
+    </ul>
+  </div>
+</section>
+
+<section role="tabpanel" id="p-arranque" aria-labelledby="t-arranque">
+  <h2>Arranque: qué haces, en qué orden y con qué palabras</h2>
+  <p class="lead">Tres días y nueve tareas. Si algo no se puede convertir en «hoy hago esto», no está aquí. Lo que escribas se guarda en este navegador.</p>
+  <h3>Día 1 · La oferta (2 horas)</h3>
+  <div class="card">
+    <h3 style="margin-top:0">Tarea 1. Tu promesa en una frase (20 min)</h3>
+    <div class="form-grid" id="arr-promesa"></div>
+    <p class="rule" id="arr-promesa-out" style="font-weight:600"></p>
+    <div id="arr-promesa-warn"></div>
+    <p class="note">Léela en voz alta. Si suena a lo que diría cualquiera de tu competencia, reescríbela con algo más específico.</p>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Tarea 2. Precio, forma de pago y garantía (30 min)</h3>
+    <div class="form-grid" id="arr-precio"></div>
+    <div id="arr-precio-warn"></div>
+    <p class="note">Garantía, con estas palabras:</p>
+    <p class="rule" id="arr-garantia"></p>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Tarea 3. Los dos complementos (40 min)</h3>
+    <p class="note" style="margin-top:0">Añadido de compra (order bump): extra pequeño antes de pagar, 30–100 USD. Oferta posterior (upsell): justo después de pagar, una sola vez, 200–400 USD.</p>
+    <div class="form-grid" id="arr-compl"></div>
+    <div id="arr-compl-warn"></div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Tarea 4. Cuánto puedes pagar por un cliente (30 min)</h3>
+    <p class="note" style="margin-top:0">La cuenta simplificada del manual: los tres descuentos se aplican sobre el ingreso medio. Ejemplo del manual: 497 + 31 + 53 = 581 → te quedan unos 440 USD.</p>
+    <div id="arr-calc"></div>
+    <div class="grid kpis" id="arr-calc-out" style="margin-top:12px"></div>
+    <div class="warnbox"><strong>Contradicción en el manual:</strong> la regla dice «CAC objetivo = 60 % del techo» (≈ 263 USD en el ejemplo), pero el propio ejemplo da 175–185 USD, que es el 40 % y coincide con el CAC de 180 USD del Excel y del Playbook. La app muestra ambos; confirma cuál usar. El modelo completo (pestaña Economía unitaria) es más preciso: usa el mix de cuotas, la comisión fija y el COGS sobre el ingreso neto.</div>
+  </div>
+  <h3>Día 2 · La página (3 horas)</h3>
+  <div class="card">
+    <h3 style="margin-top:0">Tarea 5. La estructura, sección por sección (2 horas)</h3>
+    <div class="tw"><table><thead><tr><th scope="col">#</th><th scope="col">Sección</th><th scope="col">Qué pones</th></tr></thead><tbody>
+      <tr><td>1</td><td>Titular</td><td>La promesa entera, en grande. Sin adornos</td></tr>
+      <tr><td>2</td><td>Subtitular</td><td>Para quién es y para quién no</td></tr>
+      <tr><td>3</td><td>El problema</td><td>Su situación actual con sus propias palabras («esto soy yo»)</td></tr>
+      <tr><td>4</td><td>Qué cambia</td><td>El resultado después, concreto y con cifras</td></tr>
+      <tr><td>5</td><td>Qué incluye</td><td>5–7 puntos: qué se llevan, no qué aprenderán</td></tr>
+      <tr><td>6</td><td>Para quién es / no es</td><td>Dos columnas. Ser honesto sube las ventas</td></tr>
+      <tr><td>7</td><td>Prueba</td><td>3 testimonios con nombre, foto y cifra (o tus propios resultados)</td></tr>
+      <tr><td>8</td><td>Precio</td><td>Un solo botón: precio, qué incluye y garantía</td></tr>
+      <tr><td>9</td><td>Preguntas frecuentes</td><td>Las 6 dudas que frenan la compra</td></tr>
+      <tr><td>10</td><td>Último botón</td><td>Repite el precio y el mismo botón</td></tr>
+    </tbody></table></div>
+    <p class="note">Todo en «tú», nunca en «nosotros». Una sola llamada a la acción, repetida. La sección 3 se escribe con las palabras de tus clientes.</p>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Tarea 6. Diez respuestas en 24 horas (1 hora)</h3>
+    <div class="tpl" id="tpl-msg"></div>
+    <ol class="note"><li>¿Cómo estás resolviendo esto hoy?</li><li>¿Cuánto te cuesta el problema en dinero o tiempo?</li><li>¿Qué has probado ya y por qué no funcionó?</li><li>Si tuvieras esto mañana, ¿qué cambiaría en tu semana?</li><li>¿Qué te frenaría para pagar <span data-arr="precio"></span> USD por esto?</li></ol>
+    <p class="note">Apunta las palabras literales que usen: van al titular, a la sección 3 y a los anuncios.</p>
+  </div>
+  <h3>Día 3 · Los anuncios y el lanzamiento (3 horas)</h3>
+  <div class="card">
+    <h3 style="margin-top:0">Tarea 7. Los 6 anuncios: seis ángulos distintos, no seis versiones</h3>
+    <div id="arr-ads"></div>
+    <p class="note">El gancho decide todo: escríbelo al final. Cero jerga. Una idea por anuncio.</p>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Tarea 8. Seguimiento: 3 correos automáticos (30 min)</h3>
+    <div class="tw"><table><thead><tr><th scope="col">Cuándo</th><th scope="col">Asunto</th><th scope="col">Qué dice</th></tr></thead><tbody>
+      <tr><td>2 horas después de dejar el correo</td><td>«Aquí está lo que pediste»</td><td>Entrega lo prometido + un consejo útil de verdad</td></tr>
+      <tr><td>24 horas después</td><td>«[Nombre], mira esto»</td><td>Un caso concreto de alguien que lo hizo</td></tr>
+      <tr><td>3 días después</td><td>«¿Sigues atascado con esto?»</td><td>Nombra la objeción principal, respóndela y termina con el enlace</td></tr>
+    </tbody></table></div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Tarea 9. Lanza con 500 USD (30 min)</h3>
+    <div class="tw"><table><tbody>
+      <tr><th scope="row">Dónde</th><td>Meta (Facebook e Instagram) para empezar</td></tr>
+      <tr><th scope="row">Cuánto</th><td>20 USD al día durante 3 semanas (≈ 420 USD)</td></tr>
+      <tr><th scope="row">Cómo</th><td>Una campaña, un conjunto de anuncios, los 6 anuncios dentro</td></tr>
+      <tr><th scope="row">Objetivo</th><td>«Compras» si ya tienes la compra configurada; si no, «Clientes potenciales»</td></tr>
+      <tr><th scope="row">Público</th><td>Amplio. No segmentes por intereses</td></tr>
+      <tr><th scope="row">Qué NO hacer</th><td>No toques nada los primeros 7 días: ni presupuesto, ni anuncios, ni públicos</td></tr>
+    </tbody></table></div>
+    <div class="warnbox">El Tier S del sistema completo pide 50–150 USD/día y una puerta de instrumentación (EMQ &gt; 7) antes de gastar. Este lanzamiento de 20 USD/día es la versión mínima del manual de arranque.</div>
+  </div>
+  <h3>Tu primera hora, ahora mismo</h3>
+  <div class="card"><ul class="check" id="arr-hora"></ul></div>
+</section>
+
+<section role="tabpanel" id="p-prueba" aria-labelledby="t-prueba">
+  <h2>Prueba de 21 días</h2>
+  <p class="lead">Mírala cada 3 días, no cada hora. La prueba dura 21 días: si no funciona, se cambia de ángulo. Punto.</p>
+  <div class="card">
+    <div class="form-grid" id="pr-fecha"></div>
+    <div id="pr-dia" style="margin-top:12px"></div>
+  </div>
+  <h3>Día 7 · ¿Tengo señal?</h3>
+  <div class="card"><p class="note" style="margin-top:0">Suma lo que has cobrado y compáralo con lo gastado. No mires el ROAS del panel: mira tu banco.</p><div class="form-grid" id="pr-d7"></div><div id="pr-d7-out" style="margin-top:12px"></div></div>
+  <h3>Día 14 · ¿Cuál de los 6 anuncios gana?</h3>
+  <div class="card note">Mira qué anuncio trae más gente y más barata. Apaga los otros cinco. Lanza 3 versiones nuevas de ese ángulo, distintas de verdad (otro formato, otro gancho, otras imágenes), y sube el presupuesto un 20 %. Ni más.</div>
+  <h3>Día 21 · ¿Escalo o paro?</h3>
+  <div class="card"><div class="form-grid" id="pr-d21"></div><div id="pr-d21-out" style="margin-top:12px"></div>
+    <p class="note">Tramos de la app (el manual no da cifras): «muy por debajo» = hasta el 90 % del CAC objetivo; «cerca» = hasta el 110 %; por encima del objetivo sin superar el techo = optimizar una semana; por encima del techo = parar. Techo y objetivo vienen de la tarea 4.</p></div>
+  <h3>El único panel que necesitas: cinco números por semana</h3>
+  <form class="card" id="wk-form" novalidate>
+    <div class="form-grid">
+      <label>Semana (fecha de inicio)<input class="in" type="date" name="semana" required></label>
+      <label>1 · Cuánto has gastado (USD)<input class="in" type="text" inputmode="decimal" name="gasto" required></label>
+      <label>2 · Cuánto has cobrado (USD)<input class="in" type="text" inputmode="decimal" name="cobrado" required></label>
+      <label>3 · Clientes nuevos<input class="in" type="text" inputmode="decimal" name="clientes" required></label>
+      <label>5 · Qué anuncio ha traído más<input class="in" type="text" name="anuncio" maxlength="120"></label>
+    </div>
+    <div class="row" style="margin-top:10px"><button class="btn primary" type="submit">Añadir semana</button><span id="wk-status" class="note" role="status" aria-live="polite"></span></div>
+    <div class="tw" style="margin-top:12px"><table id="wk-table"><thead><tr><th scope="col">Semana</th><th class="n" scope="col">Gastado</th><th class="n" scope="col">Cobrado</th><th class="n" scope="col">Clientes</th><th class="n" scope="col">4 · Coste por cliente</th><th scope="col">Anuncio que más trajo</th><th scope="col">Decisión</th><th scope="col"><span class="sr">Acciones</span></th></tr></thead><tbody></tbody></table></div>
+    <p class="note">Una pregunta para decidir: ¿cuánto me cuesta traer un cliente y cuánto puedo pagar por él? Si lo primero es menor que tu CAC objetivo, subes (máximo 20 %). Si supera tu techo, paras.</p>
+  </form>
+  <h3>Qué mirar y qué significa</h3>
+  <div class="card"><div class="tw"><table><thead><tr><th scope="col">Lo que ves</th><th scope="col">Qué significa</th><th scope="col">Qué haces</th></tr></thead><tbody>
+    <tr><td>Menos de 1.000 visitas a la página en 3 días</td><td>El anuncio no consigue atención</td><td>Cambia los ganchos: los tres primeros segundos</td></tr>
+    <tr><td>Visitas, pero menos del 20 % deja el correo</td><td>El titular no promete lo que busca o la página tarda</td><td>Reescribe el titular con las palabras de tus entrevistas</td></tr>
+    <tr><td>Dejan el correo, pero nadie compra</td><td>Falla la página de venta o el precio</td><td>Revisa las secciones 3 y 8</td></tr>
+    <tr><td>Compran y piden reembolso</td><td>Prometiste más de lo que entregas</td><td>Baja la promesa a lo que realmente garantizas</td></tr>
+    <tr><td>Todo funciona</td><td>Tienes un negocio</td><td>Sube un 20 %. No más</td></tr>
+  </tbody></table></div></div>
+  <h3>Qué hacer cuando…</h3>
+  <div class="card"><div class="tw"><table><thead><tr><th scope="col">Situación</th><th scope="col">Qué NO hacer</th><th scope="col">Qué hacer</th></tr></thead><tbody>
+    <tr><td>Nadie hace clic en mis anuncios</td><td>Subir el presupuesto</td><td>Reescribe los 6 ganchos. Graba un vídeo tuyo hablando</td></tr>
+    <tr><td>Hay clics, pero nadie se apunta</td><td>Cambiar el anuncio otra vez</td><td>Mira el titular y la velocidad de la página</td></tr>
+    <tr><td>Se apuntan, pero nadie compra</td><td>Bajar el precio</td><td>Que la promesa del anuncio sea idéntica a la de la página</td></tr>
+    <tr><td>Compran poco y piden reembolso</td><td>Bloquear los reembolsos</td><td>Cambia la promesa en todos los sitios</td></tr>
+    <tr><td>Funciona, pero voy justo de dinero</td><td>Pedir un préstamo para escalar</td><td>Sube el valor del añadido y de la oferta posterior</td></tr>
+    <tr><td>Funciona y tengo margen</td><td>Duplicar el presupuesto de golpe</td><td>Sube un 20 % por semana</td></tr>
+    <tr><td>Llevo 3 semanas igual</td><td>Gastar una semana más «a ver si mejora»</td><td>Para. Cambia de ángulo y vuelve a empezar</td></tr>
+    <tr><td>No sé si mi producto vale</td><td>Preguntar a amigos</td><td>Vende 25 unidades de preventa antes de invertir más</td></tr>
+  </tbody></table></div></div>
+  <h3>Cada cuánto se toca cada cosa</h3>
+  <div class="card"><div class="tw"><table><thead><tr><th scope="col">Acción</th><th scope="col">Cada cuánto</th><th scope="col">Por qué</th></tr></thead><tbody>
+    <tr><td>Revisar los cinco números</td><td>1 vez por semana</td><td>Cada día es ruido</td></tr>
+    <tr><td>Lanzar anuncios nuevos</td><td>Cada 2–3 semanas</td><td>Los anuncios se gastan</td></tr>
+    <tr><td>Cambiar el presupuesto</td><td>1 vez por semana, máximo 20 %</td><td>Los cambios bruscos reinician el aprendizaje</td></tr>
+    <tr><td>Cambiar la página</td><td>Cada 3–4 semanas</td><td>Necesitas datos para saber si mejora</td></tr>
+    <tr><td>Revisar el precio</td><td>Cada 3 meses</td><td>La gente se acostumbra al precio nuevo</td></tr>
+  </tbody></table></div>
+  <p class="note">Cómo no abandonar: la primera semana el coste por cliente será el doble de lo normal (no toques nada); la segunda baja (si no, es el anuncio); en la tercera sabrás si funciona. Revisa 3 veces por semana, no cada hora.</p></div>
+</section>
+
+<section role="tabpanel" id="p-informe" aria-labelledby="t-informe">
+  <h2>Informe de campaña</h2>
+  <p class="lead">Carga el CSV que exportas desde el Administrador de anuncios de Meta (nivel conjunto, campaña o anuncio). Si «Inicio» y «Fin» son el mismo día, se trata como <strong>diario</strong>; si abarca varios días, como <strong>acumulado</strong> (de inicio a la fecha). Los datos se procesan solo en este navegador: no se envían a ningún sitio.</p>
+  <div class="card">
+    <div class="row">
+      <label class="btn primary" for="rep-file">Cargar informe CSV</label>
+      <input type="file" id="rep-file" accept=".csv,text/csv" multiple class="sr">
+      <span id="rep-status" class="note" role="status" aria-live="polite"></span>
+    </div>
+    <p class="note">Columnas que se usan (si existen): importe gastado, impresiones, alcance, clics en el enlace, visitas a la página de destino, pagos iniciados, compras y valor de conversión. En Meta: Informes → Exportar → CSV.</p>
+    <div id="rep-list"></div>
+  </div>
+  <div id="rep-view"></div>
+</section>
+
+<section role="tabpanel" id="p-supuestos" aria-labelledby="t-supuestos">
+  <h2>Supuestos (paso 0: tus números)</h2>
+  <p class="lead">Sustituye los valores azules por los tuyos. Los cuatro que más mueven el resultado, en orden: <strong>tasa de reembolso</strong>, <strong>precio y estructura de oferta</strong>, <strong>CAC real</strong> y <strong>attach de backend</strong>. Los porcentajes se escriben como número (9 = 9 %). Se guarda automáticamente en este navegador.</p>
+  <div class="row" style="margin-bottom:12px">
+    <button class="btn" id="btn-reset" type="button">Restablecer caso de referencia</button>
+    <button class="btn" id="btn-export" type="button">Exportar datos (JSON)</button>
+    <label class="btn" for="file-import">Importar datos (JSON)</label>
+    <input type="file" id="file-import" accept="application/json,.json" class="sr">
+    <span id="io-status" class="note" role="status" aria-live="polite"></span>
+  </div>
+  <div class="grid two" id="sup-groups"></div>
+  <div class="card"><div class="note">CAC real = (gasto en medios + coste de equipo + herramientas) ÷ clientes nuevos verificados. No uses el CAC del panel de la plataforma.</div></div>
+</section>
+
+<section role="tabpanel" id="p-economia" aria-labelledby="t-economia">
+  <h2>Economía unitaria</h2>
+  <p class="lead">La cascada por cliente. El CAC es la variable que se controla; el CM1 es la que se defiende.</p>
+  <div class="grid two">
+    <div class="card"><div class="tw"><table id="eu-waterfall"><caption>Cascada de monetización y contribución (USD por cliente)</caption><thead><tr><th scope="col">Concepto</th><th class="n" scope="col">Valor</th><th scope="col"><span class="sr">Magnitud</span></th></tr></thead><tbody></tbody></table></div></div>
+    <div class="card"><div class="tw"><table id="eu-kpi"><caption>KPI y guardavías</caption><thead><tr><th scope="col">KPI</th><th class="n" scope="col">Valor</th></tr></thead><tbody></tbody></table></div></div>
+  </div>
+  <h3>Zonas de CAC equivalentes</h3>
+  <div class="grid two">
+    <div class="card"><div class="tw"><table id="eu-nivela"><caption>Nivel A: salud de la cuenta (¿el negocio gana dinero este mes?)</caption><thead><tr><th scope="col">Zona</th><th class="n" scope="col">MER</th><th class="n" scope="col">aMER</th><th class="n" scope="col">CAC equivalente</th><th scope="col">Acción</th></tr></thead><tbody></tbody></table></div></div>
+    <div class="card"><div class="tw"><table id="eu-nivelb"><caption>Nivel B: decisión de escalar (aMER marginal del último incremento)</caption><thead><tr><th scope="col">Zona</th><th class="n" scope="col">aMER marginal</th><th class="n" scope="col">CAC marginal</th><th scope="col">Acción</th></tr></thead><tbody></tbody></table></div></div>
+  </div>
+  <h3>Tres escenarios de reembolso (plan de 48 horas, hora 2)</h3>
+  <div class="card">
+    <p class="note" style="margin-top:0">El escenario base usa tu supuesto de reembolso. Los otros dos son editables; por defecto son base − 3 puntos (optimista) y 12 % (pesimista, el umbral de alerta del sistema).</p>
+    <div class="tw"><table id="eu-scen"><thead><tr><th scope="col">Escenario</th><th class="n" scope="col">Reembolso</th><th class="n" scope="col">CM1</th><th class="n" scope="col">CAC de break-even</th><th class="n" scope="col">CAC máx. operativo (Nivel A verde)</th><th class="n" scope="col">aMER al CAC objetivo</th></tr></thead><tbody></tbody></table></div>
+  </div>
+  <h3>Interpretación</h3>
+  <div class="card note" id="eu-text"></div>
+</section>
+
+<section role="tabpanel" id="p-validacion" aria-labelledby="t-validacion">
+  <h2>Validación: índice de probabilidad de éxito</h2>
+  <p class="lead">Doce señales ponderadas (paso 5, semana 7). Índice ≥ 75 = GO: se libera el Tier S. 50–74 = PIVOT: no se compra tráfico, se rediseña la oferta. &lt; 50 = NO-GO. La puntuación se interpola entre el umbral GO y el PIVOT.</p>
+  <div id="val-verdict"></div>
+  <div class="card" style="margin-top:12px">
+    <div class="meter" id="val-meter" role="img" aria-label="Índice de validación"><i></i><b style="left:50%"></b><b style="left:75%"></b></div>
+    <div class="row note" style="justify-content:space-between;margin-top:4px"><span>0</span><span>PIVOT 50</span><span>GO 75</span><span>100</span></div>
+  </div>
+  <div class="card"><div class="tw"><table id="val-table"><thead><tr><th scope="col">Señal</th><th class="n" scope="col">Peso</th><th class="n" scope="col">Umbral GO</th><th class="n" scope="col">Umbral PIVOT</th><th class="n" scope="col">Valor observado</th><th class="n" scope="col">Puntuación</th><th class="n" scope="col">Contribución</th></tr></thead><tbody></tbody><tfoot></tfoot></table></div></div>
+  <h3>Umbrales de aprobación por etapa (Playbook §1)</h3>
+  <div class="card"><div class="tw"><table><thead><tr><th scope="col">Etapa</th><th scope="col">Señal</th><th scope="col">Aprobado</th><th scope="col">Pivote</th><th scope="col">No-go</th></tr></thead><tbody>
+    <tr><td>1 · Demanda</td><td>«Definitivamente sí» entre cualificados</td><td>≥ 25 %</td><td>15–24 %</td><td>&lt; 15 %</td></tr>
+    <tr><td>1 · Demanda</td><td>Precio óptimo frente al asumido</td><td>Dentro del rango de indiferencia</td><td>± 20 % del rango</td><td>Fuera del rango</td></tr>
+    <tr><td>1 · Demanda</td><td>Dolor declarado con intensidad alta</td><td>≥ 60 %</td><td>40–59 %</td><td>&lt; 40 %</td></tr>
+    <tr><td>2 · Oferta y landing</td><td>Tasa de opt-in</td><td>≥ 30 %</td><td>18–29 %</td><td>&lt; 18 %</td></tr>
+    <tr><td>2 · Oferta y landing</td><td>Coste por lead (buscador)</td><td>≤ 67 USD</td><td>68–95 USD</td><td>&gt; 95 USD</td></tr>
+    <tr><td>2 · Oferta y landing</td><td>Coste por lead en social</td><td>≤ 45 USD</td><td>46–70 USD</td><td>&gt; 70 USD</td></tr>
+    <tr><td>2 · Oferta y landing</td><td>Velocidad de carga móvil</td><td>&lt; 2,5 s</td><td>2,5–4 s</td><td>&gt; 4 s</td></tr>
+    <tr><td>3 · Pago real</td><td>Conversión de lead a compra</td><td>≥ 3,2 %</td><td>1,8–3,1 %</td><td>&lt; 1,8 %</td></tr>
+    <tr><td>3 · Pago real</td><td>Clientes de preventa en 14 días</td><td>≥ 25</td><td>10–24</td><td>&lt; 10</td></tr>
+    <tr><td>3 · Pago real</td><td>Reembolso de preventa</td><td>≤ 9 %</td><td>9,1–13 %</td><td>&gt; 13 %</td></tr>
+    <tr><td>3 · Pago real</td><td>CM1 frente a CAC proyectado</td><td>CM1 &gt; CAC</td><td>CM1 = CAC</td><td>CM1 &lt; CAC</td></tr>
+  </tbody></table></div></div>
+</section>
+
+<section role="tabpanel" id="p-medios" aria-labelledby="t-medios">
+  <h2>Estrategia de medios</h2>
+  <p class="lead">Mix por fase (cada columna debe sumar 100 %), presupuesto mensual por canal y tiers de capital de prueba. Regla: capital de prueba = 2 meses en el extremo alto del tier + 25 % de reserva.</p>
+  <div id="med-warn"></div>
+  <div class="card"><div class="tw"><table id="med-mix"><caption>Matriz de mix por fase (%)</caption><thead><tr><th scope="col">Canal</th><th class="n" scope="col">Fase 1 Aprendizaje (mes 1–2)</th><th class="n" scope="col">Fase 2 Escalado (mes 3–6)</th><th class="n" scope="col">Fase 3 Dominio (mes 7–12)</th></tr></thead><tbody></tbody><tfoot></tfoot></table></div></div>
+  <div class="card"><div class="tw"><table id="med-alloc"><caption>Asignación mensual por canal (USD)</caption><thead><tr><th scope="col">Canal</th><th class="n" scope="col">Aprendizaje</th><th class="n" scope="col">Escalado</th><th class="n" scope="col">Dominio</th></tr></thead><tbody></tbody><tfoot></tfoot></table></div></div>
+  <div class="card"><div class="tw"><table id="med-tiers"><caption>Tiers de inversión y capital de prueba</caption><thead><tr><th scope="col">Tier</th><th class="n" scope="col">Diario mín.</th><th class="n" scope="col">Diario máx.</th><th class="n" scope="col">Mensual mín.</th><th class="n" scope="col">Mensual máx.</th><th class="n" scope="col">CAC máx. tolerado</th><th class="n" scope="col">Capital de prueba</th></tr></thead><tbody></tbody></table></div>
+  <p class="note">El Excel usa el CAC máximo del Nivel A amarillo (CM1 ÷ 1,76) para todos los tiers. El Playbook §3.4 propone 180 / 200 / 220 / 240 USD por tier; revisa cuál aplicar.</p></div>
+  <h3>Estructura de cuenta (un objetivo por campaña)</h3>
+  <div class="card"><div class="tw"><table><thead><tr><th scope="col">Campaña</th><th scope="col">Presupuesto</th><th scope="col">Estructura</th><th scope="col">Función</th></tr></thead><tbody>
+    <tr><td>CORE · Conversión</td><td>60–70 %</td><td>1–2 conjuntos en público amplio, 10–15 creatividades conceptualmente distintas</td><td>Motor principal de escalado</td></tr>
+    <tr><td>LAB · Laboratorio creativo</td><td>20–25 %</td><td>1 conjunto amplio, 6–8 conceptos nuevos por ciclo</td><td>Banco de pruebas; los ganadores pasan al CORE</td></tr>
+    <tr><td>RECUPERACIÓN · Retargeting</td><td>10–15 %</td><td>Visitantes y carrito abandonado, ventana de 30 días</td><td>Cierre de intención tibia</td></tr>
+    <tr><td>Reserva experimental</td><td>3 %</td><td>Dos canales nuevos por trimestre</td><td>Seguro contra la inflación de subasta</td></tr>
+  </tbody></table></div></div>
+</section>
+
+<section role="tabpanel" id="p-escalado" aria-labelledby="t-escalado">
+  <h2>Escalado</h2>
+  <p class="lead">Simulación de 12 meses y curva de escalado. El punto óptimo no es el de máximo gasto: es donde el último dólar sigue superando el listón de escalado (aMER marginal).</p>
+  <div class="card">
+    <h3 style="margin-top:0">Inputs de trayectoria</h3>
+    <div id="esc-inputs"></div>
+  </div>
+  <div class="grid kpis" id="esc-kpis"></div>
+  <div class="card" style="margin-top:12px"><div class="tw"><table id="esc-sim"><caption>Simulación de 12 meses (CAC y AOV mensuales editables)</caption><thead><tr><th scope="col">Mes</th><th scope="col">Fase</th><th class="n" scope="col">Presupuesto</th><th class="n" scope="col">Gasto acum.</th><th class="n" scope="col">CAC</th><th class="n" scope="col">AOV</th><th class="n" scope="col">Clientes</th><th class="n" scope="col">Ingreso bruto</th><th class="n" scope="col">MER</th><th class="n" scope="col">aMER (CM1/CAC)</th><th class="n" scope="col">Contribución CM1</th><th class="n" scope="col">Contrib. acum.</th><th class="n" scope="col">ROI acum.</th><th class="n" scope="col">Clientes acum.</th><th class="n" scope="col">EBITDA publicitario</th></tr></thead><tbody></tbody></table></div>
+  <p class="note">Como en el Excel, la contribución de cada mes usa el CM1 de tus supuestos, no el AOV del mes; el EBITDA publicitario descuenta reembolsos, gasto y OPEX, pero no comisiones ni COGS.</p></div>
+  <h3>Curva de escalado</h3>
+  <div class="card">
+    <figure style="margin:0">
+      <svg class="chart" id="esc-chart" viewBox="0 0 720 300" role="img" aria-labelledby="esc-chart-t esc-chart-d"><title id="esc-chart-t">Curva de escalado: aMER marginal según gasto diario</title><desc id="esc-chart-d">Cada punto es un nivel de gasto diario; el color y la etiqueta indican la zona de decisión. La tabla siguiente tiene los mismos datos.</desc></svg>
+      <figcaption class="note">Eje horizontal logarítmico. Líneas discontinuas: umbrales del Nivel B. Pasa el puntero o el foco sobre un punto para ver el detalle.</figcaption>
+    </figure>
+    <div class="tw" style="margin-top:12px"><table id="esc-curve"><thead><tr><th scope="col">Gasto diario (USD)</th><th class="n" scope="col">aMER marginal</th><th class="n" scope="col">CAC implícito</th><th scope="col">Zona</th></tr></thead><tbody></tbody></table></div>
+  </div>
+</section>
+
+<section role="tabpanel" id="p-rutina" aria-labelledby="t-rutina">
+  <h2>Rutina semanal: el ritual de los lunes</h2>
+  <p class="lead">Primero, si el negocio gana dinero. Después, si merece la pena gastar más. Solo al final, el detalle de la campaña. La cuenta puede ser rentable mientras el último incremento ya no lo es.</p>
+  <div class="card"><div class="form-grid" id="rut-form"></div>
+    <h3>Condiciones para escalar (Playbook §4.1)</h3>
+    <ul class="check" id="rut-conds"></ul>
+  </div>
+  <div id="rut-out"></div>
+  <div class="row" style="margin-top:12px"><button class="btn primary" id="rut-log" type="button">Registrar esta decisión en el cuaderno</button><span id="rut-log-status" class="note" role="status" aria-live="polite"></span></div>
+</section>
+
+<section role="tabpanel" id="p-guardian" aria-labelledby="t-guardian">
+  <h2>Guardián de pausas</h2>
+  <p class="lead">Nunca se apaga por un mal día ni por una métrica aislada: se apaga por una tendencia confirmada en dos ventanas consecutivas y con la causa identificada.</p>
+  <h3>Calculadora de corte</h3>
+  <div class="card">
+    <div id="gua-calc-in"></div>
+    <div id="gua-calc-out" style="margin-top:12px"></div>
+  </div>
+  <h3>Los 14 indicadores de alerta</h3>
+  <div class="card"><p class="note" style="margin-top:0">Escribe el valor observado para ver su estado. Vacío = sin evaluar.</p><div class="tw"><table id="gua-alerts"><thead><tr><th scope="col">#</th><th scope="col">Indicador</th><th class="n" scope="col">Observado</th><th scope="col">Alerta</th><th scope="col">Crítico</th><th scope="col">Estado</th><th scope="col">Acción inmediata</th><th scope="col">Ventana</th></tr></thead><tbody></tbody></table></div></div>
+  <h3>Protocolo de decisión en cinco pasos</h3>
+  <div class="card"><ol>
+    <li><strong>Detectar (24–48 h).</strong> Cualquier indicador cruza el umbral de alerta durante dos lecturas consecutivas.</li>
+    <li><strong>Aislar (48–72 h).</strong> ¿Creatividad, landing, oferta, tracking o mercado? Técnica de variable única.</li>
+    <li><strong>Diagnosticar (72–96 h).</strong> ¿La corrección requiere menos de 7 días y menos del 10 % del presupuesto mensual? Si sí, se corrige; si no, se apaga y se reasigna.</li>
+    <li><strong>Decidir (≤ 7 días desde la detección).</strong> Aplicar la matriz siguiente.</li>
+    <li><strong>Documentar (72 h).</strong> Hipótesis, dato observado, decisión y resultado a 30 días en el cuaderno.</li>
+  </ol>
+  <div class="tw"><table><thead><tr><th scope="col">Diagnóstico</th><th scope="col">Acción</th><th scope="col">Presupuesto resultante</th></tr></thead><tbody>
+    <tr><td>Fatiga creativa confirmada</td><td>Recambio creativo total</td><td>Sin cambio</td></tr>
+    <tr><td>Saturación de audiencia</td><td>Nuevos ángulos y exclusiones</td><td>−10 % temporal</td></tr>
+    <tr><td>Señal de tracking rota</td><td>Reparación de CAPI y reetiquetado</td><td>Congelado hasta reparar</td></tr>
+    <tr><td>Landing u oferta deficiente</td><td>Test de nueva oferta</td><td>−30 % hasta validar</td></tr>
+    <tr><td>Presión competitiva de subasta</td><td>Migración parcial a otro canal</td><td>−30 % permanente</td></tr>
+    <tr><td>Hipótesis refutada (producto o mercado)</td><td>Apagado total</td><td>0 %</td></tr>
+  </tbody></table></div>
+  <p class="note">Tolerancia de aprendizaje: no se juzga antes de 7 días y 50 conversiones (lo que llegue más tarde). Entre el día 7 y el 14 se tolera hasta el doble del CAC objetivo si la tendencia es descendente. Un cambio de estructura (o un salto de presupuesto superior al 40 %) reinicia el reloj.</p></div>
+</section>
+
+<section role="tabpanel" id="p-sensibilidad" aria-labelledby="t-sensibilidad">
+  <h2>Sensibilidad</h2>
+  <p class="lead">Cómo se mueven el LTV:CAC y el MER con los drivers de adquisición y backend. Los ejes son editables. El color indica la zona y cada celda muestra su valor.</p>
+  <div class="card"><div class="tw"><table id="sen-a"><caption>A) LTV:CAC por CAC (filas) y attach del segundo producto (columnas). Verde ≥ 3,0x · amarillo ≥ 2,0x · rojo ≥ 1,5x · por debajo, crítico</caption></table></div></div>
+  <div class="card"><div class="tw"><table id="sen-b"><caption>B) MER por CVR hacia compra (filas) y CAC proxy (columnas). Verde ≥ 3,0x · amarillo ≥ 2,2x · rojo ≥ 1,6x · por debajo, crítico</caption></table></div></div>
+</section>
+
+<section role="tabpanel" id="p-cuaderno" aria-labelledby="t-cuaderno">
+  <h2>Cuaderno de decisiones</h2>
+  <p class="lead">Cada pausa, apagado o escalado se registra con cuatro campos: hipótesis, dato observado, decisión y resultado a 30 días. Se guarda en este navegador; exporta el CSV para compartirlo.</p>
+  <form class="card" id="log-form" novalidate>
+    <div class="form-grid">
+      <label>Fecha<input class="in" type="date" name="fecha" required></label>
+      <label>Ámbito (canal, campaña o ángulo)<input class="in" type="text" name="ambito" maxlength="120" required></label>
+      <label>Decisión<select class="in" name="decision" required><option value="">Elegir…</option><option>Escalar</option><option>Mantener</option><option>Reducir</option><option>Pausar</option><option>Reestructurar</option><option>Apagar</option><option>Reactivar</option></select></label>
+    </div>
+    <div class="form-grid" style="margin-top:10px">
+      <label>Hipótesis<textarea class="in" name="hipotesis" maxlength="1000" required></textarea></label>
+      <label>Dato observado<textarea class="in" name="dato" maxlength="1000" required></textarea></label>
+      <label>Resultado a 30 días (se completa después)<textarea class="in" name="resultado" maxlength="1000"></textarea></label>
+    </div>
+    <div class="row" style="margin-top:10px"><button class="btn primary" type="submit">Guardar registro</button><button class="btn" type="button" id="log-csv">Exportar CSV</button><span id="log-status" class="note" role="status" aria-live="polite"></span></div>
+  </form>
+  <div id="log-list"></div>
+</section>
+
+<section role="tabpanel" id="p-plan" aria-labelledby="t-plan">
+  <h2>Plan de aplicación</h2>
+  <p class="lead">Ocho pasos en orden obligatorio: cada capa consume el resultado de la anterior. Marca lo completado; se guarda en este navegador.</p>
+  <div class="warnbox"><strong>Orden de la instrumentación:</strong> el manual la sitúa en la semana 1–2 (antes de la preventa) y el Playbook, en la semana 8 (después). Como la preventa gasta dinero real y el sistema dice que «sin EMQ &gt; 7 no se gasta», aquí se sigue el orden del manual.</div>
+  <div class="card"><ol class="check" id="plan-steps"></ol></div>
+  <h3>Plan mínimo de 48 horas</h3>
+  <div class="card"><ul class="check" id="plan-48"></ul></div>
+  <h3>Qué no puedes saltarte</h3>
+  <div class="card"><ol>
+    <li><strong>El pago real antes de escalar.</strong> Sin preventa no hay validación.</li>
+    <li><strong>La instrumentación limpia antes de gastar.</strong> Un EMQ bajo es escalar sobre ruido.</li>
+    <li><strong>El volumen creativo.</strong> 5–15 creatividades nuevas por semana a partir de 5.000 USD mensuales.</li>
+    <li><strong>La verificación de incrementalidad</strong> antes de subidas grandes.</li>
+    <li><strong>La disciplina del corte.</strong> Nunca apagues por un mal día ni mantengas por apego.</li>
+  </ol></div>
+  <h3>Cómo leer tu primera semana (Tier S, 50–150 USD/día)</h3>
+  <div class="card"><div class="tw"><table><thead><tr><th scope="col">Qué observas</th><th scope="col">Qué está pasando</th><th scope="col">Qué haces</th></tr></thead><tbody>
+    <tr><td>CAC alto la primera semana (250–350 USD)</td><td>Fase de aprendizaje normal</td><td><strong>No toques nada</strong></td></tr>
+    <tr><td>Gasto casi nulo en algunos anuncios</td><td>El algoritmo está eligiendo</td><td>Espera; no fuerces la entrega</td></tr>
+    <tr><td>CAC descendente en 7 días</td><td>El aprendizaje funciona</td><td>Mantén</td></tr>
+    <tr><td>CAC alto y plano al día 10</td><td>El ángulo o la oferta no funcionan</td><td>Audita la oferta antes de tocar el presupuesto</td></tr>
+    <tr><td>Buen CTR y mal CVR</td><td>El problema está en la landing</td><td>Reescribe la landing, no el creativo</td></tr>
+  </tbody></table></div></div>
+</section>
+</main>
+<footer>Modelo replicado del libro «Modelo_Economico_y_Escalado_2026.xlsx» (357 fórmulas verificadas). Este sistema no promete resultados sin datos: sustituye los supuestos por los tuyos antes de comprometer capital.</footer>
+<div class="tip" id="tip" role="presentation"></div>
+
+<script>
+(function () {
+'use strict';
+
+/* ================= MODELO (réplica del Excel, sin DOM) ================= */
+var SRC_BRIEF = 'Brief del usuario, Modelo Económico y Escalado 2026 (27 septiembre 2026)';
+var SRC_BENCH = 'WordStream/LocaliQ, Google Ads Benchmarks 2026; complementado por el brief del usuario';
+
+var DEFAULTS = {
+  // Supuestos
+  'Supuestos!D10':497,'Supuestos!D11':561,'Supuestos!D12':0.65,'Supuestos!D13':97,'Supuestos!D14':0.32,'Supuestos!D15':297,'Supuestos!D16':0.18,
+  'Supuestos!D21':0.09,'Supuestos!D22':0.045,'Supuestos!D23':0.3,'Supuestos!D24':1.62,'Supuestos!D25':0.07,
+  'Supuestos!D30':697,'Supuestos!D31':0.22,'Supuestos!D32':0.78,'Supuestos!D33':0.88,
+  'Supuestos!D38':1800,'Supuestos!D39':6500,
+  'Supuestos!D44':16.8,'Supuestos!D45':0.0219,'Supuestos!D46':0.016,'Supuestos!D47':9.16,'Supuestos!D48':1.02,'Supuestos!D49':0.018,'Supuestos!D50':5.42,'Supuestos!D51':0.0818,'Supuestos!D52':66.69,'Supuestos!D53':9.39,'Supuestos!D54':202,'Supuestos!D55':0.059,'Supuestos!D56':18.5,'Supuestos!D57':6.4,'Supuestos!D58':0.34,'Supuestos!D59':0.032,
+  'Supuestos!D64':180,'Supuestos!D65':3,'Supuestos!D66':2.85,'Supuestos!D67':2.2,'Supuestos!D68':1.4,'Supuestos!D69':0.2,'Supuestos!D70':'7d click / 1d view',
+  'Supuestos!D74':2.4,'Supuestos!D75':1.76,'Supuestos!D76':1.28,'Supuestos!D77':1,'Supuestos!D78':1.6,'Supuestos!D79':3.6,
+  // Estrategia de Medios
+  'Estrategia de Medios!D10':0.45,'Estrategia de Medios!E10':0.48,'Estrategia de Medios!F10':0.5,
+  'Estrategia de Medios!D11':0.22,'Estrategia de Medios!E11':0.2,'Estrategia de Medios!F11':0.18,
+  'Estrategia de Medios!D12':0.13,'Estrategia de Medios!E12':0.13,'Estrategia de Medios!F12':0.13,
+  'Estrategia de Medios!D13':0.08,'Estrategia de Medios!E13':0.09,'Estrategia de Medios!F13':0.1,
+  'Estrategia de Medios!D14':0.06,'Estrategia de Medios!E14':0.05,'Estrategia de Medios!F14':0.04,
+  'Estrategia de Medios!D15':0.03,'Estrategia de Medios!E15':0.03,'Estrategia de Medios!F15':0.04,
+  'Estrategia de Medios!D16':0.03,'Estrategia de Medios!E16':0.02,'Estrategia de Medios!F16':0.01,
+  'Estrategia de Medios!D22':15000,'Estrategia de Medios!E22':45000,'Estrategia de Medios!F22':150000,
+  'Estrategia de Medios!D37':50,'Estrategia de Medios!E37':150,'Estrategia de Medios!D38':300,'Estrategia de Medios!E38':700,
+  'Estrategia de Medios!D39':1000,'Estrategia de Medios!E39':2500,'Estrategia de Medios!D40':4000,'Estrategia de Medios!E40':12000,
+  // Escalado
+  'Escalado!D10':15000,'Escalado!D11':0.1,'Escalado!D12':0.2,'Escalado!D13':0.2,
+  // Guardian (tabla del Excel + calculadora)
+  'Guardian de Pausas!D12':0.1,'Guardian de Pausas!E12':0.2,'Guardian de Pausas!D13':0.15,'Guardian de Pausas!E13':0.25,
+  'Guardian de Pausas!D14':3,'Guardian de Pausas!E14':4,'Guardian de Pausas!D15':2.2,'Guardian de Pausas!E15':1.4,
+  'Guardian de Pausas!D16':7,'Guardian de Pausas!E16':5,'Guardian de Pausas!D17':0.12,'Guardian de Pausas!E17':0.16,
+  'Guardian de Pausas!D18':0.2,'Guardian de Pausas!E18':0.15,'Guardian de Pausas!D19':14,'Guardian de Pausas!E19':21,
+  'Guardian de Pausas!D20':0.6,'Guardian de Pausas!E20':0.75,'Guardian de Pausas!D21':0.25,'Guardian de Pausas!E21':0.4,
+  'Guardian de Pausas!D22':2,'Guardian de Pausas!E22':1.5,'Guardian de Pausas!D23':30,'Guardian de Pausas!E23':45,
+  'Guardian de Pausas!D39':30000,'Guardian de Pausas!D40':62000,
+  // Sensibilidad (ejes)
+  'Sensibilidad!D9':0.12,'Sensibilidad!E9':0.18,'Sensibilidad!F9':0.22,'Sensibilidad!G9':0.26,'Sensibilidad!H9':0.32,'Sensibilidad!I9':0.4,
+  'Sensibilidad!C10':120,'Sensibilidad!C11':150,'Sensibilidad!C12':180,'Sensibilidad!C13':210,'Sensibilidad!C14':240,'Sensibilidad!C15':280,'Sensibilidad!C16':330,'Sensibilidad!C17':400,
+  'Sensibilidad!D22':140,'Sensibilidad!E22':170,'Sensibilidad!F22':200,'Sensibilidad!G22':240,'Sensibilidad!H22':280,
+  'Sensibilidad!C23':0.016,'Sensibilidad!C24':0.02,'Sensibilidad!C25':0.024,'Sensibilidad!C26':0.028,'Sensibilidad!C27':0.032,'Sensibilidad!C28':0.036
+};
+// Escalado: CAC/AOV por mes (filas 18-29) y curva (filas 35-46)
+[[205,575],[195,585],[180,595],[165,607],[152,620],[155,632],[160,645],[166,653],[173,660],[181,667],[189,673],[196,679]].forEach(function (p, i) {
+  DEFAULTS['Escalado!H' + (18 + i)] = p[0]; DEFAULTS['Escalado!I' + (18 + i)] = p[1];
+});
+[[100,4.6],[250,4.05],[500,3.55],[750,3.2],[1000,2.95],[1500,2.6],[2000,2.35],[3000,2.05],[4000,1.85],[5000,1.62],[7000,1.45],[9000,1.38]].forEach(function (p, i) {
+  DEFAULTS['Escalado!C' + (35 + i)] = p[0]; DEFAULTS['Escalado!D' + (35 + i)] = p[1];
+});
+// Validación: [peso, GO, PIVOT, observado, mejor=alto?]
+var VAL_ROWS = [
+  ['Intención declarada (encuesta Van Westendorp)', 'pct', 0.08, 0.7, 0.5, 0.72, true],
+  ['Tasa de opt-in landing', 'pct', 0.1, 0.34, 0.25, 0.32, true],
+  ['Coste por lead', 'usd', 0.08, 40, 65, 47, false],
+  ['CVR de la landing de venta', 'pct', 0.1, 0.032, 0.024, 0.029, true],
+  ['Prueba de pago real (clientes de preventa)', 'num', 0.1, 50, 25, 55, true],
+  ['Tasa de reembolso temprana', 'pct', 0.08, 0.08, 0.12, 0.088, false],
+  ['NPS/CSAT de primeros clientes', 'num', 0.08, 50, 30, 46, true],
+  ['Velocidad orgánica (referidos/afiliados)', 'pct', 0.06, 0.15, 0.08, 0.13, true],
+  ['Margen de contribución unitario', 'pct', 0.12, 0.75, 0.65, 0.785, true],
+  ['CAC por debajo del techo', 'usd', 0.1, 180, 220, 195, false],
+  ['Señal de retención/uso', 'pct', 0.06, 0.7, 0.5, 0.65, true],
+  ['Diferenciación competitiva', 'num', 0.04, 4, 3, 3.8, true]
+];
+VAL_ROWS.forEach(function (r, i) {
+  var n = 10 + i;
+  DEFAULTS['Validacion!D' + n] = r[2]; DEFAULTS['Validacion!E' + n] = r[3];
+  DEFAULTS['Validacion!F' + n] = r[4]; DEFAULTS['Validacion!G' + n] = r[5];
+});
+
+function xlMoney1(x) { return '$' + x.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 }); }
+function xlMoney0(x) { return '$' + Math.round(x).toLocaleString('en-US'); }
+function xlX(x, d) { return x.toFixed(d) + 'x'; }
+function phaseOf(m) { return m <= 2 ? 'Fase 1 Aprendizaje' : (m <= 6 ? 'Fase 2 Escalado' : 'Fase 3 Dominio'); }
+function zoneB(v, I) {
+  return v >= I['Supuestos!D79'] ? 'Elite' : v >= I['Supuestos!D66'] ? 'Escalar' : v >= I['Supuestos!D67'] ? 'Mantener' : v >= I['Supuestos!D68'] ? 'Reducir' : 'Apagar';
+}
+var COLS = ['C','D','E','F','G','H','I','J','K','L','M','N','O','P'];
+
+function compute(I) {
+  var o = {};
+  var S = function (c) { return I['Supuestos!' + c]; };
+  // Supuestos derivados
+  o['Supuestos!D17'] = S('D10') * S('D12') + S('D11') * (1 - S('D12')) + S('D13') * S('D14') + S('D15') * S('D16');
+  o['Supuestos!D26'] = 1 - S('D21');
+  o['Supuestos!D34'] = S('D30') * S('D31') * S('D32') * S('D33');
+  o['Supuestos!D40'] = S('D38') + S('D39');
+  // Economía unitaria
+  var E = 'Economia Unitaria!';
+  o[E + 'D10'] = S('D10') * S('D12') + S('D11') * (1 - S('D12'));
+  o[E + 'D11'] = S('D13') * S('D14');
+  o[E + 'D12'] = S('D15') * S('D16');
+  o[E + 'D13'] = o[E + 'D10'] + o[E + 'D11'] + o[E + 'D12'];
+  o[E + 'D14'] = -o[E + 'D13'] * S('D21');
+  o[E + 'D15'] = o[E + 'D13'] + o[E + 'D14'];
+  o[E + 'D16'] = -(o[E + 'D15'] * S('D22') + S('D23') * S('D24'));
+  o[E + 'D17'] = o[E + 'D15'] + o[E + 'D16'];
+  o[E + 'D18'] = -o[E + 'D15'] * S('D25');
+  o[E + 'D19'] = o[E + 'D17'] + o[E + 'D18'];
+  o[E + 'D20'] = o['Supuestos!D34'];
+  o[E + 'D21'] = o[E + 'D19'] + o[E + 'D20'];
+  var cm1 = o[E + 'D19'], aov = o[E + 'D13'];
+  o[E + 'D26'] = S('D64');
+  o[E + 'D27'] = cm1 / o[E + 'D26'];
+  o[E + 'D28'] = o[E + 'D21'] / o[E + 'D26'];
+  o[E + 'D29'] = cm1 / aov;
+  o[E + 'D30'] = o[E + 'D26'] / (cm1 / 30);
+  o[E + 'D31'] = aov / o[E + 'D26'];
+  o[E + 'D32'] = aov / cm1;
+  o[E + 'D33'] = cm1;
+  o[E + 'D34'] = cm1 / S('D75');
+  o[E + 'D35'] = cm1 / S('D76');
+  o[E + 'D36'] = cm1 / S('D77');
+  o[E + 'D37'] = cm1 / S('D74');
+  o[E + 'C40'] = 'El AOV bruto de referencia es ' + xlMoney1(aov) + ' y la contribución CM1 es ' + xlMoney1(cm1) + ' por cliente, después de reembolsos, tarifas y COGS.';
+  o[E + 'C41'] = 'El aMER de referencia es ' + xlX(o[E + 'D27'], 1) + ' frente a un objetivo de MER de ' + xlX(o[E + 'D31'], 1) + '; el margen permite soportar un CAC hasta ' + xlMoney1(o[E + 'D33']) + ' en break-even.';
+  o[E + 'C42'] = 'La expansión backend añade ' + xlMoney1(o[E + 'D20']) + ' por cliente en 12 meses y lleva el LTV:CAC a ' + xlX(o[E + 'D28'], 1) + ' con el CAC objetivo.';
+  o[E + 'C43'] = 'CAC objetivo: ' + xlMoney0(S('D64')) + ' USD es un objetivo de operación dentro del Nivel A verde; el umbral de escalado del Nivel B es más exigente: aMER marginal >= ' + xlX(S('D66'), 2) + ' (CAC marginal <= ' + xlMoney0(cm1 / S('D66')) + ' USD).';
+  o[E + 'C44'] = 'Recuperación del CAC: inmediata; al ser una venta de pago único, CM1 (' + xlMoney1(cm1) + ') supera al CAC objetivo (' + xlMoney0(o[E + 'D26']) + ') en la primera transacción.';
+  // Estrategia de medios
+  var M = 'Estrategia de Medios!';
+  ['D','E','F'].forEach(function (c) {
+    var sum = 0, sumA = 0;
+    for (var r = 10; r <= 16; r++) {
+      sum += I[M + c + r];
+      o[M + c + (r + 15)] = I[M + c + r] * I[M + c + '22'];
+      sumA += o[M + c + (r + 15)];
+    }
+    o[M + c + '17'] = sum; o[M + c + '32'] = sumA;
+  });
+  for (var t = 37; t <= 40; t++) {
+    o[M + 'F' + t] = I[M + 'D' + t] * 30;
+    o[M + 'G' + t] = I[M + 'E' + t] * 30;
+    o[M + 'H' + t] = o[E + 'D34'];
+    o[M + 'I' + t] = o[M + 'G' + t] * 2 * 1.25;
+  }
+  // Escalado
+  var X = 'Escalado!', opex = o['Supuestos!D40'];
+  for (var r2 = 18; r2 <= 29; r2++) {
+    var m = r2 - 17, ph = phaseOf(m);
+    o[X + 'C' + r2] = m;
+    o[X + 'D' + r2] = ph;
+    if (r2 === 18) { o[X + 'E18'] = I[X + 'D10']; o[X + 'F18'] = o[X + 'E18']; }
+    else {
+      var g = ph === 'Fase 1 Aprendizaje' ? I[X + 'D11'] : ph === 'Fase 2 Escalado' ? I[X + 'D12'] : I[X + 'D13'];
+      o[X + 'E' + r2] = o[X + 'E' + (r2 - 1)] * (1 + g);
+      o[X + 'F' + r2] = o[X + 'F' + (r2 - 1)] + o[X + 'E' + r2];
+    }
+    o[X + 'G' + r2] = o[X + 'E' + r2] / I[X + 'H' + r2];
+    o[X + 'J' + r2] = o[X + 'G' + r2] * I[X + 'I' + r2];
+    o[X + 'K' + r2] = o[X + 'J' + r2] / o[X + 'E' + r2];
+    o[X + 'L' + r2] = o[X + 'G' + r2] * cm1;
+    o[X + 'M' + r2] = r2 === 18 ? o[X + 'L18'] : o[X + 'M' + (r2 - 1)] + o[X + 'L' + r2];
+    o[X + 'N' + r2] = o[X + 'M' + r2] / o[X + 'F' + r2] - 1;
+    o[X + 'O' + r2] = r2 === 18 ? o[X + 'G18'] : o[X + 'O' + (r2 - 1)] + o[X + 'G' + r2];
+    o[X + 'P' + r2] = o[X + 'J' + r2] * (1 - S('D21')) - o[X + 'E' + r2] - opex;
+  }
+  for (var r3 = 35; r3 <= 46; r3++) {
+    o[X + 'E' + r3] = cm1 / I[X + 'D' + r3];
+    o[X + 'F' + r3] = zoneB(I[X + 'D' + r3], I);
+  }
+  // Guardián (valores del Excel)
+  var G = 'Guardian de Pausas!';
+  o[G + 'D10'] = S('D65'); o[G + 'E10'] = S('D78');
+  o[G + 'D11'] = o[E + 'D34'] * 1.5; o[G + 'E11'] = o[E + 'D35'];
+  o[G + 'C35'] = 'Nota de guardavías: el CAC objetivo de ' + xlMoney0(S('D64')) + ' USD es un objetivo de operación del Nivel A verde (MER >= ' + xlX(S('D65'), 1) + '); el umbral de escalado es más exigente: Nivel B con aMER marginal >= ' + xlX(S('D66'), 2) + ' y CAC marginal <= ' + xlMoney0(cm1 / S('D66')) + ' USD.';
+  o[G + 'D41'] = I[G + 'D40'] / I[G + 'D39'];
+  o[G + 'D42'] = o[G + 'D41'] >= o[E + 'D32'] ? 'Continuar' : (o[G + 'D41'] >= 1 ? 'Pausar y reestructurar' : 'Apagar');
+  // Sensibilidad
+  var N = 'Sensibilidad!';
+  for (var r4 = 10; r4 <= 17; r4++) {
+    ['D','E','F','G','H','I'].forEach(function (c) {
+      o[N + c + r4] = (cm1 + (S('D30') * I[N + c + '9'] * S('D32') * S('D33'))) / I[N + 'C' + r4];
+    });
+  }
+  for (var r5 = 23; r5 <= 28; r5++) {
+    ['D','E','F','G','H'].forEach(function (c) {
+      var v = aov / (I[N + c + '22'] * (S('D59') / I[N + 'C' + r5]));
+      o[N + c + r5] = isFinite(v) ? v : 0;
+    });
+  }
+  // Validación
+  var V = 'Validacion!', wsum = 0, isum = 0;
+  VAL_ROWS.forEach(function (row, i) {
+    var n = 10 + i, go = I[V + 'E' + n], pv = I[V + 'F' + n], ob = I[V + 'G' + n], h;
+    if (row[6]) h = ob >= go ? 100 : (ob <= pv ? 0 : 100 * (ob - pv) / (go - pv));
+    else h = ob <= go ? 100 : (ob >= pv ? 0 : 100 * (pv - ob) / (pv - go));
+    o[V + 'H' + n] = h;
+    o[V + 'I' + n] = I[V + 'D' + n] * h;
+    wsum += I[V + 'D' + n]; isum += o[V + 'I' + n];
+  });
+  o[V + 'D22'] = wsum; o[V + 'I22'] = isum; o[V + 'D26'] = isum;
+  o[V + 'F26'] = isum >= 75 ? 'GO' : (isum >= 50 ? 'PIVOT' : 'NO-GO');
+  return o;
+}
+
+// Umbrales de doctrina (Playbook / manual) que no están en el Excel
+var DOC = {
+  cortePausar: 1.2,      // Playbook §5.6 y manual §2: aMER < 1,20x → apagar
+  amerHolgura: 3.0,      // manual §2: ≥ 3,00x para escalar con holgura
+  ltvCacMin: 3.0,        // manual §2
+  emqMin: 7,             // puerta 1
+  freqMax: 3.0,          // ritual de los lunes
+  ctrDrop: 0.10,         // ritual de los lunes
+  minDias: 7, minConv: 50,
+  merA: { verde: 3.0, amarillo: 2.2, rojo: 1.6 } // MER de período (Playbook §3.3)
+};
+function corteVeredicto(amer, I) {
+  if (!isFinite(amer)) return null;
+  return amer >= I['Supuestos!D74'] ? 'Continuar' : (amer >= DOC.cortePausar ? 'Pausar y reestructurar' : 'Apagar');
+}
+function zoneAamer(v, I) {
+  return v >= I['Supuestos!D74'] ? 'verde' : v >= I['Supuestos!D75'] ? 'amarillo' : v >= I['Supuestos!D76'] ? 'rojo' : 'apagado';
+}
+function zoneAmer(v, I) {
+  return v >= I['Supuestos!D65'] ? 'verde' : v >= I['Supuestos!D67'] ? 'amarillo' : v >= I['Supuestos!D78'] ? 'rojo' : 'apagado';
+}
+// Rutina semanal: devuelve la decisión en orden de prioridad del manual §4
+function weeklyDecision(w, I) {
+  var r = { blocked: null, learning: false };
+  r.mer = w.gasto > 0 ? w.ingreso / w.gasto : NaN;
+  r.amer = w.gasto > 0 ? w.contrib / w.gasto : NaN;
+  var dG = w.gasto - w.gastoAnt;
+  r.amerMarg = dG > 0 ? (w.contrib - w.contribAnt) / dG : NaN;
+  r.marginalApplies = dG > 0;
+  if (isFinite(w.emq) && w.emq < DOC.emqMin) r.blocked = 'emq';
+  if ((isFinite(w.dias) && w.dias < DOC.minDias) || (isFinite(w.conv) && w.conv < DOC.minConv)) r.learning = true;
+  r.zoneMer = isFinite(r.mer) ? zoneAmer(r.mer, I) : null;
+  r.zoneAmer = isFinite(r.amer) ? zoneAamer(r.amer, I) : null;
+  r.zoneB = isFinite(r.amerMarg) ? zoneB(r.amerMarg, I) : null;
+  var maxUp = I['Supuestos!D69'];
+  if (r.zoneB === 'Elite' || r.zoneB === 'Escalar') r.nextBudget = w.gasto * (1 + maxUp);
+  else if (r.zoneB === 'Mantener') r.nextBudget = w.gasto;
+  else if (r.zoneB === 'Reducir') r.nextBudget = w.gasto * 0.7;
+  else if (r.zoneB === 'Apagar') r.nextBudget = 0;
+  r.saturacion = isFinite(w.freq) && w.freq > DOC.freqMax;
+  r.fatiga = isFinite(w.ctrDrop) && w.ctrDrop > DOC.ctrDrop;
+  return r;
+}
+
+window.AndromedaModel = { defaults: function () { return JSON.parse(JSON.stringify(DEFAULTS)); }, compute: compute,
+  corteVeredicto: corteVeredicto, weeklyDecision: weeklyDecision, zoneAamer: zoneAamer, zoneAmer: zoneAmer, zoneB: zoneB, DOC: DOC };
+
+/* ================= ESTADO Y PERSISTENCIA ================= */
+var STORE = 'andromeda2026.v1';
+function emptyState() { return { inputs: JSON.parse(JSON.stringify(DEFAULTS)), weekly: {}, alerts: {}, conds: {}, plan: {}, log: [], scen: { opt: null, pes: 0.12 }, arr: {}, prueba: {}, weeks: [], reports: [] }; }
+var state = emptyState();
+function isNum(v) { return typeof v === 'number' && isFinite(v); }
+var ARR_NUM_KEYS = ['precio', 'bump', 'up', 'reemb', 'com', 'cost', 'objPct', 'bumpPrecio', 'upPrecio', 'precioOferta'];
+var ARR_TXT_KEYS = ['quien', 'resultado', 'plazo', 'sin', 'pago', 'bumpNombre', 'upNombre'];
+function sanitize(obj) {
+  // Solo se aceptan claves conocidas y valores del tipo esperado
+  var out = emptyState();
+  if (!obj || typeof obj !== 'object') return out;
+  if (obj.arr && typeof obj.arr === 'object') {
+    ARR_NUM_KEYS.forEach(function (k) { if (isNum(obj.arr[k]) && obj.arr[k] >= 0) out.arr[k] = obj.arr[k]; });
+    ARR_TXT_KEYS.forEach(function (k) { if (typeof obj.arr[k] === 'string') out.arr[k] = obj.arr[k].slice(0, 200); });
+  }
+  var dRe = /^\d{4}-\d{2}-\d{2}$/, numOk = function (n) { return typeof n === 'number' && (isFinite(n) || isNaN(n)); };
+  if (Array.isArray(obj.reports)) obj.reports.slice(0, 60).forEach(function (r) {
+    if (!r || typeof r !== 'object' || !Array.isArray(r.rows)) return;
+    var rows = [];
+    r.rows.slice(0, 5000).forEach(function (x) {
+      if (!x || typeof x !== 'object' || !isNum(x.gasto)) return;
+      var o = { nombre: typeof x.nombre === 'string' ? x.nombre.slice(0, 120) : '', estado: typeof x.estado === 'string' ? x.estado.slice(0, 40) : '', inicio: dRe.test(x.inicio) ? x.inicio : '', fin: dRe.test(x.fin) ? x.fin : '' };
+      ['gasto', 'presupuesto', 'impr', 'alcance', 'clics', 'lp', 'checkouts', 'compras', 'valor'].forEach(function (k) { o[k] = x[k] === null ? NaN : numOk(x[k]) ? x[k] : NaN; });
+      rows.push(o);
+    });
+    if (!rows.length) return;
+    out.reports.push({ id: typeof r.id === 'string' ? r.id.slice(0, 40) : String(Math.random()).slice(2), archivo: typeof r.archivo === 'string' ? r.archivo.slice(0, 120) : 'informe.csv', nivel: ['Campaña', 'Conjunto', 'Anuncio'].indexOf(r.nivel) >= 0 ? r.nivel : 'Conjunto', inicio: dRe.test(r.inicio) ? r.inicio : '', fin: dRe.test(r.fin) ? r.fin : '', cols: Array.isArray(r.cols) ? r.cols.filter(function (c) { return ['gasto', 'presupuesto', 'impr', 'alcance', 'clics', 'lp', 'checkouts', 'compras', 'valor'].indexOf(c) >= 0; }) : [], rows: rows });
+  });
+  if (obj.prueba && typeof obj.prueba === 'object') {
+    if (typeof obj.prueba.fecha === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(obj.prueba.fecha)) out.prueba.fecha = obj.prueba.fecha;
+    ['d7c', 'd7g', 'd21cac'].forEach(function (k) { if (isNum(obj.prueba[k]) && obj.prueba[k] >= 0) out.prueba[k] = obj.prueba[k]; });
+  }
+  if (Array.isArray(obj.weeks)) obj.weeks.slice(0, 520).forEach(function (w) {
+    if (!w || typeof w !== 'object' || typeof w.semana !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(w.semana)) return;
+    if (![w.gasto, w.cobrado, w.clientes].every(function (n) { return isNum(n) && n >= 0; })) return;
+    out.weeks.push({ id: typeof w.id === 'string' ? w.id.slice(0, 40) : String(Math.random()).slice(2), semana: w.semana, gasto: w.gasto, cobrado: w.cobrado, clientes: w.clientes, anuncio: typeof w.anuncio === 'string' ? w.anuncio.slice(0, 120) : '' });
+  });
+  if (obj.inputs && typeof obj.inputs === 'object') {
+    Object.keys(DEFAULTS).forEach(function (k) {
+      var v = obj.inputs[k];
+      if (typeof DEFAULTS[k] === 'number' ? isNum(v) : typeof v === 'string' && v.length < 200) out.inputs[k] = v;
+    });
+  }
+  ['weekly', 'alerts'].forEach(function (s) {
+    if (obj[s] && typeof obj[s] === 'object') Object.keys(obj[s]).forEach(function (k) {
+      if (/^[a-z0-9_]{1,24}$/i.test(k) && isNum(obj[s][k])) out[s][k] = obj[s][k];
+    });
+  });
+  ['conds', 'plan'].forEach(function (s) {
+    if (obj[s] && typeof obj[s] === 'object') Object.keys(obj[s]).forEach(function (k) {
+      if (/^[a-z0-9_]{1,24}$/i.test(k) && obj[s][k] === true) out[s][k] = true;
+    });
+  });
+  if (obj.scen && typeof obj.scen === 'object') {
+    if (isNum(obj.scen.opt)) out.scen.opt = obj.scen.opt;
+    if (isNum(obj.scen.pes)) out.scen.pes = obj.scen.pes;
+  }
+  if (Array.isArray(obj.log)) obj.log.slice(0, 2000).forEach(function (e) {
+    if (!e || typeof e !== 'object') return;
+    var c = {};
+    ['id', 'fecha', 'ambito', 'decision', 'hipotesis', 'dato', 'resultado'].forEach(function (f) {
+      c[f] = typeof e[f] === 'string' ? e[f].slice(0, 1000) : '';
+    });
+    if (!c.id) c.id = String(Date.now()) + Math.random().toString(36).slice(2, 8);
+    out.log.push(c);
+  });
+  return out;
+}
+function load() { try { var raw = localStorage.getItem(STORE); if (raw) state = sanitize(JSON.parse(raw)); } catch (e) { /* sin almacenamiento: se usa el caso de referencia */ } }
+function save() { try { localStorage.setItem(STORE, JSON.stringify(state)); return true; } catch (e) { return false; } }
+
+/* ================= FORMATO ================= */
+var nf = {};
+function fmtN(x, d) {
+  if (!isFinite(x)) return '—';
+  var k = d; if (!nf[k]) nf[k] = new Intl.NumberFormat('es-AR', { minimumFractionDigits: d, maximumFractionDigits: d });
+  return nf[k].format(x);
+}
+function usd(x, d) { return isFinite(x) ? fmtN(x, d == null ? 1 : d) + ' USD' : '—'; }
+function pct(x, d) { return isFinite(x) ? fmtN(x * 100, d == null ? 1 : d) + ' %' : '—'; }
+function mult(x, d) { return isFinite(x) ? fmtN(x, d == null ? 2 : d) + 'x' : '—'; }
+function parseNum(s) {
+  s = String(s).trim().replace(/\s/g, '').replace(/[%$x]|USD/gi, '');
+  if (!s) return NaN;
+  if (s.indexOf(',') >= 0) s = s.replace(/\./g, '').replace(',', '.');
+  else if (/^\-?\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, '');
+  return /^-?\d*\.?\d+$/.test(s) ? parseFloat(s) : NaN;
+}
+function el(tag, attrs, kids) {
+  var n = document.createElement(tag);
+  if (attrs) Object.keys(attrs).forEach(function (k) {
+    if (k === 'text') n.textContent = attrs[k];
+    else if (k === 'cls') n.className = attrs[k];
+    else n.setAttribute(k, attrs[k]);
+  });
+  (kids || []).forEach(function (c) { if (c != null) n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+  return n;
+}
+function clear(n) { while (n.firstChild) n.removeChild(n.firstChild); return n; }
+function badge(text, zone) { return el('span', { cls: 'badge z-' + zone, text: text }); }
+var ZONE_CLASS = { verde: 'good', amarillo: 'warning', rojo: 'serious', apagado: 'critical', Elite: 'good', Escalar: 'good', Mantener: 'warning', Reducir: 'serious', Apagar: 'critical', GO: 'good', PIVOT: 'warning', 'NO-GO': 'critical', Continuar: 'good', 'Pausar y reestructurar': 'warning' };
+var ZONE_LABEL = { Elite: 'Élite', Escalar: 'Escalar', Mantener: 'Mantener', Reducir: 'Reducir', Apagar: 'Apagar', verde: 'Verde', amarillo: 'Amarillo', rojo: 'Rojo', apagado: 'Apagado' };
+
+/* ================= INPUTS ================= */
+// tipos: usd, pct, x, num, days, text
+function scaleIn(type) { return type === 'pct' ? 100 : 1; }
+function showIn(v, type) {
+  if (type === 'text') return v;
+  var s = v * scaleIn(type);
+  return fmtN(s, Math.abs(s - Math.round(s)) < 1e-9 ? 0 : (Math.abs(s * 100 - Math.round(s * 100)) < 1e-6 ? 2 : 4)).replace(/(,\d*?)0+$/, '$1').replace(/,$/, '');
+}
+var LIMITS = { pct: [0, 1000], usd: [0, 1e9], x: [0, 1000], num: [0, 1e9], days: [0, 3650] };
+function cellInput(key, type, label, opts) {
+  opts = opts || {};
+  var inp = el('input', { cls: 'in', type: 'text', inputmode: 'decimal', autocomplete: 'off', 'data-key': key, 'aria-label': label });
+  inp.value = showIn(state.inputs[key], type);
+  inp.addEventListener('change', function () {
+    if (type === 'text') { state.inputs[key] = inp.value.slice(0, 199); commit(); return; }
+    var n = parseNum(inp.value), lim = LIMITS[type] || [0, 1e9];
+    var min = opts.min != null ? opts.min : lim[0], max = opts.max != null ? opts.max : lim[1];
+    if (!isFinite(n) || n < min || n > max || (opts.positive && n <= 0)) {
+      inp.setAttribute('aria-invalid', 'true');
+      inp.title = 'Valor no válido: se mantiene ' + showIn(state.inputs[key], type);
+      return;
+    }
+    inp.removeAttribute('aria-invalid'); inp.title = '';
+    state.inputs[key] = n / scaleIn(type);
+    commit();
+  });
+  if (type === 'text') inp.setAttribute('inputmode', 'text');
+  return inp;
+}
+var UNIT = { usd: 'USD', pct: '%', x: 'x', num: '', days: 'días', text: '' };
+
+var SUP_GROUPS = [
+  ['1) Precio y oferta', SRC_BRIEF, [['D10','Precio pago único','usd',1],['D11','Precio total plan 3 cuotas','usd',1],['D12','Mix pago único (% clientes)','pct'],['D13','Order bump (precio)','usd'],['D14','Order bump (tasa de toma)','pct'],['D15','Upsell post-compra (precio)','usd'],['D16','Upsell (tasa de toma)','pct']]],
+  ['2) Economía', SRC_BRIEF, [['D21','Tasa de reembolso y contracargos','pct'],['D22','Comisión de procesamiento (% ingreso neto)','pct'],['D23','Comisión fija por transacción','usd'],['D24','Transacciones por cliente','num'],['D25','COGS variable (% ingreso neto)','pct']]],
+  ['3) Backend y expansión (12 meses)', SRC_BRIEF, [['D30','Segundo producto (precio)','usd'],['D31','Attach de segundo producto','pct'],['D32','Margen de contribución del segundo producto','pct'],['D33','Factor de neteo del backend','pct']]],
+  ['4) Costos fijos y OPEX', SRC_BRIEF, [['D38','Plataforma/herramientas mensual','usd'],['D39','Equipo (medios+creativo+apertura) mensual','usd']]],
+  ['5) Benchmarks de canal (2026)', SRC_BENCH, [['D44','Meta CPM','usd'],['D45','Meta CTR enlace','pct'],['D46','Meta CVR a compra','pct'],['D47','TikTok CPM','usd'],['D48','TikTok CPC','usd'],['D49','TikTok CVR','pct'],['D50','Google Search CPC','usd'],['D51','Google Search CVR','pct'],['D52','Google Search CPL','usd'],['D53','LinkedIn CPC','usd'],['D54','LinkedIn CPL','usd'],['D55','LinkedIn CVR de clic a lead','pct'],['D56','YouTube/CTV CPM','usd'],['D57','Programática/DSP CPM','usd'],['D58','Tasa de opt-in landing','pct'],['D59','CVR de landing de venta a compra','pct',1]]],
+  ['6) Objetivos y guardavías', SRC_BRIEF, [['D64','CAC objetivo (blended)','usd',1],['D65','MER objetivo de referencia','x',1],['D66','Nivel B: listón de escalado (aMER marginal)','x',1],['D67','Nivel B: umbral de mantener','x',1],['D68','Nivel B: umbral de reducir','x',1],['D69','Crecimiento máximo semanal de presupuesto','pct'],['D70','Ventana de atribución','text'],['D74','Nivel A: aMER verde','x',1],['D75','Nivel A: aMER amarillo','x',1],['D76','Nivel A: aMER rojo','x',1],['D77','Nivel A: aMER break-even','x',1],['D78','Nivel A: MER crítico','x',1],['D79','Nivel B: aMER marginal Élite','x',1]]]
+];
+var DERIVED = { '1) Precio y oferta': ['Supuestos!D17', 'AOV bruto de referencia (derivado)', 'usd'], '2) Economía': ['Supuestos!D26', 'Factor de ingreso neto (derivado)', 'pct'], '3) Backend y expansión (12 meses)': ['Supuestos!D34', 'Contribución backend 12 m por cliente (derivada)', 'usd'], '4) Costos fijos y OPEX': ['Supuestos!D40', 'OPEX fijo total mensual (derivado)', 'usd'] };
+var derivedNodes = {};
+function buildSupuestos() {
+  var host = clear(document.getElementById('sup-groups'));
+  SUP_GROUPS.forEach(function (g) {
+    var card = el('div', { cls: 'card' }, [el('h3', { text: g[0], style: 'margin-top:0' })]);
+    g[2].forEach(function (f) {
+      var key = 'Supuestos!' + f[0], id = 'in-' + f[0];
+      var inp = cellInput(key, f[2], f[1], { positive: !!f[3] }); inp.id = id; inp.removeAttribute('aria-label');
+      card.appendChild(el('div', { cls: 'field' }, [el('label', { for: id, text: f[1] }), inp, el('span', { cls: 'u', text: UNIT[f[2]] })]));
+    });
+    if (DERIVED[g[0]]) {
+      var d = DERIVED[g[0]], v = el('strong', { cls: 'n' });
+      derivedNodes[d[0]] = [v, d[2]];
+      card.appendChild(el('div', { cls: 'field' }, [el('span', { text: d[1] }), v, el('span', { cls: 'u', text: '' })]));
+    }
+    card.appendChild(el('p', { cls: 'src', text: 'Fuente del valor por defecto: ' + g[1] + '.' }));
+    host.appendChild(card);
+  });
+}
+
+/* ================= RENDER ================= */
+var R; // resultados vigentes
+function commit() { save(); renderAll(); }
+
+function verdictBox(title, desc, zone) {
+  return el('div', { cls: 'verdict z-' + zone, role: 'status' }, [el('div', {}, [el('div', { cls: 't', text: title }), el('div', { cls: 'd', text: desc })])]);
+}
+function kpi(label, value, sub) { return el('div', { cls: 'kpi' }, [el('div', { cls: 'l', text: label }), el('div', { cls: 'v', text: value }), sub ? el('div', { cls: 's', text: sub }) : null]); }
+
+function renderResumen() {
+  var I = state.inputs, E = 'Economia Unitaria!';
+  var amer = R[E + 'D27'], ltv = R[E + 'D28'], z = zoneAamer(amer, I), idx = R['Validacion!D26'], ver = R['Validacion!F26'];
+  var host = clear(document.getElementById('sum-verdict'));
+  var title, desc, zone;
+  if (!isFinite(amer)) { title = 'Faltan datos'; desc = 'Revisa el CAC objetivo y los supuestos.'; zone = 'neutral'; }
+  else if (amer < DOC.cortePausar) { title = 'El modelo no soporta adquisición pagada en su forma actual'; desc = 'aMER ' + mult(amer) + ' por debajo de 1,20x: no es un problema de campañas. Rediseña precio, oferta o reembolsos.'; zone = 'critical'; }
+  else if (amer < I['Supuestos!D74']) { title = 'Todavía no: sube el CM1 antes de gastar en medios'; desc = 'aMER ' + mult(amer) + ' por debajo de ' + mult(I['Supuestos!D74']) + '. Sube el precio, añade un order bump o reduce reembolsos.'; zone = 'serious'; }
+  else if (amer < DOC.amerHolgura) { title = 'Apto para operar'; desc = 'aMER ' + mult(amer) + ': por encima de ' + mult(I['Supuestos!D74']) + ' para operar, sin llegar a ' + mult(DOC.amerHolgura) + ' para escalar con holgura.'; zone = 'warning'; }
+  else { title = 'Apto para escalar con holgura'; desc = 'aMER ' + mult(amer) + ' ≥ ' + mult(DOC.amerHolgura) + '.'; zone = 'good'; }
+  host.appendChild(verdictBox(title, desc, zone));
+  var k = clear(document.getElementById('sum-kpis'));
+  k.appendChild(kpi('CM1 por cliente', usd(R[E + 'D19']), 'Lo que queda tras reembolsos, comisiones y COGS'));
+  k.appendChild(kpi('CAC objetivo', usd(R[E + 'D26'], 0), 'Tu CAC real, no el del panel'));
+  k.appendChild(kpi('aMER (CM1 / CAC)', mult(amer), 'Nivel A: ' + ZONE_LABEL[z]));
+  k.appendChild(kpi('LTV:CAC (CM12 / CAC)', mult(ltv)));
+  k.appendChild(kpi('Techo de CAC (break-even)', usd(R[E + 'D33']), 'Por encima, el cliente no paga su adquisición'));
+  k.appendChild(kpi('Índice de validación', fmtN(idx, 1) + ' / 100', ver));
+  var tb = clear(document.querySelector('#sum-checks tbody'));
+  var rows = [
+    ['CM1 / CAC (aMER)', mult(amer), '≥ ' + mult(I['Supuestos!D74']) + ' para operar · ≥ ' + mult(DOC.amerHolgura) + ' con holgura', amer >= DOC.amerHolgura ? ['Con holgura', 'good'] : amer >= I['Supuestos!D74'] ? ['Opera', 'warning'] : ['No cumple', 'critical'], 'Sube el precio, añade un order bump o reduce reembolsos antes de gastar en medios'],
+    ['LTV / CAC', mult(ltv), '≥ ' + mult(DOC.ltvCacMin, 1), ltv >= DOC.ltvCacMin ? ['Cumple', 'good'] : ['No cumple', 'critical'], 'Trabaja el backend: segundo producto, membresía, recompra'],
+    ['MER de break-even', mult(R[E + 'D32']), 'Tu MER real debe superarlo con margen (objetivo ' + mult(R[E + 'D31']) + ')', R[E + 'D31'] > R[E + 'D32'] ? ['Objetivo por encima', 'good'] : ['Objetivo por debajo', 'critical'], 'Estás comprando clientes por encima de lo que valen'],
+    ['Índice de validación', fmtN(idx, 1), '≥ 75 GO · 50–74 PIVOT', [ver, ZONE_CLASS[ver]], 'PIVOT: no se compra tráfico, se rediseña la oferta. NO-GO: canales alternativos']
+  ];
+  rows.forEach(function (r) {
+    tb.appendChild(el('tr', {}, [el('td', { text: r[0] }), el('td', { cls: 'n', text: r[1] }), el('td', { text: r[2] }), el('td', {}, [badge(r[3][0], r[3][1])]), el('td', { text: r[4] })]));
+  });
+}
+
+function renderSupDerived() {
+  Object.keys(derivedNodes).forEach(function (k) {
+    var n = derivedNodes[k]; n[0].textContent = n[1] === 'pct' ? pct(R[k]) : usd(R[k]);
+  });
+}
+
+function renderEconomia() {
+  var I = state.inputs, E = 'Economia Unitaria!', aov = R[E + 'D13'];
+  var W = [['Ingreso por planes (mix pago único / 3 cuotas)', 'D10'], ['+ Order bump', 'D11'], ['+ Upsell', 'D12'], ['AOV bruto', 'D13', 1], ['− Reembolsos y contracargos', 'D14'], ['Ingreso neto', 'D15', 1], ['− Comisiones de pago (variable + fijo × transacciones)', 'D16'], ['Ingreso neto tras tarifas', 'D17', 1], ['− COGS variable', 'D18'], ['Contribución unitaria CM1', 'D19', 1], ['+ Expansión backend 12 m', 'D20'], ['Contribución 12 meses CM12', 'D21', 1]];
+  var tb = clear(document.querySelector('#eu-waterfall tbody'));
+  W.forEach(function (w) {
+    var v = R[E + w[1]], width = Math.min(100, Math.abs(v) / Math.max(aov, R[E + 'D21']) * 100);
+    var bar = el('div', { cls: 'bar' + (v < 0 ? ' neg' : ''), style: 'width:' + width.toFixed(2) + '%' });
+    tb.appendChild(el('tr', { cls: w[2] ? 'total' : '' }, [el('td', { text: w[0] }), el('td', { cls: 'n', text: v < 0 ? '(' + fmtN(-v, 1) + ')' : fmtN(v, 1) }), el('td', { cls: 'barcell' }, [bar])]));
+  });
+  var K = [['CAC objetivo', usd(R[E + 'D26'], 0)], ['CM1 / CAC (aMER)', mult(R[E + 'D27'])], ['CM12 / CAC (LTV:CAC)', mult(R[E + 'D28'])], ['Margen de contribución', pct(R[E + 'D29'])], ['Payback (fórmula del Excel: CAC ÷ CM1 × 30)', fmtN(R[E + 'D30'], 1) + ' días'], ['MER objetivo (AOV bruto / CAC)', mult(R[E + 'D31'])], ['MER de break-even (AOV bruto / CM1)', mult(R[E + 'D32'])], ['CAC de break-even (= CM1)', usd(R[E + 'D33'])], ['CAC máximo operativo (verde, Nivel A)', usd(R[E + 'D37'])], ['CAC máximo (amarillo, Nivel A)', usd(R[E + 'D34'])], ['CAC crítico (rojo, Nivel A)', usd(R[E + 'D35'])], ['CAC de apagado (break-even)', usd(R[E + 'D36'])]];
+  var tk = clear(document.querySelector('#eu-kpi tbody'));
+  K.forEach(function (k) { tk.appendChild(el('tr', {}, [el('td', { text: k[0] }), el('td', { cls: 'n', text: k[1] })])); });
+  var cm1 = R[E + 'D19'];
+  var ta = clear(document.querySelector('#eu-nivela tbody'));
+  [['Verde', 'good', '≥ ' + fmtN(I['Supuestos!D65'], 2), '≥ ' + fmtN(I['Supuestos!D74'], 2), '≤ ' + usd(cm1 / I['Supuestos!D74'], 0), 'Escalar hasta +' + pct(I['Supuestos!D69'], 0) + ' semanal'],
+   ['Amarillo', 'warning', fmtN(I['Supuestos!D67'], 2) + '–' + fmtN(I['Supuestos!D65'] - 0.01, 2), fmtN(I['Supuestos!D75'], 2) + '–' + fmtN(I['Supuestos!D74'] - 0.01, 2), '≤ ' + usd(cm1 / I['Supuestos!D75'], 0), 'Congelar presupuesto y optimizar'],
+   ['Rojo', 'serious', fmtN(I['Supuestos!D78'], 2) + '–' + fmtN(I['Supuestos!D67'] - 0.01, 2), fmtN(I['Supuestos!D76'], 2) + '–' + fmtN(I['Supuestos!D75'] - 0.01, 2), '≤ ' + usd(cm1 / I['Supuestos!D76'], 0), 'Reducir 30 % y reestructurar'],
+   ['Apagado', 'critical', '< ' + fmtN(I['Supuestos!D78'], 2), '< ' + fmtN(I['Supuestos!D76'], 2), '> ' + usd(cm1 / I['Supuestos!D76'], 0), 'Corte inmediato']
+  ].forEach(function (r) { ta.appendChild(el('tr', {}, [el('td', {}, [badge(r[0], r[1])]), el('td', { cls: 'n', text: r[2] }), el('td', { cls: 'n', text: r[3] }), el('td', { cls: 'n', text: r[4] }), el('td', { text: r[5] })])); });
+  var tbB = clear(document.querySelector('#eu-nivelb tbody'));
+  [['Élite', 'good', '≥ ' + fmtN(I['Supuestos!D79'], 2), '≤ ' + usd(cm1 / I['Supuestos!D79'], 0), 'Duplicar la apuesta en el ángulo ganador'],
+   ['Escalar', 'good', fmtN(I['Supuestos!D66'], 2) + '–' + fmtN(I['Supuestos!D79'] - 0.01, 2), '≤ ' + usd(cm1 / I['Supuestos!D66'], 0), 'Subir hasta +' + pct(I['Supuestos!D69'], 0) + ' semanal'],
+   ['Mantener', 'warning', fmtN(I['Supuestos!D67'], 2) + '–' + fmtN(I['Supuestos!D66'] - 0.01, 2), '≤ ' + usd(cm1 / I['Supuestos!D67'], 0), 'Meseta rentable: no subir ni bajar; trabajar CPM y creativo'],
+   ['Reducir', 'serious', fmtN(I['Supuestos!D68'], 2) + '–' + fmtN(I['Supuestos!D67'] - 0.01, 2), '≤ ' + usd(cm1 / I['Supuestos!D68'], 0), 'Reducir 30 % y auditar creativo, landing, oferta y tracking'],
+   ['Apagar', 'critical', '< ' + fmtN(I['Supuestos!D68'], 2), '> ' + usd(cm1 / I['Supuestos!D68'], 0), 'Apagar el canal o el ángulo']
+  ].forEach(function (r) { tbB.appendChild(el('tr', {}, [el('td', {}, [badge(r[0], r[1])]), el('td', { cls: 'n', text: r[2] }), el('td', { cls: 'n', text: r[3] }), el('td', { text: r[4] })])); });
+  // Escenarios de reembolso
+  var base = I['Supuestos!D21'];
+  var opt = isNum(state.scen.opt) ? state.scen.opt : Math.max(0, base - 0.03);
+  var ts = clear(document.querySelector('#eu-scen tbody'));
+  [['Optimista', 'opt', opt], ['Base (tu supuesto)', null, base], ['Pesimista', 'pes', state.scen.pes]].forEach(function (s) {
+    var I2 = Object.assign({}, I); I2['Supuestos!D21'] = s[2];
+    var R2 = compute(I2), c = R2[E + 'D19'];
+    var cellRate;
+    if (s[1]) {
+      var inp = el('input', { cls: 'in', type: 'text', inputmode: 'decimal', 'aria-label': 'Reembolso escenario ' + s[0], value: showIn(s[2], 'pct') });
+      inp.addEventListener('change', function () {
+        var n = parseNum(inp.value);
+        if (!isFinite(n) || n < 0 || n >= 100) { inp.setAttribute('aria-invalid', 'true'); return; }
+        state.scen[s[1]] = n / 100; commit();
+      });
+      cellRate = el('td', { cls: 'n' }, [inp, ' %']);
+    } else cellRate = el('td', { cls: 'n', text: pct(s[2]) });
+    ts.appendChild(el('tr', {}, [el('td', { text: s[0] }), cellRate, el('td', { cls: 'n', text: usd(c) }), el('td', { cls: 'n', text: usd(c) }), el('td', { cls: 'n', text: usd(c / I['Supuestos!D74']) }), el('td', { cls: 'n', text: mult(R2[E + 'D27']) })]));
+  });
+  var tx = clear(document.getElementById('eu-text'));
+  [
+    'El AOV bruto es ' + usd(aov) + ' y la contribución CM1 es ' + usd(cm1) + ' por cliente, después de reembolsos, tarifas y COGS.',
+    'El aMER es ' + mult(R[E + 'D27'], 1) + ' frente a un MER objetivo de ' + mult(R[E + 'D31'], 1) + '; el margen soporta un CAC de hasta ' + usd(R[E + 'D33']) + ' en break-even.',
+    'La expansión de backend añade ' + usd(R[E + 'D20']) + ' por cliente en 12 meses y lleva el LTV:CAC a ' + mult(R[E + 'D28'], 1) + ' con el CAC objetivo.',
+    'CAC objetivo de ' + usd(I['Supuestos!D64'], 0) + ': es un objetivo de operación del Nivel A. El umbral de escalado del Nivel B es más exigente: aMER marginal ≥ ' + mult(I['Supuestos!D66']) + ' (CAC marginal ≤ ' + usd(cm1 / I['Supuestos!D66'], 0) + ').',
+    cm1 > R[E + 'D26'] ? 'Recuperación del CAC inmediata: al ser un pago único, el CM1 (' + usd(cm1) + ') supera al CAC objetivo (' + usd(R[E + 'D26'], 0) + ') en la primera transacción.' : 'El CM1 (' + usd(cm1) + ') NO supera al CAC objetivo (' + usd(R[E + 'D26'], 0) + '): cada venta pierde dinero.'
+  ].forEach(function (t) { tx.appendChild(el('p', { text: t })); });
+}
+
+function renderValidacion() {
+  var I = state.inputs, V = 'Validacion!';
+  var idx = R[V + 'D26'], ver = R[V + 'F26'];
+  var host = clear(document.getElementById('val-verdict'));
+  var desc = { GO: 'Se libera el presupuesto de la Fase 1 (Tier S) y se ejecuta el sistema de adquisición completo.', PIVOT: 'No se compra tráfico. Se rediseña la oferta, el precio o el ángulo, y se repite la preventa con presupuesto reducido.', 'NO-GO': 'El producto no pasa a medios pagados. Explora orgánico, afiliación o alianzas, o abandona la línea.' }[ver];
+  host.appendChild(verdictBox(ver + ' · índice ' + fmtN(idx, 1) + ' / 100', desc, ZONE_CLASS[ver]));
+  if (Math.abs(R[V + 'D22'] - 1) > 1e-6) host.appendChild(el('div', { cls: 'warnbox', role: 'alert', text: 'Los pesos suman ' + pct(R[V + 'D22']) + ', no 100 %. El índice no es comparable hasta que sumen 100 %.' }));
+  var m = document.getElementById('val-meter');
+  m.style.setProperty('--c', 'var(--' + ZONE_CLASS[ver] + ')');
+  m.querySelector('i').style.width = Math.max(0, Math.min(100, idx)) + '%';
+  m.setAttribute('aria-label', 'Índice de validación ' + fmtN(idx, 1) + ' de 100: ' + ver);
+  var tb = clear(document.querySelector('#val-table tbody'));
+  VAL_ROWS.forEach(function (row, i) {
+    var n = 10 + i, t = row[1], lab = row[0];
+    tb.appendChild(el('tr', {}, [
+      el('th', { scope: 'row', text: lab + (row[6] ? '' : ' (menor es mejor)'), style: 'font-weight:400;color:inherit' }),
+      el('td', { cls: 'n' }, [cellInput(V + 'D' + n, 'pct', 'Peso: ' + lab)]),
+      el('td', { cls: 'n' }, [cellInput(V + 'E' + n, t, 'Umbral GO: ' + lab)]),
+      el('td', { cls: 'n' }, [cellInput(V + 'F' + n, t, 'Umbral PIVOT: ' + lab)]),
+      el('td', { cls: 'n' }, [cellInput(V + 'G' + n, t, 'Valor observado: ' + lab)]),
+      el('td', { cls: 'n', text: fmtN(R[V + 'H' + n], 1) }),
+      el('td', { cls: 'n', text: fmtN(R[V + 'I' + n], 2) })
+    ]));
+  });
+  var tf = clear(document.querySelector('#val-table tfoot'));
+  tf.appendChild(el('tr', { cls: 'total' }, [el('td', { text: 'Total' }), el('td', { cls: 'n', text: pct(R[V + 'D22'], 0) }), el('td'), el('td'), el('td'), el('td'), el('td', { cls: 'n', text: fmtN(R[V + 'I22'], 1) })]));
+}
+
+var CHANNELS = ['Meta + Instagram', 'Google Search', 'TikTok', 'YouTube/CTV', 'LinkedIn', 'Programática/DSP', 'Reserva experimental'];
+function renderMedios() {
+  var M = 'Estrategia de Medios!';
+  var tb = clear(document.querySelector('#med-mix tbody'));
+  CHANNELS.forEach(function (c, i) {
+    var r = 10 + i;
+    tb.appendChild(el('tr', {}, [el('td', { text: c })].concat(['D', 'E', 'F'].map(function (col) { return el('td', { cls: 'n' }, [cellInput(M + col + r, 'pct', 'Mix ' + c + ' fase ' + ({ D: 1, E: 2, F: 3 })[col])]); }))));
+  });
+  var tf = clear(document.querySelector('#med-mix tfoot'));
+  tf.appendChild(el('tr', { cls: 'total' }, [el('td', { text: 'Total' })].concat(['D', 'E', 'F'].map(function (col) { return el('td', { cls: 'n', text: pct(R[M + col + '17'], 0) }); }))));
+  var w = clear(document.getElementById('med-warn'));
+  var bad = ['D', 'E', 'F'].filter(function (c) { return Math.abs(R[M + c + '17'] - 1) > 1e-6; });
+  if (bad.length) w.appendChild(el('div', { cls: 'warnbox', role: 'alert', text: 'El mix de ' + bad.map(function (c) { return ({ D: 'Fase 1', E: 'Fase 2', F: 'Fase 3' })[c]; }).join(', ') + ' no suma 100 %: la asignación no reparte todo el presupuesto.' }));
+  var ta = clear(document.querySelector('#med-alloc tbody'));
+  ta.appendChild(el('tr', {}, [el('td', { text: 'Presupuesto mensual de medios' })].concat(['D', 'E', 'F'].map(function (col) { return el('td', { cls: 'n' }, [cellInput(M + col + '22', 'usd', 'Presupuesto mensual ' + ({ D: 'Aprendizaje', E: 'Escalado', F: 'Dominio' })[col])]); }))));
+  CHANNELS.forEach(function (c, i) {
+    ta.appendChild(el('tr', {}, [el('td', { text: c })].concat(['D', 'E', 'F'].map(function (col) { return el('td', { cls: 'n', text: fmtN(R[M + col + (25 + i)], 0) }); }))));
+  });
+  var taf = clear(document.querySelector('#med-alloc tfoot'));
+  taf.appendChild(el('tr', { cls: 'total' }, [el('td', { text: 'Total' })].concat(['D', 'E', 'F'].map(function (col) { return el('td', { cls: 'n', text: fmtN(R[M + col + '32'], 0) }); }))));
+  var tt = clear(document.querySelector('#med-tiers tbody'));
+  ['Tier S · Validación', 'Tier M · Tracción', 'Tier L · Escala', 'Tier XL · Dominio'].forEach(function (name, i) {
+    var r = 37 + i;
+    tt.appendChild(el('tr', {}, [el('td', { text: name }), el('td', { cls: 'n' }, [cellInput(M + 'D' + r, 'usd', 'Diario mínimo ' + name)]), el('td', { cls: 'n' }, [cellInput(M + 'E' + r, 'usd', 'Diario máximo ' + name)]), el('td', { cls: 'n', text: fmtN(R[M + 'F' + r], 0) }), el('td', { cls: 'n', text: fmtN(R[M + 'G' + r], 0) }), el('td', { cls: 'n', text: fmtN(R[M + 'H' + r], 1) }), el('td', { cls: 'n', text: fmtN(R[M + 'I' + r], 0) })]));
+  });
+}
+
+function renderEscalado() {
+  var X = 'Escalado!', E = 'Economia Unitaria!', I = state.inputs;
+  var hi = document.getElementById('esc-inputs');
+  if (!hi.firstChild) {
+    [['D10', 'Presupuesto mes 1', 'usd'], ['D11', 'Crecimiento mensual Fase 1 Aprendizaje', 'pct'], ['D12', 'Crecimiento mensual Fase 2 Escalado', 'pct'], ['D13', 'Crecimiento mensual Fase 3 Dominio', 'pct']].forEach(function (f) {
+      var inp = cellInput(X + f[0], f[2], f[1]); inp.id = 'esc-' + f[0]; inp.removeAttribute('aria-label');
+      hi.appendChild(el('div', { cls: 'field' }, [el('label', { for: inp.id, text: f[1] }), inp, el('span', { cls: 'u', text: UNIT[f[2]] })]));
+    });
+  }
+  var tb = clear(document.querySelector('#esc-sim tbody'));
+  var cm1 = R[E + 'D19'];
+  for (var r = 18; r <= 29; r++) {
+    var m = r - 17, amer = cm1 / I[X + 'H' + r];
+    tb.appendChild(el('tr', {}, [
+      el('td', { text: String(m) }), el('td', { text: R[X + 'D' + r].replace('Fase ', 'F') }),
+      el('td', { cls: 'n', text: fmtN(R[X + 'E' + r], 0) }), el('td', { cls: 'n', text: fmtN(R[X + 'F' + r], 0) }),
+      el('td', { cls: 'n' }, [cellInput(X + 'H' + r, 'usd', 'CAC mes ' + m, { positive: true })]),
+      el('td', { cls: 'n' }, [cellInput(X + 'I' + r, 'usd', 'AOV mes ' + m)]),
+      el('td', { cls: 'n', text: fmtN(R[X + 'G' + r], 0) }), el('td', { cls: 'n', text: fmtN(R[X + 'J' + r], 0) }),
+      el('td', { cls: 'n', text: mult(R[X + 'K' + r]) }), el('td', { cls: 'n', text: mult(amer) }),
+      el('td', { cls: 'n', text: fmtN(R[X + 'L' + r], 0) }), el('td', { cls: 'n', text: fmtN(R[X + 'M' + r], 0) }),
+      el('td', { cls: 'n', text: mult(R[X + 'N' + r]) }), el('td', { cls: 'n', text: fmtN(R[X + 'O' + r], 0) }), el('td', { cls: 'n', text: fmtN(R[X + 'P' + r], 0) })
+    ]));
+  }
+  var spend = R[X + 'F29'], cust = R[X + 'O29'], contrib = R[X + 'M29'];
+  var peak = 18; for (var p = 19; p <= 29; p++) if (R[X + 'N' + p] > R[X + 'N' + peak]) peak = p;
+  var k = clear(document.getElementById('esc-kpis'));
+  k.appendChild(kpi('Inversión en medios 12 m', usd(spend, 0)));
+  k.appendChild(kpi('Contribución CM1 12 m', usd(contrib, 0)));
+  k.appendChild(kpi('Clientes nuevos', fmtN(cust, 0)));
+  k.appendChild(kpi('CAC medio ponderado', usd(spend / cust, 0)));
+  k.appendChild(kpi('ROI acumulado mes 12', mult(R[X + 'N29']), 'Pico ' + mult(R[X + 'N' + peak]) + ' en el mes ' + (peak - 17)));
+  k.appendChild(kpi('ROI sobre LTV (con CM12)', mult(cust * R[E + 'D21'] / spend - 1)));
+  var tc = clear(document.querySelector('#esc-curve tbody'));
+  for (var c = 35; c <= 46; c++) {
+    var zn = R[X + 'F' + c];
+    tc.appendChild(el('tr', {}, [el('td', {}, [cellInput(X + 'C' + c, 'usd', 'Gasto diario punto ' + (c - 34), { positive: true })]), el('td', { cls: 'n' }, [cellInput(X + 'D' + c, 'x', 'aMER marginal punto ' + (c - 34), { positive: true })]), el('td', { cls: 'n', text: usd(R[X + 'E' + c]) }), el('td', {}, [badge(ZONE_LABEL[zn], ZONE_CLASS[zn])])]));
+  }
+  drawCurve();
+}
+
+var SVGNS = 'http://www.w3.org/2000/svg';
+function sv(tag, attrs, text) { var n = document.createElementNS(SVGNS, tag); Object.keys(attrs).forEach(function (k) { n.setAttribute(k, attrs[k]); }); if (text != null) n.textContent = text; return n; }
+function drawCurve() {
+  var svg = document.getElementById('esc-chart'), X = 'Escalado!', I = state.inputs;
+  Array.prototype.slice.call(svg.querySelectorAll('g')).forEach(function (g) { svg.removeChild(g); });
+  var W = 720, H = 300, L = 48, Rm = 92, T = 16, B = 40;
+  var pts = []; for (var r = 35; r <= 46; r++) pts.push({ x: I[X + 'C' + r], y: I[X + 'D' + r], z: R[X + 'F' + r], cac: R[X + 'E' + r] });
+  pts = pts.filter(function (p) { return p.x > 0 && isFinite(p.y); }).sort(function (a, b) { return a.x - b.x; });
+  if (!pts.length) return;
+  var xmin = Math.min.apply(null, pts.map(function (p) { return p.x; })), xmax = Math.max.apply(null, pts.map(function (p) { return p.x; }));
+  var lx0 = Math.log10(xmin) - 0.05, lx1 = Math.log10(xmax) + 0.05;
+  var ymax = Math.ceil(Math.max(I['Supuestos!D79'], Math.max.apply(null, pts.map(function (p) { return p.y; }))) + 0.2);
+  var sx = function (v) { return L + (Math.log10(v) - lx0) / (lx1 - lx0) * (W - L - Rm); };
+  var sy = function (v) { return T + (1 - v / ymax) * (H - T - B); };
+  var g = sv('g', {});
+  for (var yv = 0; yv <= ymax; yv++) { g.appendChild(sv('line', { class: 'gl', x1: L, x2: W - Rm, y1: sy(yv), y2: sy(yv) })); g.appendChild(sv('text', { x: L - 8, y: sy(yv) + 4, 'text-anchor': 'end' }, fmtN(yv, 0) + 'x')); }
+  [100, 250, 500, 1000, 2500, 5000, 10000].forEach(function (t) { if (Math.log10(t) >= lx0 && Math.log10(t) <= lx1) g.appendChild(sv('text', { x: sx(t), y: H - B + 18, 'text-anchor': 'middle' }, fmtN(t, 0))); });
+  g.appendChild(sv('text', { x: (L + W - Rm) / 2, y: H - 4, 'text-anchor': 'middle' }, 'Gasto diario (USD)'));
+  g.appendChild(sv('line', { class: 'ax', x1: L, x2: W - Rm, y1: sy(0), y2: sy(0) }));
+  [['D79', 'Élite', 'good'], ['D66', 'Escalar', 'good'], ['D67', 'Mantener', 'warning'], ['D68', 'Reducir', 'serious']].forEach(function (t) {
+    var y = sy(I['Supuestos!' + t[0]]);
+    g.appendChild(sv('line', { class: 'th', x1: L, x2: W - Rm, y1: y, y2: y, stroke: 'var(--' + t[2] + ')' }));
+    g.appendChild(sv('text', { x: W - Rm + 6, y: y + 4 }, t[1] + ' ' + fmtN(I['Supuestos!' + t[0]], 2) + 'x'));
+  });
+  var d = pts.map(function (p, i) { return (i ? 'L' : 'M') + sx(p.x).toFixed(1) + ' ' + sy(p.y).toFixed(1); }).join(' ');
+  g.appendChild(sv('path', { class: 'ln', d: d }));
+  var tip = document.getElementById('tip');
+  pts.forEach(function (p) {
+    var label = fmtN(p.x, 0) + ' USD/día · aMER marginal ' + mult(p.y) + ' · CAC ' + usd(p.cac, 0) + ' · ' + ZONE_LABEL[p.z];
+    var c = sv('circle', { cx: sx(p.x), cy: sy(p.y), r: 6, fill: 'var(--' + ZONE_CLASS[p.z] + ')', tabindex: '0', role: 'img', 'aria-label': label });
+    var show = function (ev) {
+      tip.textContent = label; tip.style.display = 'block';
+      var b = c.getBoundingClientRect(), x = ev && ev.clientX != null ? ev.clientX : b.left + b.width / 2, y = ev && ev.clientY != null ? ev.clientY : b.top;
+      var tw = tip.offsetWidth; tip.style.left = Math.max(8, Math.min(window.innerWidth - tw - 8, x - tw / 2)) + 'px'; tip.style.top = Math.max(8, y - 44) + 'px';
+    };
+    var hide = function () { tip.style.display = 'none'; };
+    c.addEventListener('mouseenter', show); c.addEventListener('mousemove', show); c.addEventListener('mouseleave', hide);
+    c.addEventListener('focus', function () { show(null); }); c.addEventListener('blur', hide);
+    g.appendChild(c);
+  });
+  svg.appendChild(g);
+}
+
+/* ---- Rutina semanal ---- */
+var WEEK_FIELDS = [
+  ['gasto', 'Gasto en medios esta semana (USD)'], ['gastoAnt', 'Gasto la semana anterior (USD)'],
+  ['ingreso', 'Ingreso bruto esta semana (USD)'], ['contrib', 'Contribución esta semana (USD)'], ['contribAnt', 'Contribución la semana anterior (USD)'],
+  ['emq', 'Event Match Quality (0–10)'], ['freq', 'Frecuencia en prospección'], ['ctrDrop', 'Caída semanal del CTR (%)', 'pct'],
+  ['dias', 'Días desde el último cambio'], ['conv', 'Conversiones de la semana']
+];
+var CONDS = [
+  ['verde14', '14 días o más en zona verde del Nivel A (MER ≥ 3,00)'],
+  ['ventana', 'Ventanas de atribución cerradas (7 días completos desde el último cambio)'],
+  ['emqok', 'Event Match Quality por encima de 7 (objetivo 8,8–9,3)'],
+  ['lift', 'Prueba de incrementalidad (holdout o geo-test) que confirma el lift'],
+  ['banco', 'Banco creativo con 8–12 conceptos y reposición de 5–15 creatividades semanales']
+];
+function buildRutina() {
+  var f = clear(document.getElementById('rut-form'));
+  WEEK_FIELDS.forEach(function (w) {
+    var inp = el('input', { cls: 'in', type: 'text', inputmode: 'decimal', id: 'wk-' + w[0], autocomplete: 'off' });
+    var v = state.weekly[w[0]]; if (isNum(v)) inp.value = w[2] === 'pct' ? showIn(v, 'pct') : fmtN(v, v % 1 ? 2 : 0);
+    inp.addEventListener('change', function () {
+      if (inp.value.trim() === '') { delete state.weekly[w[0]]; inp.removeAttribute('aria-invalid'); commit(); return; }
+      var n = parseNum(inp.value);
+      if (!isFinite(n) || (w[0] !== 'contrib' && w[0] !== 'contribAnt' && n < 0)) { inp.setAttribute('aria-invalid', 'true'); return; }
+      inp.removeAttribute('aria-invalid');
+      state.weekly[w[0]] = w[2] === 'pct' ? n / 100 : n; commit();
+    });
+    f.appendChild(el('label', { for: 'wk-' + w[0] }, [w[1], inp]));
+  });
+  var ul = clear(document.getElementById('rut-conds'));
+  CONDS.forEach(function (c) {
+    var cb = el('input', { type: 'checkbox', id: 'cond-' + c[0] }); cb.checked = !!state.conds[c[0]];
+    cb.addEventListener('change', function () { if (cb.checked) state.conds[c[0]] = true; else delete state.conds[c[0]]; commit(); });
+    ul.appendChild(el('li', {}, [cb, el('label', { for: 'cond-' + c[0], text: c[1] })]));
+  });
+}
+var lastWeekly = null;
+function renderRutina() {
+  var I = state.inputs, w = {}, host = clear(document.getElementById('rut-out'));
+  WEEK_FIELDS.forEach(function (f) { w[f[0]] = isNum(state.weekly[f[0]]) ? state.weekly[f[0]] : NaN; });
+  if (!isFinite(w.gasto) || !isFinite(w.contrib)) {
+    host.appendChild(el('div', { cls: 'card note', text: 'Completa al menos el gasto y la contribución de esta semana para obtener la decisión.' }));
+    lastWeekly = null; return;
+  }
+  var r = weeklyDecision(w, I); lastWeekly = { w: w, r: r };
+  var title, desc, zone;
+  if (r.blocked === 'emq') { title = 'No tomes decisiones: repara la señal primero'; desc = 'EMQ ' + fmtN(w.emq, 1) + ' < 7. Revisa eventos, CAPI y deduplicación. Presupuesto congelado hasta reparar.'; zone = 'critical'; }
+  else if (r.learning) { title = 'Fase de aprendizaje: no juzgues todavía'; desc = 'No se juzga ninguna campaña antes de 7 días y 50 conversiones (lo que llegue más tarde). Entre el día 7 y el 14 se tolera hasta el doble del CAC objetivo si la tendencia baja.'; zone = 'neutral'; }
+  else if (!r.marginalApplies) { title = 'Sin incremento de gasto: el aMER marginal no aplica'; desc = 'Decide con la salud de la cuenta (Nivel A). Para escalar, sube como máximo un ' + pct(I['Supuestos!D69'], 0) + ' y mide el incremento la semana siguiente.'; zone = r.zoneAmer ? ZONE_CLASS[r.zoneAmer] : 'neutral'; }
+  else {
+    var zb = r.zoneB, allConds = CONDS.every(function (c) { return state.conds[c[0]]; });
+    if (zb === 'Elite' || zb === 'Escalar') {
+      if (allConds) { title = (zb === 'Elite' ? 'Élite: duplica la apuesta en el ángulo ganador, ' : 'Escalar: ') + 'sube hasta un ' + pct(I['Supuestos!D69'], 0); desc = 'aMER marginal ' + mult(r.amerMarg) + ' ≥ ' + mult(I['Supuestos!D66']) + '. Próximo gasto semanal máximo: ' + usd(r.nextBudget, 0) + '.'; zone = 'good'; }
+      else { title = 'El incremento rinde, pero faltan condiciones para escalar'; desc = 'aMER marginal ' + mult(r.amerMarg) + '. Completa las condiciones del Playbook §4.1 antes de subir el presupuesto; mientras tanto, mantén.'; zone = 'warning'; }
+    } else if (zb === 'Mantener') { title = 'Meseta rentable: ni subas ni bajes'; desc = 'aMER marginal ' + mult(r.amerMarg) + ' entre ' + mult(I['Supuestos!D67']) + ' y ' + mult(I['Supuestos!D66']) + '. Trabaja el CPM y el creativo.'; zone = 'warning'; }
+    else if (zb === 'Reducir') { title = 'Reduce un 30 % y audita las cuatro capas'; desc = 'aMER marginal ' + mult(r.amerMarg) + '. Audita creativo, landing, oferta y tracking. Próximo gasto semanal: ' + usd(r.nextBudget, 0) + '.'; zone = 'serious'; }
+    else { title = 'Apaga el canal o el ángulo'; desc = 'aMER marginal ' + mult(r.amerMarg) + ' < ' + mult(I['Supuestos!D68']) + '. Aplica el protocolo de salida ordenada y reasigna el presupuesto el mismo día.'; zone = 'critical'; }
+  }
+  host.appendChild(verdictBox(title, desc, zone));
+  var tb = el('tbody');
+  var rows = [
+    ['1 · MER de los últimos 7 días (ingreso ÷ gasto)', mult(r.mer), r.zoneMer ? badge(ZONE_LABEL[r.zoneMer], ZONE_CLASS[r.zoneMer]) : badge('Sin dato', 'neutral')],
+    ['1b · aMER de período (contribución ÷ gasto)', mult(r.amer), r.zoneAmer ? badge(ZONE_LABEL[r.zoneAmer], ZONE_CLASS[r.zoneAmer]) : badge('Sin dato', 'neutral')],
+    ['2 · aMER marginal del incremento', r.marginalApplies ? mult(r.amerMarg) : 'No aplica', r.zoneB ? badge(ZONE_LABEL[r.zoneB], ZONE_CLASS[r.zoneB]) : badge('Sin incremento', 'neutral')],
+    ['3 · Event Match Quality', isFinite(w.emq) ? fmtN(w.emq, 1) : '—', !isFinite(w.emq) ? badge('Sin dato', 'neutral') : r.blocked ? badge('Reparar la señal', 'critical') : badge('OK', 'good')],
+    ['4 · Frecuencia en prospección', isFinite(w.freq) ? fmtN(w.freq, 2) : '—', !isFinite(w.freq) ? badge('Sin dato', 'neutral') : r.saturacion ? badge('Saturación', 'serious') : badge('OK', 'good')],
+    ['5 · Vida útil del creativo (caída del CTR)', isFinite(w.ctrDrop) ? pct(w.ctrDrop) : '—', !isFinite(w.ctrDrop) ? badge('Sin dato', 'neutral') : r.fatiga ? badge('Activo agotado', 'serious') : badge('OK', 'good')]
+  ];
+  rows.forEach(function (x) { tb.appendChild(el('tr', {}, [el('td', { text: x[0] }), el('td', { cls: 'n', text: x[1] }), el('td', {}, [x[2]])])); });
+  host.appendChild(el('div', { cls: 'card', style: 'margin-top:12px' }, [el('div', { cls: 'tw' }, [el('table', {}, [el('caption', { text: 'Lectura de la semana, en el orden del ritual' }), el('thead', {}, [el('tr', {}, [el('th', { scope: 'col', text: 'Qué miras' }), el('th', { scope: 'col', cls: 'n', text: 'Valor' }), el('th', { scope: 'col', text: 'Estado' })])]), tb])])]));
+  lastWeekly.title = title;
+}
+
+/* ---- Guardián ---- */
+// [id, indicador, tipo, dir(+1 = alerta si supera, -1 = alerta si baja), alerta, crítico, acción, ventana]
+var ALERTS = [
+  ['mer', 'MER de período', 'x', -1, 2.85, 2.2, 'Congelar presupuesto y auditar las cuatro capas', '7 días'],
+  ['amerm', 'aMER marginal del incremento', 'x', -1, 2.85, 2.2, 'Detener el incremento y volver al nivel anterior', '7 días'],
+  ['cac', 'CAC frente al objetivo (múltiplo)', 'x', 1, 1.25, 1.5, 'Diagnóstico de embudo completo', '7 días'],
+  ['ctr', 'Caída semanal del CTR de enlace', 'pct', 1, 0.10, 0.20, 'Recambio creativo total en 72 horas', '7 días'],
+  ['cpa', 'Subida semanal del CPA', 'pct', 1, 0.15, 0.25, 'Revisar oferta y calidad del tráfico', '7 días'],
+  ['freq', 'Frecuencia en prospección', 'num', 1, 3.0, 4.5, 'Abrir nuevos ángulos y excluir audiencia quemada', '7 días'],
+  ['roas', 'ROAS / aMER marginal', 'x', -1, 2.85, 1.4, 'Apagado del canal o del ángulo', '7–14 días'],
+  ['emq', 'Event Match Quality', 'num', -1, 7.0, 6.0, 'Detener decisiones: reparar CAPI y deduplicación', 'Inmediata'],
+  ['reemb', 'Tasa de reembolso', 'pct', 1, 0.12, 0.18, 'Auditar la promesa de la oferta y la calidad del lead', '14 días'],
+  ['optin', 'Tasa de opt-in de landing', 'pct', -1, 0.20, 0.14, 'Reescribir oferta y landing antes de comprar más tráfico', '7 días'],
+  ['dias', 'Días sin lanzar creatividad nueva', 'days', 1, 14, 21, 'Crisis de producción: activar el flujo creativo', 'Inmediata'],
+  ['conc', 'Concentración del gasto en un solo creativo', 'pct', 1, 0.60, 0.75, 'Diversificar para evitar el colapso por fatiga', '7 días'],
+  ['cpm', 'Subida del CPM en 14 días', 'pct', 1, 0.25, 0.40, 'Renegociar formato, placement y estacionalidad', '14 días'],
+  ['ltv', 'LTV:CAC de cohorte a 90 días', 'x', -1, 2.0, 1.5, 'Revisar la economía unitaria completa', '90 días']
+];
+function alertStatus(a, v) {
+  if (!isNum(v)) return null;
+  if (a[3] > 0) return v > a[5] ? 'critical' : v > a[4] ? 'warning' : 'good';
+  return v < a[5] ? 'critical' : v < a[4] ? 'warning' : 'good';
+}
+window.AndromedaModel.alertStatus = function (id, v) { var a = ALERTS.filter(function (x) { return x[0] === id; })[0]; return a ? alertStatus(a, v) : undefined; };
+function fmtT(v, t) { return t === 'pct' ? pct(v, 0) : t === 'x' ? mult(v) : t === 'days' ? fmtN(v, 0) + ' días' : fmtN(v, 1); }
+function buildGuardian() {
+  var tb = clear(document.querySelector('#gua-alerts tbody'));
+  ALERTS.forEach(function (a, i) {
+    var inp = el('input', { cls: 'in', type: 'text', inputmode: 'decimal', 'aria-label': 'Valor observado: ' + a[1], id: 'al-' + a[0] });
+    if (isNum(state.alerts[a[0]])) inp.value = showIn(state.alerts[a[0]], a[2] === 'pct' ? 'pct' : 'num');
+    var st = el('td', { 'data-status': a[0] });
+    inp.addEventListener('change', function () {
+      if (inp.value.trim() === '') { delete state.alerts[a[0]]; inp.removeAttribute('aria-invalid'); commit(); return; }
+      var n = parseNum(inp.value);
+      if (!isFinite(n) || n < 0) { inp.setAttribute('aria-invalid', 'true'); return; }
+      inp.removeAttribute('aria-invalid');
+      state.alerts[a[0]] = a[2] === 'pct' ? n / 100 : n; commit();
+    });
+    tb.appendChild(el('tr', {}, [el('td', { text: String(i + 1) }), el('td', { text: a[1] }), el('td', { cls: 'n' }, [inp, a[2] === 'pct' ? ' %' : '']), el('td', { text: (a[3] > 0 ? '> ' : '< ') + fmtT(a[4], a[2]) }), el('td', { text: (a[3] > 0 ? '> ' : '< ') + fmtT(a[5], a[2]) }), st, el('td', { text: a[6] }), el('td', { text: a[7] })]));
+  });
+  var ci = clear(document.getElementById('gua-calc-in'));
+  [['D39', 'Gasto acumulado de prueba'], ['D40', 'Contribución acumulada']].forEach(function (f) {
+    var inp = cellInput('Guardian de Pausas!' + f[0], 'usd', f[1], { positive: f[0] === 'D39' }); inp.id = 'gc-' + f[0]; inp.removeAttribute('aria-label');
+    ci.appendChild(el('div', { cls: 'field' }, [el('label', { for: inp.id, text: f[1] }), inp, el('span', { cls: 'u', text: 'USD' })]));
+  });
+}
+function renderGuardian() {
+  var I = state.inputs, G = 'Guardian de Pausas!';
+  ALERTS.forEach(function (a) {
+    var td = clear(document.querySelector('[data-status="' + a[0] + '"]'));
+    var s = alertStatus(a, state.alerts[a[0]]);
+    td.appendChild(s ? badge({ good: 'OK', warning: 'Alerta', critical: 'Crítico' }[s], s) : badge('Sin evaluar', 'neutral'));
+  });
+  var amer = R[G + 'D41'], v = corteVeredicto(amer, I), out = clear(document.getElementById('gua-calc-out'));
+  var act = { Continuar: 'Escalar según la regla del ' + pct(I['Supuestos!D69'], 0) + ' semanal.', 'Pausar y reestructurar': 'Auditoría de las cuatro capas con 7 días de plazo.', Apagar: 'Protocolo de salida ordenada y reasignación inmediata.' };
+  out.appendChild(verdictBox(v ? v + ' · aMER de la prueba ' + mult(amer) : 'Faltan datos', v ? act[v] + ' Regla: ≥ ' + mult(I['Supuestos!D74']) + ' continuar · ' + mult(DOC.cortePausar) + '–' + mult(I['Supuestos!D74'] - 0.01) + ' pausar · < ' + mult(DOC.cortePausar) + ' apagar (Playbook §5.6).' : 'Introduce un gasto mayor que cero.', v ? ZONE_CLASS[v] : 'neutral'));
+  if (v && v !== R[G + 'D42']) out.appendChild(el('p', { cls: 'note', text: 'Trazabilidad: la fórmula del Excel (umbral = MER de break-even ' + mult(R['Economia Unitaria!D32']) + ') daría «' + R[G + 'D42'] + '». Se aplica la regla del Playbook y del manual.' }));
+}
+
+/* ---- Sensibilidad ---- */
+function heatZone(v, t) { return v >= t[0] ? 'good' : v >= t[1] ? 'warning' : v >= t[2] ? 'serious' : 'critical'; }
+function renderSens() {
+  var N = 'Sensibilidad!';
+  var A = document.getElementById('sen-a'), cap = A.querySelector('caption');
+  clear(A); A.appendChild(cap);
+  var hr = el('tr', {}, [el('th', { scope: 'col', text: 'CAC \\ Attach' })]);
+  ['D', 'E', 'F', 'G', 'H', 'I'].forEach(function (c) { hr.appendChild(el('th', { scope: 'col', cls: 'n' }, [cellInput(N + c + '9', 'pct', 'Attach columna ' + c), ' %'])); });
+  A.appendChild(el('thead', {}, [hr]));
+  var tb = el('tbody');
+  for (var r = 10; r <= 17; r++) {
+    var tr = el('tr', {}, [el('th', { scope: 'row' }, [cellInput(N + 'C' + r, 'usd', 'CAC fila ' + (r - 9), { positive: true })])]);
+    ['D', 'E', 'F', 'G', 'H', 'I'].forEach(function (c) { var v = R[N + c + r]; tr.appendChild(el('td', { cls: 'n' }, [badge(mult(v), heatZone(v, [3, 2, 1.5]))])); });
+    tb.appendChild(tr);
+  }
+  A.appendChild(tb);
+  var B = document.getElementById('sen-b'), capB = B.querySelector('caption');
+  clear(B); B.appendChild(capB);
+  var hb = el('tr', {}, [el('th', { scope: 'col', text: 'CVR \\ CAC' })]);
+  ['D', 'E', 'F', 'G', 'H'].forEach(function (c) { hb.appendChild(el('th', { scope: 'col', cls: 'n' }, [cellInput(N + c + '22', 'usd', 'CAC columna ' + c, { positive: true })])); });
+  B.appendChild(el('thead', {}, [hb]));
+  var tbb = el('tbody');
+  for (var r2 = 23; r2 <= 28; r2++) {
+    var tr2 = el('tr', {}, [el('th', { scope: 'row' }, [cellInput(N + 'C' + r2, 'pct', 'CVR fila ' + (r2 - 22), { positive: true }), ' %'])]);
+    ['D', 'E', 'F', 'G', 'H'].forEach(function (c) { var v = R[N + c + r2]; tr2.appendChild(el('td', { cls: 'n' }, [badge(mult(v), heatZone(v, [3, 2.2, 1.6]))])); });
+    tbb.appendChild(tr2);
+  }
+  B.appendChild(tbb);
+}
+
+/* ---- Cuaderno ---- */
+var LOG_FIELDS = [['fecha', 'Fecha'], ['ambito', 'Ámbito'], ['decision', 'Decisión'], ['hipotesis', 'Hipótesis'], ['dato', 'Dato observado'], ['resultado', 'Resultado a 30 días']];
+function addDays(iso, n) { var d = new Date(iso + 'T00:00:00'); if (isNaN(d)) return ''; d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); }
+function renderLog() {
+  var host = clear(document.getElementById('log-list'));
+  if (!state.log.length) { host.appendChild(el('p', { cls: 'note', text: 'Todavía no hay registros.' })); return; }
+  state.log.slice().sort(function (a, b) { return a.fecha < b.fecha ? 1 : -1; }).forEach(function (e) {
+    var dl = el('dl');
+    LOG_FIELDS.slice(3).forEach(function (f) { dl.appendChild(el('dt', { text: f[1] })); dl.appendChild(el('dd', { text: e[f[0]] || '—' })); });
+    dl.appendChild(el('dt', { text: 'Revisión' })); dl.appendChild(el('dd', { text: addDays(e.fecha, 30) || '—' }));
+    var del = el('button', { cls: 'btn', type: 'button', text: 'Eliminar' });
+    del.addEventListener('click', function () {
+      if (!window.confirm('¿Eliminar este registro? No se puede deshacer.')) return;
+      state.log = state.log.filter(function (x) { return x.id !== e.id; }); commit();
+    });
+    var res = el('button', { cls: 'btn', type: 'button', text: 'Anotar resultado' });
+    res.addEventListener('click', function () {
+      var t = window.prompt('Resultado a 30 días:', e.resultado || '');
+      if (t == null) return; e.resultado = String(t).slice(0, 1000); commit();
+    });
+    host.appendChild(el('article', { cls: 'log-entry' }, [el('div', { cls: 'row', style: 'justify-content:space-between' }, [el('strong', { text: e.fecha + ' · ' + e.ambito }), badge(e.decision, ZONE_CLASS[{ Escalar: 'Escalar', Mantener: 'Mantener', Reducir: 'Reducir', Apagar: 'Apagar' }[e.decision]] || 'neutral')]), dl, el('div', { cls: 'row', style: 'margin-top:8px' }, [res, del])]));
+  });
+}
+function csvCell(s) {
+  s = String(s == null ? '' : s);
+  if (/^[=+\-@\t\r]/.test(s)) s = "'" + s; // evita inyección de fórmulas al abrir en Excel
+  return '"' + s.replace(/"/g, '""') + '"';
+}
+function toCSV(log) {
+  var lines = [LOG_FIELDS.map(function (f) { return csvCell(f[1]); }).join(';')];
+  log.forEach(function (e) { lines.push(LOG_FIELDS.map(function (f) { return csvCell(e[f[0]]); }).join(';')); });
+  return '﻿' + lines.join('\r\n');
+}
+window.AndromedaModel.toCSV = toCSV; window.AndromedaModel.sanitize = sanitize;
+function download(name, text, type) {
+  var a = el('a', { download: name });
+  a.href = URL.createObjectURL(new Blob([text], { type: type }));
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+}
+
+/* ---- Plan ---- */
+var STEPS = [
+  ['s0', '0 · Tus números', 'Hoy, 1–2 horas', 'Sustituir los supuestos azules. ¿La economía soporta publicidad pagada?', ''],
+  ['s1', '1 · Investigación', 'Semana 1', '20–30 entrevistas, test de Van Westendorp y vocabulario del cliente. ¿Dolor real y rango de precio?', ''],
+  ['s2', '2 · Instrumentación', 'Semanas 1–2', 'API de conversiones, deduplicación y EMQ verificado. ¿EMQ > 7? Sin esto no se gasta.', 'Puerta 1'],
+  ['s3', '3 · Landing y oferta', 'Semanas 1–2', 'Tres ángulos (dolor, prueba social, mecanismo), dos formatos de página. ¿Opt-in ≥ 30 % y CPL ≤ 67 USD?', ''],
+  ['s4', '4 · Preventa real', 'Semanas 3–6', 'Campaña de 500–1.500 USD con pago y garantía, tres ángulos en paralelo. ¿CVR de lead a compra ≥ 3,2 %?', 'Puerta 2'],
+  ['s5', '5 · Scorecard', 'Semana 7', 'Puntuar las 12 señales. GO ≥ 75 · PIVOT 50–74 · NO-GO < 50.', ''],
+  ['s6', '6 · Banco creativo', 'Semanas 8–10', '8–12 conceptos distintos con 2–3 variantes y producción semanal. ¿Similitud creativa < 40 %?', 'Puerta 3'],
+  ['s7', '7 · Estructura y Tier S', 'Semanas 11–12', 'CORE + LAB + RECUPERACIÓN, un objetivo por campaña, 50–150 USD/día. ¿CM1 > CAC con datos reales?', ''],
+  ['s8', '8 · Escalado', 'Desde la semana 13', 'Subidas de máximo 20 % semanal con aMER marginal verificado. ¿Sigo escalando o abro canal nuevo?', '']
+];
+var H48 = [
+  ['h1', 'Hora 1 (45 min): sustituir los supuestos azules y mirar si el aMER supera 1,20x.'],
+  ['h2', 'Hora 2 (45 min): CM1 con tres escenarios de reembolso y el techo de CAC de cada uno.'],
+  ['h3', 'Hora 3 (1 h): verificar el Event Match Quality. Si está por debajo de 7, es tu único proyecto esta semana.'],
+  ['h4', 'Hora 4 (1 h): auditar el banco creativo. ¿Menos de 8 conceptos distintos o más de 14 días con los mismos?'],
+  ['h5', 'Horas 5–8 (2–3 h): escribir las tres landing de ángulo y preparar la preventa de 500 USD.'],
+  ['h6', 'Resto: lanzar la preventa. Es el único paso que valida de verdad.']
+];
+function buildPlan() {
+  var ol = clear(document.getElementById('plan-steps'));
+  STEPS.forEach(function (s) {
+    var cb = el('input', { type: 'checkbox', id: 'pl-' + s[0] }); cb.checked = !!state.plan[s[0]];
+    cb.addEventListener('change', function () { if (cb.checked) state.plan[s[0]] = true; else delete state.plan[s[0]]; save(); });
+    var lab = el('label', { for: 'pl-' + s[0] }, [el('strong', { text: s[1] }), s[4] ? el('span', { cls: 'gate', text: s[4] }) : null, el('br'), el('span', { cls: 'note', text: s[2] + ' · ' + s[3] })]);
+    ol.appendChild(el('li', {}, [cb, lab]));
+  });
+  var ul = clear(document.getElementById('plan-48'));
+  H48.forEach(function (h) {
+    var cb = el('input', { type: 'checkbox', id: 'pl-' + h[0] }); cb.checked = !!state.plan[h[0]];
+    cb.addEventListener('change', function () { if (cb.checked) state.plan[h[0]] = true; else delete state.plan[h[0]]; save(); });
+    ul.appendChild(el('li', {}, [cb, el('label', { for: 'pl-' + h[0], text: h[1] })]));
+  });
+}
+
+/* ================= ARRANQUE Y PRUEBA DE 21 DÍAS (Manual de arranque) ================= */
+function arrCalc(a) {
+  var ingreso = a.precio + a.bump + a.up;
+  var reemb = ingreso * a.reemb, com = ingreso * a.com, cost = ingreso * a.cost; // el manual descuenta todo sobre el ingreso medio
+  var queda = ingreso - reemb - com - cost;
+  return { ingreso: ingreso, reemb: reemb, com: com, cost: cost, techo: queda, objetivo: queda * a.objPct, objetivo40: queda * 0.4 };
+}
+function d7Verdict(cobrado, gastado) {
+  if (!(gastado > 0) || !isFinite(cobrado)) return null;
+  if (cobrado > gastado) return ['Hay mercado', 'Has cobrado más de lo gastado. Sigue hasta el día 21.', 'good'];
+  if (cobrado >= gastado / 2) return ['Hay interés real, pero algo falla en el cierre', 'Revisa el precio y la página de venta.', 'warning'];
+  return ['El ángulo o el producto no funcionan', 'Has cobrado menos de la mitad de lo gastado. Vuelve al Día 1 con otro ángulo.', 'critical'];
+}
+function d21Verdict(cac, objetivo, techo) {
+  if (!isFinite(cac) || !(objetivo > 0) || !(techo > 0)) return null;
+  if (cac > techo) return ['Para', 'Tu coste por cliente supera tu techo: cada venta te cuesta dinero.', 'critical'];
+  if (cac <= objetivo * 0.9) return ['Escala', 'Muy por debajo del objetivo. Sube un 20 % cada semana.', 'good'];
+  if (cac <= objetivo * 1.1) return ['Mantén', 'Cerca del objetivo. No subas; trabaja el anuncio ganador.', 'warning'];
+  return ['Optimiza una semana más', 'Por encima del objetivo, con poco margen hasta el techo. Si no baja, para.', 'serious'];
+}
+Object.assign(window.AndromedaModel, { arrCalc: arrCalc, d7Verdict: d7Verdict, d21Verdict: d21Verdict });
+
+var ARR_NUM = { precio: 497, bump: 31, up: 53, reemb: 0.10, com: 0.045, cost: 0.10, objPct: 0.6, bumpPrecio: NaN, upPrecio: NaN, precioOferta: NaN };
+var ARR_TXT = ['quien', 'resultado', 'plazo', 'sin', 'pago', 'bumpNombre', 'upNombre'];
+function arrNum(k) { return isNum(state.arr[k]) ? state.arr[k] : ARR_NUM[k]; }
+function arrTxt(k) { return typeof state.arr[k] === 'string' ? state.arr[k] : ''; }
+function textField(host, key, label, ph, max) {
+  var id = 'arr-' + key, inp = el('input', { cls: 'in', type: 'text', id: id, maxlength: String(max || 200), placeholder: ph || '' });
+  inp.value = arrTxt(key);
+  inp.addEventListener('input', function () { state.arr[key] = inp.value.slice(0, max || 200); save(); renderArranque(); });
+  host.appendChild(el('label', { for: id }, [label, inp]));
+}
+function numField(host, key, label, type, opts) {
+  opts = opts || {};
+  var id = 'arr-' + key, inp = el('input', { cls: 'in', type: 'text', inputmode: 'decimal', id: id, autocomplete: 'off' });
+  var v = arrNum(key); if (isNum(v)) inp.value = showIn(v, type);
+  inp.addEventListener('change', function () {
+    if (inp.value.trim() === '' && opts.optional) { delete state.arr[key]; inp.removeAttribute('aria-invalid'); save(); renderArranque(); renderPrueba(); return; }
+    var n = parseNum(inp.value), max = type === 'pct' ? 100 : 1e9;
+    if (!isFinite(n) || n < 0 || n > max) { inp.setAttribute('aria-invalid', 'true'); return; }
+    inp.removeAttribute('aria-invalid'); state.arr[key] = n / scaleIn(type); save(); renderArranque(); renderPrueba();
+  });
+  host.appendChild(el('label', { for: id }, [label + (UNIT[type] ? ' (' + UNIT[type] + ')' : ''), inp]));
+}
+function copyBtn(getText) {
+  var b = el('button', { cls: 'btn', type: 'button', text: 'Copiar' });
+  b.addEventListener('click', function () {
+    var t = getText(), done = function () { b.textContent = 'Copiado'; setTimeout(function () { b.textContent = 'Copiar'; }, 1500); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, function () { b.textContent = 'Selecciona y copia'; });
+    else b.textContent = 'Selecciona y copia';
+  });
+  return b;
+}
+var ADS = [
+  ['Anuncio 1 · El que ya gasta y no ve retorno', 'GANCHO:  Llevas [cifra] al mes en anuncios y no sabes qué campaña te da el dinero.\nCUERPO:  Eso no es un problema de presupuesto. Es de medición.\n         Te enseño a calcular cuánto puedes pagar por un cliente\n         y a saber qué anuncio te lo trae, en 14 días.\nCTA:     Ver cómo funciona\nFORMATO: Vídeo tuyo a cámara, 45 segundos, con subtítulos'],
+  ['Anuncio 2 · El que tiene miedo de quemar dinero', 'GANCHO:  Antes de gastar 10.000 USD en anuncios, haz esta prueba de 500.\nCUERPO:  Si no pasa la prueba, no gastas nada más.\n         Es el mismo sistema que usé para saber si un producto\n         merecía que le pusiera dinero encima.\nCTA:     Ver la prueba\nFORMATO: Imagen estática con el titular en grande y una cifra visible'],
+  ['Anuncio 3 · El escéptico de «otro curso»', 'GANCHO:  No es un curso. Es una planilla de cálculo que te dice\n         cuánto puedes pagar por un cliente antes de perder dinero.\nCUERPO:  Metes tus números. Te devuelve tu techo de inversión.\n         Si tu coste por cliente lo supera, cada venta te empobrece.\nCTA:     Ver la planilla\nFORMATO: Grabación de pantalla, 30 segundos, mostrando la planilla'],
+  ['Anuncio 4 · Prueba social', 'GANCHO:  [NOMBRE] pasó de [cifra antes] a [cifra después] en [plazo].\nCUERPO:  No cambió de producto. Cambió cómo decidía dónde poner el dinero.\n         Aquí está lo que hizo en la primera semana.\nCTA:     Ver el caso\nFORMATO: Vídeo de testimonio, 40 segundos, con el cliente hablando'],
+  ['Anuncio 5 · El problema concreto', 'GANCHO:  El panel de anuncios te dice que vas bien.\n         Tu cuenta bancaria dice otra cosa.\nCUERPO:  La diferencia entre los dos es esto. Y se arregla en una tarde.\nCTA:     Ver qué lo causa\nFORMATO: Carrusel: cifra del panel / cifra real / qué lo explica'],
+  ['Anuncio 6 · La oferta directa (solo retargeting)', 'GANCHO:  Estuviste mirando la página de precios y no compraste.\nCUERPO:  Te falta responder una sola pregunta: ¿qué pasa si no funciona?\n         Respuesta: te devuelvo el dinero en 30 días. Sin preguntas.\nCTA:     Terminar la compra\nFORMATO: Imagen con la garantía visible y el precio']
+];
+var HORA = [['a1', 'Escribe tu frase de promesa con la plantilla de la tarea 1 (15 min)'], ['a2', 'Haz la cuenta de la tarea 4: tu techo de CAC y tu CAC objetivo (15 min)'], ['a3', 'Escribe el gancho del anuncio 1. Solo el gancho (15 min)'], ['a4', 'Manda el mensaje de la tarea 6 a 10 personas de tu público (15 min)']];
+function buildArranque() {
+  var p = clear(document.getElementById('arr-promesa'));
+  textField(p, 'quien', 'A quién exactamente', 'dueños de tiendas online');
+  textField(p, 'resultado', 'Resultado concreto y medible', 'saber qué anuncio les trae ventas');
+  textField(p, 'plazo', 'Plazo', '14 días');
+  textField(p, 'sin', 'Sin lo que más temen', 'contratar a una agencia');
+  var pr = clear(document.getElementById('arr-precio'));
+  numField(pr, 'precioOferta', 'Precio exacto', 'usd', { optional: true });
+  var sel = el('select', { cls: 'in', id: 'arr-pago' }, [el('option', { value: '', text: 'Elegir…' }), el('option', { text: 'Pago único' }), el('option', { text: 'Pago en 3 cuotas' })]);
+  sel.value = arrTxt('pago');
+  sel.addEventListener('change', function () { state.arr.pago = sel.value; save(); renderArranque(); });
+  pr.appendChild(el('label', { for: 'arr-pago' }, ['Forma de pago (una sola)', sel]));
+  var c = clear(document.getElementById('arr-compl'));
+  textField(c, 'bumpNombre', 'Añadido de compra: qué es', '45 plantillas de anuncios probadas');
+  numField(c, 'bumpPrecio', 'Precio del añadido', 'usd', { optional: true });
+  textField(c, 'upNombre', 'Oferta posterior: qué es', 'Revisión de campañas por videollamada');
+  numField(c, 'upPrecio', 'Precio de la oferta posterior', 'usd', { optional: true });
+  var k = clear(document.getElementById('arr-calc')), g = el('div', { cls: 'form-grid' });
+  numField(g, 'precio', 'Precio del producto', 'usd');
+  numField(g, 'bump', '+ Valor medio del añadido', 'usd');
+  numField(g, 'up', '+ Valor medio de la oferta posterior', 'usd');
+  numField(g, 'reemb', '− Reembolsos (10 % si no tienes datos)', 'pct');
+  numField(g, 'com', '− Comisiones de pago', 'pct');
+  numField(g, 'cost', '− Costes del producto', 'pct');
+  numField(g, 'objPct', 'CAC objetivo como % del techo', 'pct');
+  k.appendChild(g);
+  var tm = document.getElementById('tpl-msg');
+  clear(tm).appendChild(el('pre', { id: 'tpl-msg-pre' }));
+  tm.appendChild(copyBtn(function () { return document.getElementById('tpl-msg-pre').textContent; }));
+  var ads = clear(document.getElementById('arr-ads'));
+  ADS.forEach(function (a) { ads.appendChild(el('div', { cls: 'tpl' }, [el('h4', { text: a[0] }), el('pre', { text: a[1] }), copyBtn(function () { return a[1]; })])); });
+  var ul = clear(document.getElementById('arr-hora'));
+  HORA.forEach(function (h) {
+    var cb = el('input', { type: 'checkbox', id: 'pl-' + h[0] }); cb.checked = !!state.plan[h[0]];
+    cb.addEventListener('change', function () { if (cb.checked) state.plan[h[0]] = true; else delete state.plan[h[0]]; save(); });
+    ul.appendChild(el('li', {}, [cb, el('label', { for: 'pl-' + h[0], text: h[1] })]));
+  });
+}
+function warnList(hostId, items) {
+  var h = clear(document.getElementById(hostId));
+  items.filter(Boolean).forEach(function (t) { h.appendChild(el('div', { cls: 'warnbox', text: t })); });
+}
+function renderArranque() {
+  var q = arrTxt('quien'), r = arrTxt('resultado'), pl = arrTxt('plazo'), s = arrTxt('sin');
+  document.getElementById('arr-promesa-out').textContent = 'Ayudo a ' + (q || '[QUIÉN exacto]') + ' a conseguir ' + (r || '[RESULTADO concreto y medible]') + ' en ' + (pl || '[PLAZO]') + ' sin ' + (s || '[LO QUE MÁS TEMEN]') + '.';
+  warnList('arr-promesa-warn', [
+    q && /\b(emprendedores|cualquiera|todos|todo el mundo|personas|gente)\b/i.test(q) ? '«' + q + '» es demasiado amplio: ¿quién exactamente?' : '',
+    r && !/\d/.test(r) ? 'El resultado no tiene ninguna cifra: ¿es medible?' : '',
+    pl && !/\d/.test(pl) ? 'El plazo debería ser un número concreto (14 días, 30 días…).' : ''
+  ]);
+  var po = arrNum('precioOferta');
+  warnList('arr-precio-warn', [isNum(po) && (po < 100 || po > 500) ? 'El manual recomienda un precio entre 100 y 500 USD para el primer producto: por debajo de 100 hay que vender muchísimo volumen para cubrir los anuncios.' : '']);
+  document.getElementById('arr-garantia').textContent = 'Si en 30 días no consigues ' + (r || '[el resultado de tu promesa]') + ', te devuelvo el dinero completo. Sin preguntas.';
+  var bp = arrNum('bumpPrecio'), up = arrNum('upPrecio');
+  warnList('arr-compl-warn', [isNum(bp) && (bp < 30 || bp > 100) ? 'El añadido de compra suele ir entre 30 y 100 USD (compra impulsiva).' : '', isNum(up) && (up < 200 || up > 400) ? 'La oferta posterior suele ir entre 200 y 400 USD.' : '']);
+  var a = {}; Object.keys(ARR_NUM).forEach(function (k2) { a[k2] = arrNum(k2); });
+  var cc = arrCalc(a), out = clear(document.getElementById('arr-calc-out'));
+  out.appendChild(kpi('Ingreso medio por cliente', usd(cc.ingreso)));
+  out.appendChild(kpi('Descuentos', '−' + usd(cc.reemb + cc.com + cc.cost), 'Reembolsos ' + usd(cc.reemb) + ' · comisiones ' + usd(cc.com) + ' · costes ' + usd(cc.cost)));
+  out.appendChild(kpi('Tu techo de CAC', usd(cc.techo), 'Lo que de verdad te queda'));
+  out.appendChild(kpi('CAC objetivo (' + pct(a.objPct, 0) + ' del techo)', usd(cc.objetivo, 0), 'Regla escrita en el manual'));
+  out.appendChild(kpi('CAC objetivo al 40 %', usd(cc.objetivo40, 0), 'Coincide con el ejemplo (175–185) y con el Excel'));
+  document.getElementById('tpl-msg-pre').textContent = 'Hola [nombre]. Estoy construyendo algo para ' + (r ? 'ayudarte a ' + r : '[su problema]') + ' y no quiero hacerlo a ciegas. ¿Me regalas 10 minutos esta semana? Solo quiero entender cómo lo estás resolviendo ahora. Sin venderte nada.';
+  Array.prototype.forEach.call(document.querySelectorAll('[data-arr="precio"]'), function (n) { n.textContent = fmtN(isNum(po) ? po : a.precio, 0); });
+}
+function prNum(k) { return isNum(state.prueba[k]) ? state.prueba[k] : NaN; }
+function buildPrueba() {
+  var f = clear(document.getElementById('pr-fecha'));
+  var d = el('input', { cls: 'in', type: 'date', id: 'pr-lanz' }); d.value = state.prueba.fecha || '';
+  d.addEventListener('change', function () { state.prueba.fecha = /^\d{4}-\d{2}-\d{2}$/.test(d.value) ? d.value : ''; save(); renderPrueba(); });
+  f.appendChild(el('label', { for: 'pr-lanz' }, ['Fecha de lanzamiento', d]));
+  function nf2(host, key, label) {
+    var id = 'pr-' + key, inp = el('input', { cls: 'in', type: 'text', inputmode: 'decimal', id: id });
+    if (isNum(state.prueba[key])) inp.value = fmtN(state.prueba[key], state.prueba[key] % 1 ? 2 : 0);
+    inp.addEventListener('change', function () {
+      if (inp.value.trim() === '') { delete state.prueba[key]; inp.removeAttribute('aria-invalid'); save(); renderPrueba(); return; }
+      var n = parseNum(inp.value);
+      if (!isFinite(n) || n < 0) { inp.setAttribute('aria-invalid', 'true'); return; }
+      inp.removeAttribute('aria-invalid'); state.prueba[key] = n; save(); renderPrueba();
+    });
+    host.appendChild(el('label', { for: id }, [label, inp]));
+  }
+  var d7 = clear(document.getElementById('pr-d7'));
+  nf2(d7, 'd7c', 'Cobrado en 7 días (USD)'); nf2(d7, 'd7g', 'Gastado en 7 días (USD)');
+  var d21 = clear(document.getElementById('pr-d21'));
+  nf2(d21, 'd21cac', 'Tu coste por cliente actual (USD)');
+}
+function arrTargets() {
+  var a = {}; Object.keys(ARR_NUM).forEach(function (k) { a[k] = arrNum(k); });
+  return arrCalc(a);
+}
+function renderPrueba() {
+  var host = clear(document.getElementById('pr-dia'));
+  if (state.prueba.fecha) {
+    var start = new Date(state.prueba.fecha + 'T00:00:00'), today = new Date(); today.setHours(0, 0, 0, 0);
+    var day = Math.floor((today - start) / 86400000) + 1, t, dsc, z;
+    if (day < 1) { t = 'Lanzamiento programado'; dsc = 'Faltan ' + (1 - day) + ' días.'; z = 'neutral'; }
+    else if (day < 7) { t = 'Día ' + day + ' de 21: no toques nada'; dsc = 'Ni presupuesto, ni anuncios, ni públicos. El día 7 miras si hay señal.'; z = 'neutral'; }
+    else if (day < 14) { t = 'Día ' + day + ' de 21: momento de decisión del día 7'; dsc = 'Compara lo cobrado con lo gastado. El día 14 eliges el anuncio ganador.'; z = 'warning'; }
+    else if (day < 21) { t = 'Día ' + day + ' de 21: quédate con el ganador'; dsc = 'Apaga los otros cinco, lanza 3 versiones nuevas de ese ángulo y sube un 20 %. El día 21 decides.'; z = 'warning'; }
+    else { t = 'Día ' + day + ': toca decidir'; dsc = 'La prueba de 21 días terminó. Escala, mantén, optimiza una semana o para.'; z = 'good'; }
+    host.appendChild(verdictBox(t, dsc, z));
+  } else host.appendChild(el('p', { cls: 'note', text: 'Indica la fecha de lanzamiento para ver en qué día de la prueba estás.' }));
+  var o7 = clear(document.getElementById('pr-d7-out')), v7 = d7Verdict(prNum('d7c'), prNum('d7g'));
+  if (v7) o7.appendChild(verdictBox(v7[0], v7[1], v7[2]));
+  var tg = arrTargets(), o21 = clear(document.getElementById('pr-d21-out')), v21 = d21Verdict(prNum('d21cac'), tg.objetivo, tg.techo);
+  o21.appendChild(el('p', { cls: 'note', text: 'Tu techo: ' + usd(tg.techo) + ' · tu CAC objetivo: ' + usd(tg.objetivo, 0) + ' (tarea 4).' }));
+  if (v21) o21.appendChild(verdictBox(v21[0], v21[1], v21[2]));
+  var tb = clear(document.querySelector('#wk-table tbody'));
+  if (!state.weeks.length) tb.appendChild(el('tr', {}, [el('td', { colspan: '8', cls: 'note', text: 'Sin semanas registradas.' })]));
+  state.weeks.slice().sort(function (a, b) { return a.semana < b.semana ? -1 : 1; }).forEach(function (w) {
+    var cac = w.clientes > 0 ? w.gasto / w.clientes : NaN, v = d21Verdict(cac, tg.objetivo, tg.techo);
+    var dec = w.clientes > 0 ? (v ? badge(v[0], v[2]) : badge('—', 'neutral')) : badge('Sin clientes: revisa el embudo', 'critical');
+    var del = el('button', { cls: 'btn', type: 'button', text: 'Eliminar', 'aria-label': 'Eliminar semana ' + w.semana });
+    del.addEventListener('click', function () { if (!window.confirm('¿Eliminar esta semana?')) return; state.weeks = state.weeks.filter(function (x) { return x.id !== w.id; }); save(); renderPrueba(); });
+    tb.appendChild(el('tr', {}, [el('td', { text: w.semana }), el('td', { cls: 'n', text: fmtN(w.gasto, 0) }), el('td', { cls: 'n', text: fmtN(w.cobrado, 0) + (w.cobrado > w.gasto ? ' ✓' : '') }), el('td', { cls: 'n', text: fmtN(w.clientes, 0) }), el('td', { cls: 'n', text: usd(cac, 0) }), el('td', { text: w.anuncio || '—' }), el('td', {}, [dec]), el('td', {}, [del])]));
+  });
+}
+document.getElementById('wk-form').addEventListener('submit', function (ev) {
+  ev.preventDefault();
+  var f = ev.target, st = document.getElementById('wk-status');
+  var w = { id: String(Date.now()) + Math.random().toString(36).slice(2, 8), semana: f.elements.semana.value, gasto: parseNum(f.elements.gasto.value), cobrado: parseNum(f.elements.cobrado.value), clientes: parseNum(f.elements.clientes.value), anuncio: String(f.elements.anuncio.value || '').trim().slice(0, 120) };
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(w.semana) || !(w.gasto >= 0) || !(w.cobrado >= 0) || !(w.clientes >= 0)) { st.textContent = 'Completa la semana y los tres números (sin valores negativos).'; return; }
+  state.weeks.push(w); save(); f.reset(); renderPrueba(); st.textContent = 'Semana añadida.';
+});
+
+/* ================= INFORME DE CAMPAÑA (CSV de Meta) ================= */
+function parseCSV(text) {
+  text = String(text).replace(/^﻿/, '');
+  var first = text.split(/\r?\n/, 1)[0], counts = { ',': 0, ';': 0, '\t': 0 }, q = false;
+  for (var i = 0; i < first.length; i++) { var ch = first[i]; if (ch === '"') q = !q; else if (!q && ch in counts) counts[ch]++; }
+  var d = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; })[0];
+  var rows = [], row = [], cell = '', inQ = false;
+  for (var j = 0; j < text.length; j++) {
+    var c = text[j];
+    if (inQ) {
+      if (c === '"') { if (text[j + 1] === '"') { cell += '"'; j++; } else inQ = false; }
+      else cell += c;
+    } else if (c === '"') inQ = true;
+    else if (c === d) { row.push(cell); cell = ''; }
+    else if (c === '\n' || c === '\r') { if (c === '\r' && text[j + 1] === '\n') j++; row.push(cell); cell = ''; if (row.some(function (x) { return x.trim() !== ''; })) rows.push(row); row = []; }
+    else cell += c;
+  }
+  row.push(cell); if (row.some(function (x) { return x.trim() !== ''; })) rows.push(row);
+  rows.delim = d;
+  return rows;
+}
+// commaDecimal: true = «1.234,56» (coma decimal), false = «1,234.56» (punto decimal), undefined = deducir
+function csvNum(s, commaDecimal) {
+  s = String(s == null ? '' : s).trim().replace(/[\s$%]|USD/gi, '');
+  if (s === '') return 0;
+  if (commaDecimal === true) s = s.replace(/\./g, '').replace(',', '.');
+  else if (commaDecimal === false) s = s.replace(/,/g, '');
+  else {
+    var lc = s.lastIndexOf(','), ld = s.lastIndexOf('.');
+    if (lc >= 0 && ld >= 0) s = lc > ld ? s.replace(/\./g, '').replace(',', '.') : s.replace(/,/g, '');
+    else if (lc >= 0) s = s.replace(',', '.');
+  }
+  var n = Number(s);
+  return isFinite(n) ? n : NaN;
+}
+function normH(h) { return String(h).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, ' ').trim(); }
+// [clave, alias exactos, alias por prefijo]
+var REP_COLS = [
+  ['inicio', ['inicio del informe', 'reporting starts'], []],
+  ['fin', ['fin del informe', 'reporting ends'], []],
+  ['dia', ['dia', 'day'], []],
+  ['nombre', [], ['nombre del conjunto de anuncios', 'ad set name', 'nombre de la campana', 'campaign name', 'nombre del anuncio', 'ad name']],
+  ['estado', [], ['entrega del conjunto de anuncios', 'ad set delivery', 'entrega de la campana', 'campaign delivery', 'entrega del anuncio', 'ad delivery']],
+  ['gasto', [], ['importe gastado', 'amount spent']],
+  ['presupuesto', [], ['presupuesto del conjunto de anuncios', 'ad set budget', 'presupuesto de la campana', 'campaign budget']],
+  ['impr', [], ['impresiones', 'impressions']],
+  ['alcance', ['alcance', 'reach'], []],
+  ['clics', [], ['clics en el enlace', 'link clicks']],
+  ['lp', [], ['visitas a la pagina de destino', 'landing page views']],
+  ['checkouts', ['pagos iniciados', 'checkouts initiated'], []],
+  ['compras', ['compras', 'purchases'], []],
+  ['valor', [], ['valor de conversion de compras', 'purchases conversion value', 'purchase conversion value']]
+];
+var REP_NUM = ['gasto', 'presupuesto', 'impr', 'alcance', 'clics', 'lp', 'checkouts', 'compras', 'valor'];
+function parseReport(text, fileName) {
+  var rows = parseCSV(text);
+  if (rows.length < 2) throw new Error('El archivo no tiene filas de datos.');
+  var H = rows[0].map(normH), idx = {};
+  REP_COLS.forEach(function (c) {
+    var k = -1;
+    c[1].forEach(function (a) { if (k < 0) k = H.indexOf(a); });
+    c[2].forEach(function (a) { if (k < 0) k = H.findIndex(function (h) { return h.indexOf(a) === 0; }); });
+    if (k >= 0) idx[c[0]] = k;
+  });
+  if (idx.gasto == null) throw new Error('No se reconoce el formato: falta la columna «Importe gastado».');
+  // Convención decimal del archivo: con «;» se exporta en formato europeo (coma decimal); con «,» los números usan punto
+  var cd = rows.delim === ';' ? true : rows.delim === ',' ? false : rows.slice(1, 50).some(function (r) { return REP_NUM.some(function (k) { return idx[k] != null && /\d,\d{1,2}$/.test(String(r[idx[k]] || '').trim()); }); });
+  var date = /^\d{4}-\d{2}-\d{2}$/, out = [], level = normH(rows[0][idx.nombre] || '').indexOf('campa') >= 0 ? 'Campaña' : normH(rows[0][idx.nombre] || '').indexOf('conjunto') >= 0 || normH(rows[0][idx.nombre] || '').indexOf('ad set') >= 0 ? 'Conjunto' : 'Anuncio';
+  rows.slice(1, 5001).forEach(function (r) {
+    var o = { nombre: String(idx.nombre != null ? r[idx.nombre] || '' : 'Total').slice(0, 120), estado: String(idx.estado != null ? r[idx.estado] || '' : '').slice(0, 40) };
+    var ini = idx.dia != null ? r[idx.dia] : idx.inicio != null ? r[idx.inicio] : '', fin = idx.dia != null ? r[idx.dia] : idx.fin != null ? r[idx.fin] : ini;
+    o.inicio = date.test(String(ini).trim()) ? String(ini).trim() : ''; o.fin = date.test(String(fin).trim()) ? String(fin).trim() : o.inicio;
+    REP_NUM.forEach(function (k) { o[k] = idx[k] != null ? csvNum(r[idx[k]], cd) : NaN; });
+    if (!isFinite(o.gasto)) return;
+    out.push(o);
+  });
+  if (!out.length) throw new Error('No hay filas con importe gastado válido.');
+  var ini2 = out.map(function (x) { return x.inicio; }).filter(Boolean).sort()[0] || '', fin2 = out.map(function (x) { return x.fin; }).filter(Boolean).sort().pop() || '';
+  var cols = REP_NUM.filter(function (k) { return idx[k] != null; });
+  return { id: String(Date.now()) + Math.random().toString(36).slice(2, 8), archivo: String(fileName || 'informe.csv').slice(0, 120), nivel: level, inicio: ini2, fin: fin2, cols: cols, rows: out };
+}
+function daysBetween(a, b) { var x = new Date(a + 'T00:00:00'), y = new Date(b + 'T00:00:00'); return isNaN(x) || isNaN(y) ? NaN : Math.round((y - x) / 86400000) + 1; }
+function repAgg(rows) {
+  var t = {}; REP_NUM.forEach(function (k) { t[k] = 0; });
+  rows.forEach(function (r) { REP_NUM.forEach(function (k) { if (isFinite(r[k])) t[k] += r[k]; }); });
+  t.cpm = t.impr > 0 ? t.gasto / t.impr * 1000 : NaN;
+  t.ctr = t.impr > 0 ? t.clics / t.impr : NaN;
+  t.cpc = t.clics > 0 ? t.gasto / t.clics : NaN;
+  t.connect = t.clics > 0 ? t.lp / t.clics : NaN;
+  t.lpToCheckout = t.lp > 0 ? t.checkouts / t.lp : NaN;
+  t.checkoutToCompra = t.checkouts > 0 ? t.compras / t.checkouts : NaN;
+  t.cvr = t.clics > 0 ? t.compras / t.clics : NaN;
+  t.costCheckout = t.checkouts > 0 ? t.gasto / t.checkouts : NaN;
+  t.cac = t.compras > 0 ? t.gasto / t.compras : NaN;
+  t.roas = t.gasto > 0 && t.valor > 0 ? t.valor / t.gasto : NaN;
+  t.freq = t.alcance > 0 ? t.impr / t.alcance : NaN;
+  return t;
+}
+// Diagnóstico del informe con las reglas del sistema
+function repDiagnose(t, dias, I, cm1) {
+  var d = { learning: (isFinite(dias) ? dias < DOC.minDias : true) || t.compras < DOC.minConv };
+  d.contrib = t.compras * cm1;
+  d.amer = t.gasto > 0 ? d.contrib / t.gasto : NaN;
+  d.zoneAmer = t.compras > 0 && isFinite(d.amer) ? zoneAamer(d.amer, I) : null;
+  d.cacZone = !isFinite(t.cac) ? null : t.cac <= cm1 / I['Supuestos!D74'] ? 'good' : t.cac <= cm1 / I['Supuestos!D75'] ? 'warning' : t.cac <= cm1 / I['Supuestos!D76'] ? 'serious' : 'critical';
+  d.sinComprasSobreTecho = t.compras === 0 && t.gasto > cm1;
+  var bench = function (v, weak, strong, higherBetter) { if (!isFinite(v)) return null; return higherBetter ? (v < weak ? 'serious' : v > strong ? 'good' : 'warning') : (v > weak ? 'serious' : v < strong ? 'good' : 'warning'); };
+  d.cpm = bench(t.cpm, 22, 12, false);          // Playbook §6.2: débil > 22 · fuerte < 12
+  d.ctr = bench(t.ctr, 0.01, 0.03, true);        // débil < 1 % · fuerte > 3 %
+  d.cvr = t.clics > 0 ? bench(t.cvr, 0.012, 0.03, true) : null; // CVR a compra en social
+  d.freq = !isFinite(t.freq) ? null : t.freq > 4.5 ? 'critical' : t.freq > 3 ? 'warning' : 'good';
+  return d;
+}
+function repWinner(rows) {
+  var agg = rows.map(function (r) { return { r: r, t: repAgg([r]) }; }).filter(function (x) { return x.t.gasto > 0; });
+  agg.sort(function (a, b) {
+    if (b.t.compras !== a.t.compras) return b.t.compras - a.t.compras;
+    var ca = isFinite(a.t.costCheckout) ? a.t.costCheckout : Infinity, cb = isFinite(b.t.costCheckout) ? b.t.costCheckout : Infinity;
+    if (ca !== cb) return ca - cb;
+    var pa = isFinite(a.t.cpc) ? a.t.cpc : Infinity, pb = isFinite(b.t.cpc) ? b.t.cpc : Infinity;
+    return pa - pb;
+  });
+  return agg.length ? agg[0].r.nombre : null;
+}
+Object.assign(window.AndromedaModel, { parseCSV: parseCSV, csvNum: csvNum, parseReport: parseReport, repAgg: repAgg, repDiagnose: repDiagnose, repWinner: repWinner });
+
+var repSel = null; // id del informe o 'daily-sum'
+function renderInforme() {
+  var list = clear(document.getElementById('rep-list')), view = clear(document.getElementById('rep-view'));
+  var reps = state.reports.slice().sort(function (a, b) { return a.inicio < b.inicio ? 1 : a.inicio > b.inicio ? -1 : 0; });
+  if (!reps.length) { view.appendChild(el('p', { cls: 'note', text: 'Todavía no has cargado ningún informe.' })); return; }
+  var dailies = reps.filter(function (r) { return r.inicio === r.fin; });
+  if (!repSel || (repSel !== 'daily-sum' && !reps.some(function (r) { return r.id === repSel; })) || (repSel === 'daily-sum' && dailies.length < 2)) repSel = reps[0].id;
+  var tb = el('tbody');
+  var opt = function (id, label) {
+    var rb = el('input', { type: 'radio', name: 'rep-sel', id: 'rs-' + id, value: id }); rb.checked = repSel === id;
+    rb.addEventListener('change', function () { repSel = id; renderInforme(); });
+    return el('td', {}, [rb, el('label', { for: 'rs-' + id, cls: 'sr', text: 'Ver ' + label })]);
+  };
+  reps.forEach(function (r) {
+    var t = repAgg(r.rows), del = el('button', { cls: 'btn', type: 'button', text: 'Quitar', 'aria-label': 'Quitar ' + r.archivo });
+    del.addEventListener('click', function () { if (!window.confirm('¿Quitar este informe?')) return; state.reports = state.reports.filter(function (x) { return x.id !== r.id; }); save(); renderInforme(); });
+    tb.appendChild(el('tr', {}, [opt(r.id, r.archivo), el('td', { text: r.inicio === r.fin ? r.inicio : r.inicio + ' → ' + r.fin }), el('td', {}, [badge(r.inicio === r.fin ? 'Diario' : 'Acumulado', 'neutral')]), el('td', { text: r.archivo }), el('td', { cls: 'n', text: String(r.rows.length) }), el('td', { cls: 'n', text: usd(t.gasto, 2) }), el('td', { cls: 'n', text: fmtN(t.compras, 0) }), el('td', {}, [del])]));
+  });
+  if (dailies.length >= 2) tb.appendChild(el('tr', {}, [opt('daily-sum', 'suma de informes diarios'), el('td', { text: dailies[dailies.length - 1].inicio + ' → ' + dailies[0].fin }), el('td', {}, [badge('Suma de ' + dailies.length + ' diarios', 'neutral')]), el('td', { text: 'De inicio a fecha actual (calculado)' }), el('td'), el('td'), el('td'), el('td')]));
+  list.appendChild(el('div', { cls: 'tw' }, [el('table', {}, [el('caption', { text: 'Informes cargados: elige cuál ver' }), el('thead', {}, [el('tr', {}, ['Ver', 'Periodo', 'Tipo', 'Archivo', 'Filas', 'Gasto', 'Compras', ''].map(function (h, i) { return el('th', { scope: 'col', cls: i === 4 || i === 5 || i === 6 ? 'n' : '', text: h }); }))]), tb])]));
+
+  var rows, ini, fin, label, cols;
+  if (repSel === 'daily-sum') {
+    rows = []; dailies.forEach(function (r) { r.rows.forEach(function (x) { rows.push(x); }); });
+    ini = dailies[dailies.length - 1].inicio; fin = dailies[0].fin; label = 'Suma de ' + dailies.length + ' informes diarios';
+    cols = dailies.reduce(function (a, r) { r.cols.forEach(function (c) { if (a.indexOf(c) < 0) a.push(c); }); return a; }, []);
+  } else {
+    var rep = reps.filter(function (r) { return r.id === repSel; })[0];
+    rows = rep.rows; ini = rep.inicio; fin = rep.fin; label = rep.archivo; cols = rep.cols;
+  }
+  var I = state.inputs, cm1 = R['Economia Unitaria!D19'], t = repAgg(rows), dias = daysBetween(ini, fin), dg = repDiagnose(t, dias, I, cm1);
+  var has = function (c) { return cols.indexOf(c) >= 0; };
+  view.appendChild(el('h3', { text: label + ' · ' + (ini === fin ? ini : ini + ' → ' + fin) + (isFinite(dias) ? ' (' + dias + (dias === 1 ? ' día' : ' días') + ')' : '') }));
+  var title, desc, zone;
+  if (dg.sinComprasSobreTecho) { title = 'Has gastado más que tu techo de CAC sin ninguna compra'; desc = 'Gasto ' + usd(t.gasto, 2) + ' > techo ' + usd(cm1) + '. Cualquier cliente que llegue ya costaría más de lo que deja: revisa oferta y página antes de seguir.'; zone = 'critical'; }
+  else if (dg.learning) { title = 'Fase de aprendizaje: todavía no juzgues'; desc = (isFinite(dias) ? dias + (dias === 1 ? ' día' : ' días') : 'Periodo sin fechas') + ' y ' + fmtN(t.compras, 0) + ' compras. El sistema pide 7 días y 50 conversiones (lo que llegue más tarde) antes de decidir. No toques presupuesto, anuncios ni públicos.'; zone = 'neutral'; }
+  else if (dg.zoneAmer) { title = 'Nivel A: ' + ZONE_LABEL[dg.zoneAmer] + ' · aMER ' + mult(dg.amer); desc = { verde: 'Escalar hasta +' + pct(I['Supuestos!D69'], 0) + ' semanal, comprobando el aMER marginal.', amarillo: 'Congelar presupuesto y optimizar.', rojo: 'Reducir 30 % y reestructurar.', apagado: 'Corte inmediato.' }[dg.zoneAmer]; zone = ZONE_CLASS[dg.zoneAmer]; }
+  else { title = 'Sin compras en el periodo'; desc = 'Revisa el embudo: dónde se corta el recorrido.'; zone = 'warning'; }
+  view.appendChild(verdictBox(title, desc, zone));
+  if (has('checkouts') && has('compras') && t.checkouts >= 10 && t.compras === 0)
+    view.appendChild(el('div', { cls: 'warnbox', role: 'alert', text: fmtN(t.checkouts, 0) + ' pagos iniciados y ninguna compra registrada. Antes de tocar anuncios, comprueba que el evento de compra llega a Meta (píxel + API de conversiones, puerta 1: sin señal limpia no se decide) y que el pago se completa sin errores. Si ambas cosas están bien, el freno está en el checkout o en el precio.' }));
+  var k = el('div', { cls: 'grid kpis', style: 'margin-top:12px' });
+  k.appendChild(kpi('Gasto', usd(t.gasto, 2), isFinite(dias) && dias > 0 ? usd(t.gasto / dias, 2) + ' por día' : ''));
+  k.appendChild(kpi('Compras', has('compras') ? fmtN(t.compras, 0) : '—', has('valor') && t.valor > 0 ? 'Valor ' + usd(t.valor, 2) : ''));
+  k.appendChild(kpi('CAC (gasto ÷ compras)', usd(t.cac, 2), 'Techo ' + usd(cm1, 0) + ' · verde ≤ ' + usd(cm1 / I['Supuestos!D74'], 0)));
+  k.appendChild(kpi('aMER (compras × CM1 ÷ gasto)', mult(dg.amer), 'Contribución estimada ' + usd(dg.contrib, 0)));
+  k.appendChild(kpi('ROAS de plataforma', mult(t.roas), 'Solo para operar, no para decidir'));
+  k.appendChild(kpi('Coste por pago iniciado', usd(t.costCheckout, 2), fmtN(t.checkouts, 0) + ' pagos iniciados'));
+  view.appendChild(k);
+  // Embudo
+  var fb = el('tbody');
+  [['Impresiones', t.impr, null, 'impr'], ['Clics en el enlace', t.clics, t.ctr, 'clics', 'CTR'], ['Visitas a la página', t.lp, t.connect, 'lp', 'Llegan a cargar'], ['Pagos iniciados', t.checkouts, t.lpToCheckout, 'checkouts', 'Visita → pago'], ['Compras', t.compras, t.checkoutToCompra, 'compras', 'Pago → compra']].forEach(function (s) {
+    if (!has(s[3])) return;
+    fb.appendChild(el('tr', {}, [el('td', { text: s[0] }), el('td', { cls: 'n', text: fmtN(s[1], 0) }), el('td', { cls: 'n', text: s[2] == null ? '' : pct(s[2], 1) }), el('td', { text: s[4] || '' })]));
+  });
+  var bt = el('tbody');
+  [['CPM', usd(t.cpm, 2), dg.cpm, 'Media 2026: 16,80 USD · débil > 22 · fuerte < 12'], ['CTR del enlace (clics ÷ impresiones)', pct(t.ctr, 2), dg.ctr, 'Media 2,19 % · débil < 1 % · fuerte > 3 %'], ['CPC del enlace', usd(t.cpc, 2), null, ''], ['CVR clic → compra', pct(t.cvr, 2), dg.cvr, 'Social: 1,6–2,5 % · débil < 1,2 % · fuerte > 3 %'], ['Frecuencia (impresiones ÷ alcance, aprox.)', fmtN(t.freq, 2), dg.freq, 'Alerta > 3,0 · crítico > 4,5']].forEach(function (b) {
+    bt.appendChild(el('tr', {}, [el('td', { text: b[0] }), el('td', { cls: 'n', text: b[1] }), el('td', {}, [b[2] ? badge({ good: 'Fuerte', warning: 'En la media', serious: 'Débil', critical: 'Crítico' }[b[2]], b[2]) : badge('—', 'neutral')]), el('td', { cls: 'note', text: b[3] })]));
+  });
+  view.appendChild(el('div', { cls: 'grid two', style: 'margin-top:12px' }, [
+    el('div', { cls: 'card' }, [el('div', { cls: 'tw' }, [el('table', {}, [el('caption', { text: 'Embudo del periodo' }), el('thead', {}, [el('tr', {}, [el('th', { scope: 'col', text: 'Paso' }), el('th', { scope: 'col', cls: 'n', text: 'Total' }), el('th', { scope: 'col', cls: 'n', text: 'Tasa' }), el('th', { scope: 'col', text: 'Qué mide' })])]), fb])])]),
+    el('div', { cls: 'card' }, [el('div', { cls: 'tw' }, [el('table', {}, [el('caption', { text: 'Frente a los benchmarks 2026 del Playbook §6.2' }), el('thead', {}, [el('tr', {}, [el('th', { scope: 'col', text: 'Métrica' }), el('th', { scope: 'col', cls: 'n', text: 'Valor' }), el('th', { scope: 'col', text: 'Lectura' }), el('th', { scope: 'col', text: 'Referencia' })])]), bt])])])
+  ]));
+  // Por conjunto / campaña / anuncio
+  var byName = {};
+  rows.forEach(function (r) { (byName[r.nombre] = byName[r.nombre] || []).push(r); });
+  var names = Object.keys(byName), win = repWinner(names.map(function (n) { var a = repAgg(byName[n]); a.nombre = n; return a; }));
+  var st = el('tbody');
+  names.map(function (n) { return { n: n, t: repAgg(byName[n]), e: byName[n][byName[n].length - 1].estado }; }).sort(function (a, b) { return b.t.gasto - a.t.gasto; }).forEach(function (x) {
+    var fz = !isFinite(x.t.freq) ? null : x.t.freq > 4.5 ? 'critical' : x.t.freq > 3 ? 'warning' : null;
+    st.appendChild(el('tr', {}, [el('td', {}, [x.n, x.n === win ? ' ' : null, x.n === win ? badge('Mejor', 'good') : null]), el('td', { text: x.e || '—' }), el('td', { cls: 'n', text: fmtN(x.t.gasto, 2) }), el('td', { cls: 'n', text: fmtN(x.t.impr, 0) }), el('td', { cls: 'n', text: fmtN(x.t.cpm, 2) }), el('td', { cls: 'n', text: pct(x.t.ctr, 2) }), el('td', { cls: 'n', text: fmtN(x.t.cpc, 2) }), el('td', { cls: 'n', text: fmtN(x.t.lp, 0) }), el('td', { cls: 'n', text: fmtN(x.t.checkouts, 0) }), el('td', { cls: 'n', text: fmtN(x.t.costCheckout, 2) }), el('td', { cls: 'n', text: fmtN(x.t.compras, 0) }), el('td', { cls: 'n', text: fmtN(x.t.cac, 2) }), el('td', { cls: 'n' }, [fmtN(x.t.freq, 2), fz ? ' ' : null, fz ? badge(fz === 'critical' ? 'Crítico' : 'Alerta', fz) : null])]));
+  });
+  var lvl = repSel === 'daily-sum' ? 'Conjunto' : (reps.filter(function (r) { return r.id === repSel; })[0] || {}).nivel || 'Conjunto';
+  view.appendChild(el('div', { cls: 'card' }, [el('div', { cls: 'tw' }, [el('table', {}, [el('caption', { text: 'Por ' + lvl.toLowerCase() + ' (ordenado por gasto). «Mejor» = más compras; a igualdad, menor coste por pago iniciado y luego menor CPC' }), el('thead', {}, [el('tr', {}, [lvl, 'Estado', 'Gasto', 'Impr.', 'CPM', 'CTR', 'CPC', 'Visitas', 'Pagos inic.', 'Coste/pago', 'Compras', 'CAC', 'Frec.'].map(function (h, i) { return el('th', { scope: 'col', cls: i > 1 ? 'n' : '', text: h }); }))]), st])]),
+    el('p', { cls: 'note', text: isFinite(dias) && dias >= 14 ? 'Regla del día 14: quédate con el mejor, apaga el resto y lanza 3 versiones nuevas de ese ángulo, distintas de verdad.' : 'La regla del día 14 (quedarte con el mejor y apagar el resto) se aplica cuando el periodo cubre al menos 14 días.' })]));
+  // Serie diaria
+  var byDay = {};
+  rows.forEach(function (r) { if (r.inicio && r.inicio === r.fin) (byDay[r.inicio] = byDay[r.inicio] || []).push(r); });
+  var days = Object.keys(byDay).sort();
+  if (days.length >= 2) {
+    var dt = el('tbody');
+    days.forEach(function (dd) { var a = repAgg(byDay[dd]); dt.appendChild(el('tr', {}, [el('td', { text: dd }), el('td', { cls: 'n', text: fmtN(a.gasto, 2) }), el('td', { cls: 'n', text: fmtN(a.cpm, 2) }), el('td', { cls: 'n', text: pct(a.ctr, 2) }), el('td', { cls: 'n', text: fmtN(a.checkouts, 0) }), el('td', { cls: 'n', text: fmtN(a.compras, 0) }), el('td', { cls: 'n', text: fmtN(a.cac, 2) })])); });
+    view.appendChild(el('div', { cls: 'card' }, [el('div', { cls: 'tw' }, [el('table', {}, [el('caption', { text: 'Evolución diaria' }), el('thead', {}, [el('tr', {}, ['Día', 'Gasto', 'CPM', 'CTR', 'Pagos inic.', 'Compras', 'CAC'].map(function (h, i) { return el('th', { scope: 'col', cls: i ? 'n' : '', text: h }); }))]), dt])])]));
+  }
+  // Acciones
+  var st2 = el('span', { cls: 'note', role: 'status', 'aria-live': 'polite' });
+  var b1 = el('button', { cls: 'btn', type: 'button', text: 'Usar en la rutina semanal' });
+  b1.addEventListener('click', function () {
+    var w = state.weekly;
+    if (isNum(w.gasto)) w.gastoAnt = w.gasto; if (isNum(w.contrib)) w.contribAnt = w.contrib;
+    w.gasto = t.gasto; w.contrib = dg.contrib; if (t.valor > 0) w.ingreso = t.valor; else delete w.ingreso;
+    if (isFinite(t.freq)) w.freq = t.freq; if (isFinite(dias)) w.dias = dias; w.conv = t.compras;
+    save(); buildRutina(); renderAll(); st2.textContent = 'Enviado a la rutina semanal (la semana cargada antes pasa a ser la anterior).';
+  });
+  var b2 = el('button', { cls: 'btn', type: 'button', text: 'Añadir al panel de 5 números' });
+  b2.addEventListener('click', function () {
+    state.weeks.push({ id: String(Date.now()) + Math.random().toString(36).slice(2, 8), semana: ini, gasto: t.gasto, cobrado: t.valor > 0 ? t.valor : 0, clientes: t.compras, anuncio: win || '' });
+    save(); renderPrueba(); st2.textContent = 'Añadido al panel de la pestaña Prueba de 21 días.';
+  });
+  view.appendChild(el('div', { cls: 'row' }, [b1, b2, st2]));
+  if (!has('compras')) view.appendChild(el('div', { cls: 'warnbox', text: 'El informe no incluye la columna «Compras»: sin ella no se puede calcular el CAC ni el aMER. Añádela en las columnas del Administrador de anuncios.' }));
+  view.appendChild(el('p', { cls: 'note', text: 'Contribución estimada = compras × tu CM1 (' + usd(cm1) + '). El ROAS de la plataforma se muestra solo como referencia: el sistema decide con contribución e incrementalidad, no con el panel.' }));
+  labelScrollers();
+}
+document.getElementById('rep-file').addEventListener('change', function (ev) {
+  var files = Array.prototype.slice.call(ev.target.files || []), st = document.getElementById('rep-status'), msgs = [];
+  var pending = files.length; if (!pending) return;
+  files.forEach(function (f) {
+    if (f.size > 5e6) { msgs.push(f.name + ': demasiado grande (máx. 5 MB)'); if (!--pending) done(); return; }
+    var rd = new FileReader();
+    rd.onload = function () {
+      try {
+        var rep = parseReport(String(rd.result), f.name);
+        // Un informe con el mismo periodo y el mismo nivel sustituye al anterior
+        state.reports = state.reports.filter(function (r) { return !(r.inicio === rep.inicio && r.fin === rep.fin && r.nivel === rep.nivel); });
+        state.reports.push(rep); repSel = rep.id; msgs.push(f.name + ': ' + rep.rows.length + ' filas');
+      } catch (e) { msgs.push(f.name + ': ' + e.message); }
+      if (!--pending) done();
+    };
+    rd.onerror = function () { msgs.push(f.name + ': no se pudo leer'); if (!--pending) done(); };
+    rd.readAsText(f);
+  });
+  function done() {
+    if (!save()) msgs.push('aviso: no se pudo guardar en este navegador (espacio lleno o almacenamiento bloqueado); el informe se verá hasta que recargues');
+    st.textContent = msgs.join(' · '); ev.target.value = ''; renderInforme();
+  }
+});
+
+/* ================= ORQUESTACIÓN ================= */
+function renderAll() {
+  R = compute(state.inputs);
+  renderSupDerived(); renderResumen(); renderEconomia(); renderValidacion(); renderMedios(); renderEscalado(); renderRutina(); renderGuardian(); renderSens(); renderLog(); renderArranque(); renderPrueba(); renderInforme();
+}
+function rebuild() { buildSupuestos(); clear(document.getElementById('esc-inputs')); buildRutina(); buildGuardian(); buildPlan(); buildArranque(); buildPrueba(); renderAll(); }
+
+function initTabs() {
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+  function select(t, focus) {
+    tabs.forEach(function (x) {
+      var on = x === t; x.setAttribute('aria-selected', on ? 'true' : 'false'); x.tabIndex = on ? 0 : -1;
+      document.getElementById(x.getAttribute('aria-controls')).classList.toggle('active', on);
+    });
+    if (focus) t.focus();
+    try { history.replaceState(null, '', '#' + t.id.slice(2)); } catch (e) { /* ignorado */ }
+    document.getElementById('tip').style.display = 'none';
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { select(t, false); });
+    t.addEventListener('keydown', function (e) {
+      var j = null;
+      if (e.key === 'ArrowRight') j = (i + 1) % tabs.length; else if (e.key === 'ArrowLeft') j = (i - 1 + tabs.length) % tabs.length;
+      else if (e.key === 'Home') j = 0; else if (e.key === 'End') j = tabs.length - 1;
+      if (j != null) { e.preventDefault(); select(tabs[j], true); }
+    });
+  });
+  var h = (location.hash || '').slice(1), start = document.getElementById('t-' + h);
+  if (start) select(start, false);
+}
+
+document.getElementById('btn-reset').addEventListener('click', function () {
+  if (!window.confirm('¿Restablecer todos los supuestos al caso de referencia? El cuaderno, el arranque y las casillas se conservan.')) return;
+  state.inputs = JSON.parse(JSON.stringify(DEFAULTS)); state.scen = { opt: null, pes: 0.12 }; save(); rebuild();
+  document.getElementById('io-status').textContent = 'Supuestos restablecidos.';
+});
+document.getElementById('btn-export').addEventListener('click', function () {
+  download('andromeda2026-datos.json', JSON.stringify(state, null, 1), 'application/json');
+  document.getElementById('io-status').textContent = 'Exportado.';
+});
+document.getElementById('file-import').addEventListener('change', function (ev) {
+  var f = ev.target.files && ev.target.files[0], st = document.getElementById('io-status');
+  if (!f) return;
+  if (f.size > 2e6) { st.textContent = 'Archivo demasiado grande.'; return; }
+  var rd = new FileReader();
+  rd.onload = function () {
+    try { state = sanitize(JSON.parse(String(rd.result))); save(); rebuild(); st.textContent = 'Datos importados.'; }
+    catch (e) { st.textContent = 'El archivo no es un JSON válido de esta app.'; }
+    ev.target.value = '';
+  };
+  rd.readAsText(f);
+});
+document.getElementById('log-form').addEventListener('submit', function (ev) {
+  ev.preventDefault();
+  var f = ev.target, st = document.getElementById('log-status'), e = { id: String(Date.now()) + Math.random().toString(36).slice(2, 8) };
+  var missing = [];
+  LOG_FIELDS.forEach(function (x) { e[x[0]] = String(f.elements[x[0]].value || '').trim().slice(0, 1000); if (x[0] !== 'resultado' && !e[x[0]]) missing.push(x[1]); });
+  if (missing.length) { st.textContent = 'Falta completar: ' + missing.join(', ') + '.'; return; }
+  state.log.push(e); f.reset(); f.elements.fecha.value = new Date().toISOString().slice(0, 10);
+  commit(); st.textContent = 'Registro guardado.';
+});
+document.getElementById('log-csv').addEventListener('click', function () { download('cuaderno-decisiones.csv', toCSV(state.log), 'text/csv;charset=utf-8'); });
+document.getElementById('rut-log').addEventListener('click', function () {
+  var st = document.getElementById('rut-log-status');
+  if (!lastWeekly) { st.textContent = 'Completa primero los datos de la semana.'; return; }
+  var w = lastWeekly.w, r = lastWeekly.r, f = document.getElementById('log-form');
+  f.elements.fecha.value = new Date().toISOString().slice(0, 10);
+  f.elements.dato.value = 'MER ' + mult(r.mer) + ' · aMER ' + mult(r.amer) + ' · aMER marginal ' + (r.marginalApplies ? mult(r.amerMarg) : 'n/a') + (isFinite(w.emq) ? ' · EMQ ' + fmtN(w.emq, 1) : '');
+  f.elements.decision.value = r.blocked ? 'Pausar' : r.zoneB === 'Elite' || r.zoneB === 'Escalar' ? 'Escalar' : r.zoneB || '';
+  f.elements.hipotesis.value = lastWeekly.title || '';
+  document.getElementById('t-cuaderno').click();
+  f.elements.ambito.focus();
+  st.textContent = '';
+});
+
+// Las tablas con desplazamiento horizontal deben poder recorrerse con el teclado
+function labelScrollers() {
+  Array.prototype.forEach.call(document.querySelectorAll('.tw'), function (w) {
+    var cap = w.querySelector('caption'), card = w.closest('.card'), inner = card && card.querySelector('h3');
+    var prev = card && card.previousElementSibling, h = prev && /^H[23]$/.test(prev.tagName) ? prev : null;
+    w.setAttribute('tabindex', '0'); w.setAttribute('role', 'region');
+    w.setAttribute('aria-label', 'Tabla: ' + (cap ? cap.textContent : inner ? inner.textContent : h ? h.textContent : 'datos'));
+  });
+}
+load();
+document.getElementById('log-form').elements.fecha.value = new Date().toISOString().slice(0, 10);
+initTabs();
+rebuild();
+labelScrollers();
+})();
+</script>
+</body>
+</html>
