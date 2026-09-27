@@ -51,7 +51,7 @@ const URL_APP = `http://127.0.0.1:${server.address().port}/app/`;
 
 const browser = await chromium.launch({ executablePath: process.env.PW_CHROMIUM || undefined });
 const problems = [];
-async function newPage(ctxOpts = {}, init) {
+async function newPage(ctxOpts = {}, init, { simple = false } = {}) {
   const ctx = await browser.newContext({ acceptDownloads: true, ...ctxOpts });
   if (init) await ctx.addInitScript(init);
   const page = await ctx.newPage();
@@ -59,6 +59,8 @@ async function newPage(ctxOpts = {}, init) {
   page.on('pageerror', e => problems.push('pageerror: ' + e.message));
   page.on('dialog', d => d.accept(d.type() === 'prompt' ? 'resultado de prueba' : undefined));
   await page.goto(URL_APP);
+  // La app abre en modo fácil; las pruebas de las pestañas usan el modo experto
+  if (!simple && (await page.getAttribute('html', 'data-modo')) === 'simple') await page.click('#btn-modo');
   return { ctx, page };
 }
 
@@ -144,6 +146,8 @@ async function newPage(ctxOpts = {}, init) {
     }, id);
     if (!ok) tabBad.push(id);
   }
+  const dupIds = await page.evaluate(() => { const c = {}; document.querySelectorAll('[id]').forEach(e => { c[e.id] = (c[e.id] || 0) + 1; }); return Object.keys(c).filter(k => c[k] > 1); });
+  check('HTML', 'Sin ids duplicados en la página renderizada', dupIds.length === 0, dupIds.join(', '));
   check('Interfaz', `Las ${tabs.length} pestañas muestran solo su panel`, tabBad.length === 0, tabBad.join(','));
   await page.click('#t-resumen'); await page.focus('#t-resumen'); await page.keyboard.press('ArrowRight');
   check('Interfaz', 'Navegación con flechas entre pestañas', await page.evaluate(() => document.activeElement.id === 't-arranque' && document.getElementById('p-arranque').classList.contains('active')));
@@ -151,20 +155,20 @@ async function newPage(ctxOpts = {}, init) {
   // Editar un supuesto recalcula y persiste
   await page.click('#t-supuestos');
   await page.fill('#in-D21', '12'); await page.press('#in-D21', 'Tab');
-  const expCm1 = await page.evaluate(() => { const M = window.AndromedaModel, d = M.defaults(); d['Supuestos!D21'] = 0.12; return M.compute(d)['Economia Unitaria!D19']; });
+  const expCm1 = await page.evaluate(() => { const d = JSON.parse(localStorage.getItem('andromeda2026.v1')).inputs; return d['Supuestos!D21'] === 0.12 ? window.AndromedaModel.compute(d)['Economia Unitaria!D19'] : NaN; });
   const kpiTxt = await page.textContent('#sum-kpis .kpi:first-child .v');
   const fmt = new Intl.NumberFormat('es-AR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(expCm1) + ' USD';
   check('Interfaz', 'Cambiar reembolso a 12 % actualiza el CM1 del resumen', kpiTxt === fmt, `${kpiTxt} vs ${fmt}`);
   await page.reload();
   check('Interfaz', 'El cambio persiste tras recargar (localStorage)', (await page.inputValue('#in-D21')) === '12');
   await page.click('#t-supuestos'); await page.click('#btn-reset');
-  check('Interfaz', 'Restablecer vuelve al caso de referencia', (await page.inputValue('#in-D21')) === '9');
+  check('Interfaz', 'Restablecer vuelve a los valores de tu producto (reembolso 10 %)', (await page.inputValue('#in-D21')) === '10' && (await page.inputValue('#in-D10')) === '14,9');
   await page.fill('#in-D10', 'abc'); await page.press('#in-D10', 'Tab');
   const inv = await page.evaluate(() => ({ a: document.getElementById('in-D10').getAttribute('aria-invalid'), v: JSON.parse(localStorage.getItem('andromeda2026.v1')).inputs['Supuestos!D10'] }));
-  check('Interfaz', 'Entrada no válida se marca y no altera el modelo', inv.a === 'true' && inv.v === 497, JSON.stringify(inv));
+  check('Interfaz', 'Entrada no válida se marca y no altera el modelo', inv.a === 'true' && inv.v === 14.9, JSON.stringify(inv));
   await page.fill('#in-D64', '0'); await page.press('#in-D64', 'Tab');
   check('Interfaz', 'CAC objetivo 0 se rechaza (evita división por cero)', (await page.getAttribute('#in-D64', 'aria-invalid')) === 'true');
-  await page.fill('#in-D10', '497'); await page.press('#in-D10', 'Tab');
+  await page.fill('#in-D10', '14,9'); await page.press('#in-D10', 'Tab');
 
   // Rutina semanal
   await page.click('#t-rutina');
@@ -204,6 +208,7 @@ async function newPage(ctxOpts = {}, init) {
   const aw = await page.textContent('#arr-promesa-warn');
   check('Interfaz', 'Promesa: avisa de público amplio y resultado sin cifra', /demasiado amplio/.test(aw) && /cifra/.test(aw));
   check('Interfaz', 'Garantía se genera con el resultado de la promesa', (await page.textContent('#arr-garantia')).includes('vender más'));
+  for (const [k, v] of Object.entries({ precio: '497', bump: '31', up: '53', reemb: '10', com: '4,5', cost: '10' })) { await page.fill('#arrn-' + k, v); await page.press('#arrn-' + k, 'Tab'); }
   const techo = await page.textContent('#arr-calc-out .kpi:nth-child(3) .v');
   check('Interfaz', 'Tarea 4 con el ejemplo del manual → techo 438,7 USD', techo === '438,7 USD', techo);
   await page.click('#t-prueba');
@@ -271,10 +276,84 @@ async function newPage(ctxOpts = {}, init) {
     await page.setInputFiles('#rep-file', process.env.REAL_CSV);
     await page.waitForFunction(() => /filas/.test(document.getElementById('rep-status').textContent));
     const real = await page.evaluate(() => ({ st: document.getElementById('rep-status').textContent, v: document.querySelector('#rep-view .verdict .t').textContent, k: document.querySelector('#rep-view .kpi .v').textContent }));
-    check('Informe CSV', 'CSV real del usuario (10 conjuntos, 27-sep-2026): se carga y se diagnostica', /10 filas/.test(real.st) && real.k === '32,90 USD' && /aprendizaje/.test(real.v), JSON.stringify(real));
+    check('Informe CSV', 'CSV real del usuario (10 conjuntos, 27-sep-2026): se carga y se diagnostica', /10 filas/.test(real.st) && real.k === '32,90 USD' && /más que tu techo/.test(real.v), JSON.stringify(real));
     check('Informe CSV', 'CSV real: avisa de 21 pagos iniciados sin compras (revisar evento de compra)', /21 pagos iniciados y ninguna compra/.test(await page.textContent('#rep-view')));
     await page.screenshot({ path: join(SHOTS, 'informe-real.png'), fullPage: true });
   }
+  await ctx.close();
+}
+
+/* ---------- 6c. Modo fácil ---------- */
+{
+  const FX = join(ROOT, 'audit', 'fixtures');
+  const { ctx, page } = await newPage({}, undefined, { simple: true });
+  const ini = await page.evaluate(() => ({ modo: document.documentElement.getAttribute('data-modo'), nav: getComputedStyle(document.querySelector('nav.tabs')).display, txt: document.getElementById('sp-resumen').textContent }));
+  check('Modo fácil', 'Abre en modo fácil, sin pestañas a la vista', ini.modo === 'simple' && ini.nav === 'none');
+  check('Modo fácil', 'Producto precargado: 14,90 USD + añadidos 9 y 8 → te deja 15,90 USD; límite 6,62 USD', /14,90 USD/.test(ini.txt) && /9,00 y 8,00 USD/.test(ini.txt) && /15,90 USD/.test(ini.txt) && /6,62 USD/.test(ini.txt), ini.txt);
+  const cm = await page.evaluate(() => window.AndromedaModel.compute(JSON.parse(localStorage.getItem('andromeda2026.v1')).inputs)['Economia Unitaria!D19']);
+  const aov = 14.9 + 17 * 0.32, net = aov * 0.9, cmHand = net - (net * 0.045 + 0.30) - net * 0.07;
+  check('Modo fácil', 'CM1 de tu producto = cálculo a mano (20,34 − reembolsos − comisiones − costes)', near(cm, cmHand, 1e-12), `${cm} vs ${cmHand}`);
+  const adv = await page.evaluate(() => {
+    const M = window.AndromedaModel, base = { cm1: 15.90081, obj: 6.62, aov: 20.34, inicio: '2026-09-27', best: 'Conjunto 5', diario: 30, sets: [] };
+    const A = (rows, N, extra) => M.simpleAdvice(Object.assign({}, base, { t: M.repAgg(rows), N }, extra || {}));
+    const pick = r => ({ title: r.title, zone: r.zone, actions: r.actions, next: r.next, nextDate: r.nextDate });
+    return {
+      real: pick(A([{ gasto: 32.9, impr: 2932, alcance: 2700, clics: 94, lp: 70, checkouts: 21, compras: 0, valor: 0 }], 1)),
+      poco: pick(A([{ gasto: 10, impr: 900, alcance: 800, clics: 20, lp: 15, checkouts: 1, compras: 0, valor: 0 }], 2)),
+      d8sin: pick(A([{ gasto: 200, impr: 20000, alcance: 15000, clics: 500, lp: 400, checkouts: 30, compras: 0, valor: 0 }], 8)),
+      d3con: pick(A([{ gasto: 60, impr: 6000, alcance: 5000, clics: 150, lp: 120, checkouts: 10, compras: 3, valor: 61 }], 3)),
+      d10ok: pick(A([{ gasto: 250, impr: 25000, alcance: 20000, clics: 600, lp: 500, checkouts: 120, compras: 50, valor: 1017 }], 10)),
+      d10caro: pick(A([{ gasto: 250, impr: 25000, alcance: 20000, clics: 600, lp: 500, checkouts: 60, compras: 12, valor: 244 }], 10)),
+      d15: M.simpleAdvice(Object.assign({}, base, { t: M.repAgg([{ gasto: 450, impr: 45000, alcance: 30000, clics: 1000, lp: 800, checkouts: 200, compras: 80, valor: 1627 }]), N: 15, sets: [{ nombre: 'Conjunto 5', gasto: 100, compras: 30 }, { nombre: 'Conjunto 1', gasto: 50, compras: 5 }] })),
+      d22: pick(A([{ gasto: 630, impr: 60000, alcance: 40000, clics: 1500, lp: 1200, checkouts: 300, compras: 120, valor: 2441 }], 22)),
+      d22freq: pick(A([{ gasto: 630, impr: 60000, alcance: 15000, clics: 400, lp: 300, checkouts: 300, compras: 120, valor: 2441 }], 22)),
+      dates: [M.normDate('2026-09-27'), M.normDate('27/09/2026'), M.normDate('46292'), M.normDate('2026-09-27 00:00:00'), M.normDate('hola')]
+    };
+  });
+  check('Modo fácil', 'Tu caso (día 1, 21 pagos iniciados, 0 ventas): revisar la página de pago, no tocar anuncios, volver el día 7', adv.real.zone === 'serious' && /página de pago/.test(adv.real.title) && /compra de prueba/.test(adv.real.actions[0]) && /día 7 \(03\/10\/2026\)/.test(adv.real.actions.join(' ')) && /Si el día 7 sigue sin ventas, se para/.test(adv.real.actions.join(' ')) && adv.real.next === 7, JSON.stringify(adv.real));
+  check('Modo fácil', 'Poco gasto y sin ventas antes del día 7 → esperar', adv.poco.zone === 'neutral' && /Espera/.test(adv.poco.title));
+  check('Modo fácil', 'Día 8 sin ventas → parar (y revisar el registro de compras)', adv.d8sin.zone === 'critical' && /Para la campaña/.test(adv.d8sin.title) && /compra de prueba/.test(adv.d8sin.actions.join(' ')));
+  check('Modo fácil', 'Día 3 con ventas → esperar hasta el día 7', adv.d3con.zone === 'neutral' && /día 7/.test(adv.d3con.actions[0]));
+  check('Modo fácil', 'Día 10, venta a 5 USD (≤ 6,62) → hay mercado, seguir hasta el día 14', adv.d10ok.zone === 'good' && /día 14/.test(adv.d10ok.actions[0]) && /Conjunto 5/.test(adv.d10ok.actions.join(' ')));
+  check('Modo fácil', 'Día 10, venta a 20,83 USD (> 15,90) → parar', adv.d10caro.zone === 'critical' && /más de lo que te deja/.test(adv.d10caro.title));
+  const s15 = adv.d15.sets.map(x => x.nombre + ':' + x.label).join(',');
+  check('Modo fácil', 'Día 15 → dejar el mejor, apagar el resto, subir 20 % (30 → 36 USD/día)', /Día 14/.test(adv.d15.title) && s15 === 'Conjunto 5:Dejar activo,Conjunto 1:Apagar' && /de 30,00 USD a 36,00 USD/.test(adv.d15.actions.join(' ')), s15 + ' ' + adv.d15.actions.join(' | '));
+  check('Modo fácil', 'Día 22, venta a 5,25 USD → escalar 20 % por semana', adv.d22.zone === 'good' && adv.d22.title === 'Escala' && /20 %/.test(adv.d22.actions.join(' ')) && adv.d22.next === null, JSON.stringify(adv.d22));
+  check('Modo fácil', 'Frecuencia > 3 → preparar anuncios nuevos', /frecuencia 4,0/.test(adv.d22freq.actions.join(' ')));
+  check('Modo fácil', 'Fechas: ISO, dd/mm/aaaa, serie de Excel y con hora', JSON.stringify(adv.dates) === JSON.stringify(['2026-09-27', '2026-09-27', '2026-09-27', '2026-09-27', '']), JSON.stringify(adv.dates));
+
+  // Excel (.xlsx)
+  await page.setInputFiles('#simple-file', join(FX, 'meta-diario-2026-09-20.xlsx'));
+  await page.waitForFunction(() => /filas/.test(document.getElementById('simple-status').textContent));
+  const xs = await page.evaluate(() => { const r = JSON.parse(localStorage.getItem('andromeda2026.v1')).reports[0]; return { n: r.rows.length, ini: r.inicio, g: r.rows.reduce((a, x) => a + x.gasto, 0), name: r.rows[0].nombre, c: r.rows.reduce((a, x) => a + (x.compras || 0), 0) }; });
+  check('Modo fácil', 'Excel .xlsx de Meta: mismas filas y totales que el CSV', xs.n === 3 && xs.ini === '2026-09-20' && near(xs.g, 70.75) && xs.c === 3 && xs.name === 'Conjunto A, "dolor"', JSON.stringify(xs));
+  check('Modo fácil', 'Tras subir el informe aparece «Qué hacer hoy» con acciones', (await page.$$('#sp-result ol.todo li')).length >= 2);
+  const xa = await page.evaluate(async (b64) => { const bin = atob(b64), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+    const rows = await window.AndromedaModel.readXlsx(u.buffer); const r = window.AndromedaModel.parseReport(rows, 'x.xlsx'); return { ini: r.inicio, fin: r.fin, n: r.rows.length, g: window.AndromedaModel.repAgg(r.rows).gasto }; }, readFileSync(join(FX, 'meta-acumulado-fechas.xlsx')).toString('base64'));
+  check('Modo fácil', 'Excel con celdas de fecha y fila de totales: fechas correctas y sin contar doble', xa.ini === '2026-09-01' && xa.fin === '2026-09-21' && xa.n === 2 && near(xa.g, 150), JSON.stringify(xa));
+  await page.setInputFiles('#simple-file', join(FX, 'no-es-excel.xlsx'));
+  await page.waitForFunction(() => /no-es-excel/.test(document.getElementById('simple-status').textContent));
+  check('Modo fácil', 'Archivo .xlsx no válido: mensaje claro', /No es un archivo Excel/.test(await page.textContent('#simple-status')));
+  if (process.env.REAL_CSV) {
+    await page.evaluate(() => { const s = JSON.parse(localStorage.getItem('andromeda2026.v1')); s.reports = []; localStorage.setItem('andromeda2026.v1', JSON.stringify(s)); });
+    await page.reload();
+    await page.setInputFiles('#simple-file', process.env.REAL_CSV);
+    await page.waitForFunction(() => /filas/.test(document.getElementById('simple-status').textContent));
+    const rs = await page.evaluate(() => ({ t: document.querySelector('#sp-result .verdict .t').textContent, li: [...document.querySelectorAll('#sp-result ol.todo li')].map(l => l.textContent), sets: [...document.querySelectorAll('#sp-result tbody tr')].map(tr => tr.textContent) }));
+    check('Modo fácil', 'Tu CSV real: «Revisa hoy tu página de pago», compra de prueba, conjuntos en espera y Conjunto 5 va mejor', /página de pago/.test(rs.t) && /21 personas empezaron a pagar/.test(rs.li.join(' ')) && rs.sets.length === 10 && rs.sets.some(x => /Conjunto 5.*Va mejor/.test(x)), JSON.stringify(rs));
+    await page.screenshot({ path: join(SHOTS, 'modo-facil-real.png'), fullPage: true });
+  }
+  // Cambiar el precio desde el modo fácil
+  await page.click('#sp-resumen ~ details summary');
+  await page.fill('#sp-precio', '29'); await page.press('#sp-precio', 'Tab');
+  const chg = await page.evaluate(() => ({ t: document.getElementById('sp-resumen').textContent, d10: JSON.parse(localStorage.getItem('andromeda2026.v1')).inputs['Supuestos!D10'] }));
+  check('Modo fácil', 'Cambiar el precio a 29 USD actualiza el modelo y el texto', chg.d10 === 29 && /29,00 USD/.test(chg.t), JSON.stringify(chg));
+  await page.fill('#sp-precio', '-1'); await page.press('#sp-precio', 'Tab');
+  check('Modo fácil', 'Precio no válido se rechaza', (await page.getAttribute('#sp-precio', 'aria-invalid')) === 'true');
+  await page.click('#btn-modo'); await page.reload();
+  check('Modo fácil', 'El modo experto se recuerda al recargar', (await page.getAttribute('html', 'data-modo')) === 'experto' && (await page.textContent('#btn-modo')) === 'Volver al modo fácil');
+  await page.click('#btn-modo');
+  check('Modo fácil', 'Volver al modo fácil', (await page.getAttribute('html', 'data-modo')) === 'simple');
   await ctx.close();
 }
 
@@ -291,9 +370,19 @@ async function newPage(ctxOpts = {}, init) {
 const axeSrc = readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
 for (const scheme of ['light', 'dark']) {
   for (const vp of [{ w: 360, h: 780 }, { w: 768, h: 1024 }, { w: 1280, h: 900 }]) {
-    const { ctx, page } = await newPage({ viewport: { width: vp.w, height: vp.h }, colorScheme: scheme });
-    const tabs = await page.$$eval('[role=tab]', ts => ts.map(t => t.id));
+    const { ctx, page } = await newPage({ viewport: { width: vp.w, height: vp.h }, colorScheme: scheme }, undefined, { simple: true });
     const overflow = [], axeBad = [];
+    // Modo fácil, con un informe cargado
+    await page.setInputFiles('#simple-file', join(ROOT, 'audit', 'fixtures', 'meta-diario-2026-09-20.csv'));
+    await page.waitForFunction(() => /filas/.test(document.getElementById('simple-status').textContent));
+    { const o = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth); if (o > 0) overflow.push(`modo fácil+${o}px`); }
+    if (vp.w !== 768) {
+      if (!(await page.evaluate(() => !!window.axe))) await page.evaluate(axeSrc);
+      (await page.evaluate(async () => (await window.axe.run(document, { resultTypes: ['violations'] })).violations.map(v => `${v.id} (${v.impact}): ${v.nodes.slice(0, 3).map(n => n.target.join(' ')).join(' | ')}`))).forEach(v => axeBad.push('modo fácil: ' + v));
+      await page.screenshot({ path: join(SHOTS, `${scheme}-${vp.w}-modo-facil.png`), fullPage: true });
+    }
+    await page.click('#btn-modo');
+    const tabs = await page.$$eval('[role=tab]', ts => ts.map(t => t.id));
     for (const id of tabs) {
       await page.click('#' + id);
       const o = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);

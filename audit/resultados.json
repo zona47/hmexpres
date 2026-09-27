@@ -1,6 +1,6 @@
 {
- "fecha": "2026-09-27T21:49:57.713Z",
- "total": 100,
+ "fecha": "2026-09-27T22:09:12.204Z",
+ "total": 122,
  "fallidas": 0,
  "results": [
   {
@@ -238,6 +238,12 @@
    "detail": "[\"Escala\",\"Mantén\",\"Optimiza una semana más\",\"Para\"]"
   },
   {
+   "area": "HTML",
+   "name": "Sin ids duplicados en la página renderizada",
+   "ok": true,
+   "detail": ""
+  },
+  {
    "area": "Interfaz",
    "name": "Las 14 pestañas muestran solo su panel",
    "ok": true,
@@ -253,7 +259,7 @@
    "area": "Interfaz",
    "name": "Cambiar reembolso a 12 % actualiza el CM1 del resumen",
    "ok": true,
-   "detail": "469,8 USD vs 469,8 USD"
+   "detail": "15,5 USD vs 15,5 USD"
   },
   {
    "area": "Interfaz",
@@ -263,7 +269,7 @@
   },
   {
    "area": "Interfaz",
-   "name": "Restablecer vuelve al caso de referencia",
+   "name": "Restablecer vuelve a los valores de tu producto (reembolso 10 %)",
    "ok": true,
    "detail": ""
   },
@@ -271,7 +277,7 @@
    "area": "Interfaz",
    "name": "Entrada no válida se marca y no altera el modelo",
    "ok": true,
-   "detail": "{\"a\":\"true\",\"v\":497}"
+   "detail": "{\"a\":\"true\",\"v\":14.9}"
   },
   {
    "area": "Interfaz",
@@ -463,7 +469,7 @@
    "area": "Informe CSV",
    "name": "Enviar a la rutina semanal copia gasto, compras y contribución",
    "ok": true,
-   "detail": "{\"gasto\":132.75,\"contrib\":2915.18919,\"ingreso\":2982,\"freq\":1.1130136986301369,\"dias\":2,\"conv\":6}"
+   "detail": "{\"gasto\":132.75,\"contrib\":95.40486,\"ingreso\":2982,\"freq\":1.1130136986301369,\"dias\":2,\"conv\":6}"
   },
   {
    "area": "Informe CSV",
@@ -486,6 +492,132 @@
   {
    "area": "Informe CSV",
    "name": "Quitar un informe",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Modo fácil",
+   "name": "Abre en modo fácil, sin pestañas a la vista",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Modo fácil",
+   "name": "Producto precargado: 14,90 USD + añadidos 9 y 8 → te deja 15,90 USD; límite 6,62 USD",
+   "ok": true,
+   "detail": "Vendes a 14,90 USD con dos añadidos (9,00 y 8,00 USD). Cada cliente te deja unos 15,90 USD. Para ganar dinero, cada venta debe costarte en anuncios 6,62 USD o menos."
+  },
+  {
+   "area": "Modo fácil",
+   "name": "CM1 de tu producto = cálculo a mano (20,34 − reembolsos − comisiones − costes)",
+   "ok": true,
+   "detail": "15.90081 vs 15.90081"
+  },
+  {
+   "area": "Modo fácil",
+   "name": "Tu caso (día 1, 21 pagos iniciados, 0 ventas): revisar la página de pago, no tocar anuncios, volver el día 7",
+   "ok": true,
+   "detail": "{\"title\":\"Revisa hoy tu página de pago. Los anuncios, no los toques\",\"zone\":\"serious\",\"actions\":[\"Haz tú mismo una compra de prueba y mira en Meta (Administrador de eventos) si aparece «Compra». 21 personas empezaron a pagar y ninguna terminó: casi siempre es que la compra no se registra o que el pago falla.\",\"No toques presupuesto, anuncios ni públicos hasta el día 7 (03/10/2026).\",\"Llevas 32,90 USD gastados sin ventas y cada cliente te deja 15,90 USD. Si el día 7 sigue sin ventas, se para.\"],\"next\":7,\"nextDate\":\"2026-10-03\"}"
+  },
+  {
+   "area": "Modo fácil",
+   "name": "Poco gasto y sin ventas antes del día 7 → esperar",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Modo fácil",
+   "name": "Día 8 sin ventas → parar (y revisar el registro de compras)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Modo fácil",
+   "name": "Día 3 con ventas → esperar hasta el día 7",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Modo fácil",
+   "name": "Día 10, venta a 5 USD (≤ 6,62) → hay mercado, seguir hasta el día 14",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Modo fácil",
+   "name": "Día 10, venta a 20,83 USD (> 15,90) → parar",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Modo fácil",
+   "name": "Día 15 → dejar el mejor, apagar el resto, subir 20 % (30 → 36 USD/día)",
+   "ok": true,
+   "detail": "Conjunto 5:Dejar activo,Conjunto 1:Apagar Deja activo «Conjunto 5» y apaga los demás conjuntos. | Lanza 3 versiones nuevas de ese anuncio ganador, distintas de verdad (otro formato, otro gancho, otras imágenes). | Sube el presupuesto solo un 20 %: de 30,00 USD a 36,00 USD al día."
+  },
+  {
+   "area": "Modo fácil",
+   "name": "Día 22, venta a 5,25 USD → escalar 20 % por semana",
+   "ok": true,
+   "detail": "{\"title\":\"Escala\",\"zone\":\"good\",\"actions\":[\"Muy por debajo del objetivo.\",\"Sube el presupuesto solo un 20 %: de 30,00 USD a 36,00 USD al día. Repite cada semana mientras siga así.\"],\"next\":null,\"nextDate\":\"\"}"
+  },
+  {
+   "area": "Modo fácil",
+   "name": "Frecuencia > 3 → preparar anuncios nuevos",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Modo fácil",
+   "name": "Fechas: ISO, dd/mm/aaaa, serie de Excel y con hora",
+   "ok": true,
+   "detail": "[\"2026-09-27\",\"2026-09-27\",\"2026-09-27\",\"2026-09-27\",\"\"]"
+  },
+  {
+   "area": "Modo fácil",
+   "name": "Excel .xlsx de Meta: mismas filas y totales que el CSV",
+   "ok": true,
+   "detail": "{\"n\":3,\"ini\":\"2026-09-20\",\"g\":70.75,\"name\":\"Conjunto A, \\\"dolor\\\"\",\"c\":3}"
+  },
+  {
+   "area": "Modo fácil",
+   "name": "Tras subir el informe aparece «Qué hacer hoy» con acciones",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Modo fácil",
+   "name": "Excel con celdas de fecha y fila de totales: fechas correctas y sin contar doble",
+   "ok": true,
+   "detail": "{\"ini\":\"2026-09-01\",\"fin\":\"2026-09-21\",\"n\":2,\"g\":150}"
+  },
+  {
+   "area": "Modo fácil",
+   "name": "Archivo .xlsx no válido: mensaje claro",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Modo fácil",
+   "name": "Cambiar el precio a 29 USD actualiza el modelo y el texto",
+   "ok": true,
+   "detail": "{\"t\":\"Vendes a 29,00 USD con dos añadidos (9,00 y 8,00 USD). Cada cliente te deja unos 27,13 USD. Para ganar dinero, cada venta debe costarte en anuncios 11,30 USD o menos.\",\"d10\":29}"
+  },
+  {
+   "area": "Modo fácil",
+   "name": "Precio no válido se rechaza",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Modo fácil",
+   "name": "El modo experto se recuerda al recargar",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "area": "Modo fácil",
+   "name": "Volver al modo fácil",
    "ok": true,
    "detail": ""
   },

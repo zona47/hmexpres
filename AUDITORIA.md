@@ -1,13 +1,13 @@
 # Auditoría · App «Sistema Andromeda 2026»
 
-**Estado: APROBADA. 100 de 100 comprobaciones superadas, y 102 de 102 con tu CSV real** (27-sep-2026).
+**Estado: APROBADA. 122 de 122 comprobaciones superadas, y 125 de 125 con tu CSV real** (27-sep-2026, versión 2: modo fácil).
 Archivo auditado: `app/index.html` (un único HTML autocontenido, sin dependencias externas).
 Regla del proyecto: ningún HTML se entrega a Netlify sin pasar esta auditoría. Para repetirla:
 
 ```bash
 npm install
-npm run audit        # recalcula el hash CSP y ejecuta las 100 comprobaciones; sale con error si falla alguna
-REAL_CSV=/ruta/informe.csv npm run audit   # +2 pruebas con un CSV real (no se sube al repositorio)
+npm run audit        # recalcula el hash CSP y ejecuta las 122 comprobaciones; sale con error si falla alguna
+REAL_CSV=/ruta/informe.csv npm run audit   # +3 pruebas con un CSV real (no se sube al repositorio)
 ```
 
 El detalle de cada comprobación se guarda en `audit/resultados.json`.
@@ -20,7 +20,8 @@ El detalle de cada comprobación se guarda en `audit/resultados.json`.
 | `Playbook_Sistema_Campanas_Andromeda_2026` (PDF) | Las 2 copias tienen el mismo texto | Umbrales de decisión, alertas, zonas y benchmarks |
 | `Cómo funciona y cómo se aplica` / `Guia_de_Aplicacion_Paso_a_Paso` | El .md y los 2 PDF tienen el mismo texto | Rutina semanal, plan de 8 pasos, plan de 48 h |
 | `Manual_de_arranque` (.md y PDF) | Mismo texto | Pestañas «Arranque (3 días)» y «Prueba de 21 días» |
-| CSV de Meta «Conjuntos de anuncios 27-sep-2026» | Exportación real del usuario | Pestaña «Informe de campaña» (formato de columnas) |
+| CSV de Meta «Conjuntos de anuncios 27-sep-2026» | Exportación real del usuario | Pestaña «Informe de campaña» y modo fácil (formato de columnas) |
+| Datos del producto (chat) | Precio 14,90 USD; añadidos de 9 y 8 USD | Configuración inicial del modo fácil |
 
 ## 2. Qué se comprobó
 
@@ -30,13 +31,37 @@ El detalle de cada comprobación se guarda en `audit/resultados.json`.
 | Coherencia con el Playbook | 16 | Cifras citadas: CM1 485,9 · aMER 2,70x · LTV:CAC 3,28x · índice 80,8 GO · 545.482 USD invertidos · 3.079 clientes · ROI 1,74x · punto óptimo 1.000 USD/día… |
 | Reglas de decisión | 14 | Calculadora de corte, Nivel A/B, aMER marginal, puerta EMQ, aprendizaje (7 días y 50 conversiones), 14 alertas, tarea 4, días 7 y 21 |
 | Informe CSV | 18 (16 + 2 con el CSV real) | Formato de Meta en español e inglés, separadores `,` y `;`, decimales con punto o coma, comillas, totales recalculados, suma de informes diarios, ganador, envío a la rutina y al panel, archivo no válido, persistencia y tu CSV real |
+| Modo fácil | 22 (21 + 1 con el CSV real) | La app abre en una sola pantalla con tu producto precargado (CM1 comprobado con una cuenta a mano). Se prueban 9 escenarios de «qué hacer hoy» (tu caso actual, días 7, 14 y 21, escalar, parar, frecuencia), el Excel `.xlsx` de Meta (incluye fechas como celdas de fecha y la fila de totales), un archivo no válido, el cambio de precio y el cambio de modo |
 | Interfaz | 22 | Las 14 pestañas, teclado, recálculo, persistencia, restablecer, entradas no válidas, división por cero, rutina, cuaderno, arranque, prueba de 21 días, gráfico con tooltip |
 | Seguridad | 9 | CSP con hash (sin `unsafe-inline` en los scripts), sin red ni recursos externos, sin `innerHTML`/`eval`, XSS en el cuaderno y en los nombres del CSV, CSV exportado sin inyección de fórmulas, importación JSON validada |
 | Responsive | 12 | 360, 768 y 1280 px, en modo claro y oscuro: sin scroll horizontal y con campos de tabla legibles |
 | Accesibilidad | 4 | axe-core sin violaciones en todas las pestañas (360 y 1280 px, claro y oscuro) |
-| HTML / Consola / Robustez | 3 | html-validate sin errores; consola sin errores ni avisos; funciona con el almacenamiento bloqueado |
+| HTML / Consola / Robustez | 4 | html-validate sin errores; sin ids duplicados; consola sin errores ni avisos; funciona con el almacenamiento bloqueado |
 
 También se revisaron las capturas a mano. Esa revisión encontró los campos de CAC/AOV aplastados en la tabla de 12 meses: se corrigieron y se añadió una comprobación automática.
+
+**Defectos encontrados y corregidos en la versión 2:**
+- Un campo de la tarea 4 y un contenedor compartían el mismo `id`. Ahora la auditoría comprueba que no haya ids duplicados.
+- La columna «Quitar» de la tabla de informes no tenía encabezado accesible.
+- En el modo fácil faltaba la región principal para lectores de pantalla.
+
+## 2b. Modo fácil: de dónde sale cada consejo
+
+| Situación | Qué dice la app | Fuente |
+|---|---|---|
+| Menos de 7 días, sin ventas y con 5 o más pagos iniciados | Revisa hoy la página de pago (compra de prueba) y no toques los anuncios | Puerta 1 del sistema (sin señal limpia no se decide) + Manual de arranque «no toques nada 7 días» |
+| Menos de 7 días | Espera; no toques presupuesto, anuncios ni públicos | Manual de arranque, tarea 9 y parte 5 |
+| Día 7 o más sin ventas | Para (pausa sin borrar) y cambia de ángulo | Manual, día 7 («cobrado < mitad → vuelve al día 1») |
+| Día 7 o más, cada venta cuesta más de lo que deja | Para | Regla de oro: nunca pagar un cliente por encima de su contribución |
+| Días 7 a 13 | Si hay mercado, sigue igual hasta el día 14; si no, revisa el cierre o el ángulo | Manual, día 7 |
+| Días 14 a 20 | Deja el mejor conjunto, apaga el resto, 3 versiones nuevas, sube un 20 % | Manual, día 14 |
+| Día 21 o más | Escala / mantén / optimiza / para | Manual, día 21 (tramos de la app, apartado 4) |
+| Frecuencia > 3 o CTR < 1 % | Prepara anuncios nuevos / cambia el gancho | Ritual de los lunes y benchmarks del Playbook §6.2 |
+
+Notas del modo fácil:
+- El «límite para ganar» es el CAC del Nivel A verde: lo que te deja cada cliente ÷ 2,40, redondeado hacia abajo (6,62 USD con tu producto).
+- En el modo fácil se aplica el calendario del Manual de arranque (días 7, 14 y 21), sin exigir 50 compras. Con un presupuesto de unos 30 USD al día, esa exigencia del Playbook nunca se cumpliría.
+- **Supuesto pendiente de tu dato real:** que el 32 % de los compradores se lleva cada añadido (valor de referencia del Excel). Se puede cambiar en «Cambiar precios → Más opciones».
 
 ## 3. Contradicciones encontradas en la documentación
 

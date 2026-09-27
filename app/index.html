@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-modo="simple">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-n6TPrV3jlIutKK3q4XUxJCjNnD3L/fy7tPfHGY92r8s='; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-C8RyeiJ6toW5ZhPAu2MPQNKpl1PAJs4efOAiGeenC6o='; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="description" content="Sistema Integral de Campañas, Edición Andromeda 2026: economía unitaria, validación, escalado y guardián de pausas.">
 <meta name="color-scheme" content="light dark">
@@ -119,6 +119,16 @@ details summary{cursor:pointer;font-weight:600}
 .tpl pre{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:12px;font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .tpl h4{margin:0 0 6px;font-size:.9rem}
 .tpl .btn{margin-top:6px;font-size:.8rem;padding:4px 10px}
+[data-modo="simple"] nav.tabs,[data-modo="simple"] main#main,[data-modo="simple"] .expert-only{display:none}
+[data-modo="experto"] #simple{display:none}
+.simple{max-width:760px;margin:0 auto;padding:8px 16px 16px}
+.simple h2{display:flex;align-items:center;gap:10px;font-size:1.15rem;margin:0 0 8px}
+.step{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--page);font-size:.9rem;flex:0 0 auto}
+.simple p.big{font-size:1.05rem;margin:4px 0 8px}
+.btn.big{font-size:1.05rem;padding:14px 20px;border-radius:10px}
+ol.todo{margin:12px 0 0;padding-left:1.4em;font-size:1.05rem}
+ol.todo li{margin:0 0 10px;padding-left:4px}
+.modo-bar{display:flex;justify-content:flex-end;margin-top:10px}
 footer{max-width:1200px;margin:0 auto;padding:8px 16px 32px;color:var(--muted);font-size:.8rem}
 .sr{position:absolute;left:0;top:0;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
 @media (max-width:560px){
@@ -132,12 +142,34 @@ footer{max-width:1200px;margin:0 auto;padding:8px 16px 32px;color:var(--muted);f
 </style>
 </head>
 <body>
-<a class="skip" href="#main">Saltar al contenido</a>
+<a class="skip" href="#simple" id="skip">Saltar al contenido</a>
 <header class="top">
   <h1>Sistema Integral de Campañas · Andromeda 2026</h1>
-  <p>Economía unitaria, validación, escalado marginal y guardián de pausas. Las celdas <span class="legend-in">azules</span> son tus datos: al cambiarlas se recalcula todo.</p>
-  <div class="rule">Nunca comprar un cliente por encima de su contribución de break-even.</div>
+  <p class="expert-only">Economía unitaria, validación, escalado marginal y guardián de pausas. Las celdas <span class="legend-in">azules</span> son tus datos: al cambiarlas se recalcula todo.</p>
+  <div class="rule">Nunca pagues por un cliente más de lo que ese cliente te deja.</div>
+  <div class="modo-bar"><button type="button" class="btn" id="btn-modo">Ver modo experto (todas las herramientas)</button></div>
 </header>
+<div id="simple" class="simple">
+  <section class="card" aria-labelledby="s1-t">
+    <h2 id="s1-t"><span class="step" aria-hidden="true">1</span>Tu producto</h2>
+    <p class="big" id="sp-resumen"></p>
+    <details><summary>Cambiar precios</summary>
+      <div class="form-grid" id="sp-form" style="margin-top:10px"></div>
+      <details style="margin-top:10px"><summary>Más opciones (si las conoces)</summary><div class="form-grid" id="sp-form2" style="margin-top:10px"></div></details>
+    </details>
+  </section>
+  <section class="card" aria-labelledby="s2-t">
+    <h2 id="s2-t"><span class="step" aria-hidden="true">2</span>Sube el informe de Meta</h2>
+    <p class="note" style="margin-top:0">En el Administrador de anuncios: pestaña <strong>Conjuntos de anuncios</strong> → elige las fechas <strong>desde que empezó la campaña hasta hoy</strong> → <strong>Exportar</strong> → Excel o CSV. También puedes subir un informe de un solo día.</p>
+    <div class="row"><label class="btn primary big" for="simple-file">Subir informe (Excel o CSV)</label><input type="file" id="simple-file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple class="sr"></div>
+    <p id="simple-status" class="note" role="status" aria-live="polite"></p>
+    <div class="form-grid" id="sp-inicio"></div>
+  </section>
+  <section class="card" aria-labelledby="s3-t">
+    <h2 id="s3-t"><span class="step" aria-hidden="true">3</span>Qué hacer hoy</h2>
+    <div id="sp-result"></div>
+  </section>
+</div>
 <nav class="tabs" aria-label="Secciones">
   <div class="inner" role="tablist" id="tablist">
     <button type="button" role="tab" id="t-resumen" aria-controls="p-resumen" aria-selected="true">Resumen</button>
@@ -325,8 +357,8 @@ footer{max-width:1200px;margin:0 auto;padding:8px 16px 32px;color:var(--muted);f
   <p class="lead">Carga el CSV que exportas desde el Administrador de anuncios de Meta (nivel conjunto, campaña o anuncio). Si «Inicio» y «Fin» son el mismo día, se trata como <strong>diario</strong>; si abarca varios días, como <strong>acumulado</strong> (de inicio a la fecha). Los datos se procesan solo en este navegador: no se envían a ningún sitio.</p>
   <div class="card">
     <div class="row">
-      <label class="btn primary" for="rep-file">Cargar informe CSV</label>
-      <input type="file" id="rep-file" accept=".csv,text/csv" multiple class="sr">
+      <label class="btn primary" for="rep-file">Cargar informe (Excel o CSV)</label>
+      <input type="file" id="rep-file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple class="sr">
       <span id="rep-status" class="note" role="status" aria-live="polite"></span>
     </div>
     <p class="note">Columnas que se usan (si existen): importe gastado, impresiones, alcance, clics en el enlace, visitas a la página de destino, pagos iniciados, compras y valor de conversión. En Meta: Informes → Exportar → CSV.</p>
@@ -339,7 +371,7 @@ footer{max-width:1200px;margin:0 auto;padding:8px 16px 32px;color:var(--muted);f
   <h2>Supuestos (paso 0: tus números)</h2>
   <p class="lead">Sustituye los valores azules por los tuyos. Los cuatro que más mueven el resultado, en orden: <strong>tasa de reembolso</strong>, <strong>precio y estructura de oferta</strong>, <strong>CAC real</strong> y <strong>attach de backend</strong>. Los porcentajes se escriben como número (9 = 9 %). Se guarda automáticamente en este navegador.</p>
   <div class="row" style="margin-bottom:12px">
-    <button class="btn" id="btn-reset" type="button">Restablecer caso de referencia</button>
+    <button class="btn" id="btn-reset" type="button">Restablecer supuestos</button>
     <button class="btn" id="btn-export" type="button">Exportar datos (JSON)</button>
     <label class="btn" for="file-import">Importar datos (JSON)</label>
     <input type="file" id="file-import" accept="application/json,.json" class="sr">
@@ -773,7 +805,10 @@ window.AndromedaModel = { defaults: function () { return JSON.parse(JSON.stringi
 
 /* ================= ESTADO Y PERSISTENCIA ================= */
 var STORE = 'andromeda2026.v1';
-function emptyState() { return { inputs: JSON.parse(JSON.stringify(DEFAULTS)), weekly: {}, alerts: {}, conds: {}, plan: {}, log: [], scen: { opt: null, pes: 0.12 }, arr: {}, prueba: {}, weeks: [], reports: [] }; }
+function emptyState() { return { inputs: JSON.parse(JSON.stringify(DEFAULTS)), weekly: {}, alerts: {}, conds: {}, plan: {}, log: [], scen: { opt: null, pes: 0.12 }, arr: {}, prueba: {}, weeks: [], reports: [], producto: null, modo: 'simple' }; }
+// Producto del usuario: la app arranca configurada con él (los valores del Excel siguen siendo la referencia del modelo)
+var PRODUCTO_INICIAL = { precio: 14.9, a1: 9, a2: 8, toma: 0.32, reemb: 0.10, com: 0.045, fijo: 0.30 };
+var PRODUCTO_LIM = { precio: [0.01, 1e6], a1: [0, 1e6], a2: [0, 1e6], toma: [0, 1], reemb: [0, 0.9], com: [0, 0.5], fijo: [0, 1000] };
 var state = emptyState();
 function isNum(v) { return typeof v === 'number' && isFinite(v); }
 var ARR_NUM_KEYS = ['precio', 'bump', 'up', 'reemb', 'com', 'cost', 'objPct', 'bumpPrecio', 'upPrecio', 'precioOferta'];
@@ -782,6 +817,11 @@ function sanitize(obj) {
   // Solo se aceptan claves conocidas y valores del tipo esperado
   var out = emptyState();
   if (!obj || typeof obj !== 'object') return out;
+  if (obj.modo === 'experto') out.modo = 'experto';
+  if (obj.producto && typeof obj.producto === 'object') {
+    var pr = {}, okP = Object.keys(PRODUCTO_LIM).every(function (k) { var v = obj.producto[k], l = PRODUCTO_LIM[k]; if (!isNum(v) || v < l[0] || v > l[1]) return false; pr[k] = v; return true; });
+    if (okP) out.producto = pr;
+  }
   if (obj.arr && typeof obj.arr === 'object') {
     ARR_NUM_KEYS.forEach(function (k) { if (isNum(obj.arr[k]) && obj.arr[k] >= 0) out.arr[k] = obj.arr[k]; });
     ARR_TXT_KEYS.forEach(function (k) { if (typeof obj.arr[k] === 'string') out.arr[k] = obj.arr[k].slice(0, 200); });
@@ -1445,7 +1485,7 @@ function textField(host, key, label, ph, max) {
 }
 function numField(host, key, label, type, opts) {
   opts = opts || {};
-  var id = 'arr-' + key, inp = el('input', { cls: 'in', type: 'text', inputmode: 'decimal', id: id, autocomplete: 'off' });
+  var id = 'arrn-' + key, inp = el('input', { cls: 'in', type: 'text', inputmode: 'decimal', id: id, autocomplete: 'off' });
   var v = arrNum(key); if (isNum(v)) inp.value = showIn(v, type);
   inp.addEventListener('change', function () {
     if (inp.value.trim() === '' && opts.optional) { delete state.arr[key]; inp.removeAttribute('aria-invalid'); save(); renderArranque(); renderPrueba(); return; }
@@ -1653,8 +1693,18 @@ var REP_COLS = [
   ['valor', [], ['valor de conversion de compras', 'purchases conversion value', 'purchase conversion value']]
 ];
 var REP_NUM = ['gasto', 'presupuesto', 'impr', 'alcance', 'clics', 'lp', 'checkouts', 'compras', 'valor'];
-function parseReport(text, fileName) {
-  var rows = parseCSV(text);
+// Fechas: ISO (2026-09-27), dd/mm/aaaa o número de serie de Excel
+function normDate(v) {
+  var t = String(v == null ? '' : v).trim(), m;
+  if ((m = /^(\d{4}-\d{2}-\d{2})/.exec(t))) return m[1];
+  if ((m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(t))) return m[3] + '-' + ('0' + m[2]).slice(-2) + '-' + ('0' + m[1]).slice(-2);
+  if (/^\d{5}(\.\d+)?$/.test(t) && +t > 30000 && +t < 80000) return new Date(Date.UTC(1899, 11, 30) + Math.floor(+t) * 86400000).toISOString().slice(0, 10);
+  return '';
+}
+// input: texto CSV o filas ya leídas de un Excel (.xlsx)
+function parseReport(input, fileName) {
+  var rows = Array.isArray(input) ? input : parseCSV(input);
+  if (Array.isArray(input)) rows.delim = 'xlsx';
   if (rows.length < 2) throw new Error('El archivo no tiene filas de datos.');
   var H = rows[0].map(normH), idx = {};
   REP_COLS.forEach(function (c) {
@@ -1665,12 +1715,13 @@ function parseReport(text, fileName) {
   });
   if (idx.gasto == null) throw new Error('No se reconoce el formato: falta la columna «Importe gastado».');
   // Convención decimal del archivo: con «;» se exporta en formato europeo (coma decimal); con «,» los números usan punto
-  var cd = rows.delim === ';' ? true : rows.delim === ',' ? false : rows.slice(1, 50).some(function (r) { return REP_NUM.some(function (k) { return idx[k] != null && /\d,\d{1,2}$/.test(String(r[idx[k]] || '').trim()); }); });
-  var date = /^\d{4}-\d{2}-\d{2}$/, out = [], level = normH(rows[0][idx.nombre] || '').indexOf('campa') >= 0 ? 'Campaña' : normH(rows[0][idx.nombre] || '').indexOf('conjunto') >= 0 || normH(rows[0][idx.nombre] || '').indexOf('ad set') >= 0 ? 'Conjunto' : 'Anuncio';
+  var cd = rows.delim === ';' ? true : rows.delim === ',' || rows.delim === 'xlsx' ? false : rows.slice(1, 50).some(function (r) { return REP_NUM.some(function (k) { return idx[k] != null && /\d,\d{1,2}$/.test(String(r[idx[k]] || '').trim()); }); });
+  var out = [], level = normH(rows[0][idx.nombre] || '').indexOf('campa') >= 0 ? 'Campaña' : normH(rows[0][idx.nombre] || '').indexOf('conjunto') >= 0 || normH(rows[0][idx.nombre] || '').indexOf('ad set') >= 0 ? 'Conjunto' : 'Anuncio';
   rows.slice(1, 5001).forEach(function (r) {
-    var o = { nombre: String(idx.nombre != null ? r[idx.nombre] || '' : 'Total').slice(0, 120), estado: String(idx.estado != null ? r[idx.estado] || '' : '').slice(0, 40) };
+    var o = { nombre: String(idx.nombre != null ? r[idx.nombre] || '' : 'Total').trim().slice(0, 120), estado: String(idx.estado != null ? r[idx.estado] || '' : '').slice(0, 40) };
+    if (idx.nombre != null && !o.nombre) return; // fila de totales de Meta: se descarta para no contar dos veces
     var ini = idx.dia != null ? r[idx.dia] : idx.inicio != null ? r[idx.inicio] : '', fin = idx.dia != null ? r[idx.dia] : idx.fin != null ? r[idx.fin] : ini;
-    o.inicio = date.test(String(ini).trim()) ? String(ini).trim() : ''; o.fin = date.test(String(fin).trim()) ? String(fin).trim() : o.inicio;
+    o.inicio = normDate(ini); o.fin = normDate(fin) || o.inicio;
     REP_NUM.forEach(function (k) { o[k] = idx[k] != null ? csvNum(r[idx[k]], cd) : NaN; });
     if (!isFinite(o.gasto)) return;
     out.push(o);
@@ -1744,7 +1795,7 @@ function renderInforme() {
     tb.appendChild(el('tr', {}, [opt(r.id, r.archivo), el('td', { text: r.inicio === r.fin ? r.inicio : r.inicio + ' → ' + r.fin }), el('td', {}, [badge(r.inicio === r.fin ? 'Diario' : 'Acumulado', 'neutral')]), el('td', { text: r.archivo }), el('td', { cls: 'n', text: String(r.rows.length) }), el('td', { cls: 'n', text: usd(t.gasto, 2) }), el('td', { cls: 'n', text: fmtN(t.compras, 0) }), el('td', {}, [del])]));
   });
   if (dailies.length >= 2) tb.appendChild(el('tr', {}, [opt('daily-sum', 'suma de informes diarios'), el('td', { text: dailies[dailies.length - 1].inicio + ' → ' + dailies[0].fin }), el('td', {}, [badge('Suma de ' + dailies.length + ' diarios', 'neutral')]), el('td', { text: 'De inicio a fecha actual (calculado)' }), el('td'), el('td'), el('td'), el('td')]));
-  list.appendChild(el('div', { cls: 'tw' }, [el('table', {}, [el('caption', { text: 'Informes cargados: elige cuál ver' }), el('thead', {}, [el('tr', {}, ['Ver', 'Periodo', 'Tipo', 'Archivo', 'Filas', 'Gasto', 'Compras', ''].map(function (h, i) { return el('th', { scope: 'col', cls: i === 4 || i === 5 || i === 6 ? 'n' : '', text: h }); }))]), tb])]));
+  list.appendChild(el('div', { cls: 'tw' }, [el('table', {}, [el('caption', { text: 'Informes cargados: elige cuál ver' }), el('thead', {}, [el('tr', {}, ['Ver', 'Periodo', 'Tipo', 'Archivo', 'Filas', 'Gasto', 'Compras', ''].map(function (h, i) { return h ? el('th', { scope: 'col', cls: i === 4 || i === 5 || i === 6 ? 'n' : '', text: h }) : el('th', { scope: 'col' }, [el('span', { cls: 'sr', text: 'Acciones' })]); }))]), tb])]));
 
   var rows, ini, fin, label, cols;
   if (repSel === 'daily-sum') {
@@ -1829,36 +1880,257 @@ function renderInforme() {
   view.appendChild(el('p', { cls: 'note', text: 'Contribución estimada = compras × tu CM1 (' + usd(cm1) + '). El ROAS de la plataforma se muestra solo como referencia: el sistema decide con contribución e incrementalidad, no con el panel.' }));
   labelScrollers();
 }
-document.getElementById('rep-file').addEventListener('change', function (ev) {
-  var files = Array.prototype.slice.call(ev.target.files || []), st = document.getElementById('rep-status'), msgs = [];
-  var pending = files.length; if (!pending) return;
+/* ---- Lectura de Excel (.xlsx) sin librerías: ZIP + XML con las APIs del navegador ---- */
+function readXlsx(buf) {
+  var u8 = new Uint8Array(buf), dv = new DataView(buf), td = new TextDecoder('utf-8');
+  var bad = function (m) { return Promise.reject(new Error(m || 'No es un archivo Excel (.xlsx) válido.')); };
+  if (u8.length < 22 || dv.getUint32(0, true) !== 0x04034b50) return bad();
+  var eocd = -1;
+  for (var i = u8.length - 22; i >= Math.max(0, u8.length - 65557); i--) if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+  if (eocd < 0) return bad();
+  var n = dv.getUint16(eocd + 10, true), off = dv.getUint32(eocd + 16, true), files = {};
+  for (var k = 0; k < n && off + 46 <= u8.length && dv.getUint32(off, true) === 0x02014b50; k++) {
+    var nl = dv.getUint16(off + 28, true);
+    files[td.decode(u8.subarray(off + 46, off + 46 + nl))] = { method: dv.getUint16(off + 10, true), csize: dv.getUint32(off + 20, true), usize: dv.getUint32(off + 24, true), lho: dv.getUint32(off + 42, true) };
+    off += 46 + nl + dv.getUint16(off + 30, true) + dv.getUint16(off + 32, true);
+  }
+  function get(name) {
+    var f = files[name];
+    if (!f) return Promise.resolve(null);
+    if (f.usize > 60e6) return bad('El Excel es demasiado grande.');
+    var l = f.lho;
+    if (l + 30 > u8.length || dv.getUint32(l, true) !== 0x04034b50) return bad();
+    var st = l + 30 + dv.getUint16(l + 26, true) + dv.getUint16(l + 28, true), data = u8.subarray(st, st + f.csize);
+    if (f.method === 0) return Promise.resolve(td.decode(data));
+    if (f.method !== 8 || typeof DecompressionStream === 'undefined') return bad('Tu navegador no puede abrir este Excel: expórtalo como CSV.');
+    return new Response(new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text();
+  }
+  function xml(t) {
+    var d = new DOMParser().parseFromString(t, 'application/xml');
+    if (d.getElementsByTagName('parsererror').length) throw new Error('El Excel está dañado.');
+    return d;
+  }
+  var all = function (node, tag) { return Array.prototype.slice.call(node.getElementsByTagNameNS('*', tag)); };
+  var text = function (node) { return all(node, 't').map(function (t) { return t.textContent; }).join(''); };
+  return Promise.all([get('xl/workbook.xml'), get('xl/_rels/workbook.xml.rels'), get('xl/sharedStrings.xml')]).then(function (res) {
+    var target = 'xl/worksheets/sheet1.xml';
+    if (res[0] && res[1]) {
+      var sh = all(xml(res[0]), 'sheet')[0], rid = sh && (sh.getAttribute('r:id') || sh.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships', 'id'));
+      var rel = all(xml(res[1]), 'Relationship').filter(function (r) { return r.getAttribute('Id') === rid; })[0];
+      if (rel) { var tg = rel.getAttribute('Target'); target = tg.charAt(0) === '/' ? tg.slice(1) : 'xl/' + tg.replace(/^\.\//, ''); }
+    }
+    var ss = res[2] ? all(xml(res[2]), 'si').map(text) : [];
+    return get(target).then(function (sheet) {
+      if (!sheet) throw new Error('El Excel no tiene hojas.');
+      var rows = [];
+      all(xml(sheet), 'row').slice(0, 5002).forEach(function (row) {
+        var out = [];
+        all(row, 'c').forEach(function (c, ci) {
+          var ref = c.getAttribute('r') || '', col = ci, m = /^([A-Z]+)/.exec(ref);
+          if (m) { col = 0; for (var j = 0; j < m[1].length; j++) col = col * 26 + m[1].charCodeAt(j) - 64; col--; }
+          if (col > 200) return;
+          var t = c.getAttribute('t'), v = all(c, 'v')[0], val = '';
+          if (t === 's') val = ss[parseInt(v && v.textContent, 10)] || '';
+          else if (t === 'inlineStr') val = text(c);
+          else val = v ? v.textContent : '';
+          while (out.length < col) out.push('');
+          out[col] = val;
+        });
+        rows.push(out);
+      });
+      return rows;
+    });
+  });
+}
+
+function addReport(rep) {
+  // Un informe con el mismo periodo y el mismo nivel sustituye al anterior
+  state.reports = state.reports.filter(function (r) { return !(r.inicio === rep.inicio && r.fin === rep.fin && r.nivel === rep.nivel); });
+  state.reports.push(rep); repSel = rep.id;
+}
+function loadReportFiles(files, statusEl, input) {
+  var msgs = [], pending = files.length;
+  if (!pending) return;
+  var fin = function () { if (!--pending) done(); };
   files.forEach(function (f) {
-    if (f.size > 5e6) { msgs.push(f.name + ': demasiado grande (máx. 5 MB)'); if (!--pending) done(); return; }
-    var rd = new FileReader();
+    if (f.size > 10e6) { msgs.push(f.name + ': demasiado grande (máx. 10 MB)'); return fin(); }
+    if (/\.xls$/i.test(f.name)) { msgs.push(f.name + ': formato .xls antiguo; expórtalo como .xlsx o .csv'); return fin(); }
+    var isX = /\.xlsx$/i.test(f.name), rd = new FileReader();
     rd.onload = function () {
-      try {
-        var rep = parseReport(String(rd.result), f.name);
-        // Un informe con el mismo periodo y el mismo nivel sustituye al anterior
-        state.reports = state.reports.filter(function (r) { return !(r.inicio === rep.inicio && r.fin === rep.fin && r.nivel === rep.nivel); });
-        state.reports.push(rep); repSel = rep.id; msgs.push(f.name + ': ' + rep.rows.length + ' filas');
-      } catch (e) { msgs.push(f.name + ': ' + e.message); }
-      if (!--pending) done();
+      var job = isX ? readXlsx(rd.result).then(function (rows) { return parseReport(rows, f.name); }) : Promise.resolve().then(function () { return parseReport(String(rd.result), f.name); });
+      job.then(function (rep) { addReport(rep); msgs.push(f.name + ': ' + rep.rows.length + ' filas'); }, function (e) { msgs.push(f.name + ': ' + e.message); }).then(fin);
     };
-    rd.onerror = function () { msgs.push(f.name + ': no se pudo leer'); if (!--pending) done(); };
-    rd.readAsText(f);
+    rd.onerror = function () { msgs.push(f.name + ': no se pudo leer'); fin(); };
+    if (isX) rd.readAsArrayBuffer(f); else rd.readAsText(f);
   });
   function done() {
     if (!save()) msgs.push('aviso: no se pudo guardar en este navegador (espacio lleno o almacenamiento bloqueado); el informe se verá hasta que recargues');
-    st.textContent = msgs.join(' · '); ev.target.value = ''; renderInforme();
+    statusEl.textContent = msgs.join(' · '); if (input) input.value = '';
+    renderInforme(); renderSimple();
   }
-});
+}
+document.getElementById('rep-file').addEventListener('change', function (ev) { loadReportFiles(Array.prototype.slice.call(ev.target.files || []), document.getElementById('rep-status'), ev.target); });
+document.getElementById('simple-file').addEventListener('change', function (ev) { loadReportFiles(Array.prototype.slice.call(ev.target.files || []), document.getElementById('simple-status'), ev.target); });
+
+/* ================= MODO FÁCIL ================= */
+function applyProducto(p) {
+  var I = state.inputs;
+  I['Supuestos!D10'] = p.precio; I['Supuestos!D12'] = 1;
+  I['Supuestos!D13'] = p.a1; I['Supuestos!D14'] = p.toma; I['Supuestos!D15'] = p.a2; I['Supuestos!D16'] = p.toma;
+  I['Supuestos!D21'] = p.reemb; I['Supuestos!D22'] = p.com; I['Supuestos!D23'] = p.fijo; I['Supuestos!D24'] = 1; I['Supuestos!D31'] = 0;
+  var cm1 = compute(I)['Economia Unitaria!D19'];
+  // CAC objetivo = máximo del Nivel A verde (CM1 ÷ 2,40), redondeado hacia abajo
+  I['Supuestos!D64'] = Math.max(0.01, Math.floor(cm1 / I['Supuestos!D74'] * 100) / 100);
+  state.arr.precio = p.precio; state.arr.bump = (p.a1 + p.a2) * p.toma; state.arr.up = 0; state.arr.reemb = p.reemb; state.arr.com = p.com;
+}
+function fmtFecha(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ''); return m ? m[3] + '/' + m[2] + '/' + m[1] : '—'; }
+function addDaysIso(iso, n) { var d = new Date(iso + 'T00:00:00Z'); if (isNaN(d)) return ''; d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); }
+// Datos que mira el modo fácil: el informe más reciente (acumulado) o la suma de los diarios
+function simpleDataset(reports) {
+  if (!reports.length) return null;
+  var newest = reports.slice().sort(function (a, b) { return a.fin < b.fin ? 1 : -1; })[0], lvl = newest.nivel;
+  var reps = reports.filter(function (r) { return r.nivel === lvl; });
+  var acc = reps.filter(function (r) { return r.inicio !== r.fin; }).sort(function (a, b) { return a.fin !== b.fin ? (a.fin < b.fin ? 1 : -1) : (a.inicio < b.inicio ? -1 : 1); })[0];
+  var d = reps.filter(function (r) { return r.inicio === r.fin; }), ds = null;
+  if (d.length) {
+    var rows = []; d.forEach(function (r) { r.rows.forEach(function (x) { rows.push(x); }); });
+    var dates = d.map(function (r) { return r.inicio; }).filter(Boolean).sort();
+    ds = { rows: rows, inicio: dates[0] || '', fin: dates[dates.length - 1] || '', fuente: d.length > 1 ? 'suma de ' + d.length + ' informes diarios' : 'informe de un día' };
+  }
+  if (acc && (!ds || acc.fin >= ds.fin)) return { rows: acc.rows, inicio: acc.inicio, fin: acc.fin, fuente: 'informe acumulado' };
+  return ds;
+}
+// Reglas en lenguaje simple: Manual de arranque (días 7, 14 y 21) + regla de oro del sistema
+function simpleAdvice(c) {
+  var t = c.t, ventas = t.compras || 0, gasto = t.gasto, cac = ventas > 0 ? gasto / ventas : NaN, N = c.N;
+  var cobrado = t.valor > 0 ? t.valor : ventas * c.aov, a = [], title, zone, stop = false;
+  var noTocar = function (d) { return 'No toques presupuesto, anuncios ni públicos hasta el día ' + d + ' (' + fmtFecha(addDaysIso(c.inicio, d - 1)) + ').'; };
+  var pruebaPago = t.checkouts >= 5 ? 'Haz tú mismo una compra de prueba y mira en Meta (Administrador de eventos) si aparece «Compra». ' + fmtN(t.checkouts, 0) + ' personas empezaron a pagar y ninguna terminó: casi siempre es que la compra no se registra o que el pago falla.' : null;
+  var subir = function () { return isFinite(c.diario) && c.diario > 0 ? 'Sube el presupuesto solo un 20 %: de ' + usd(c.diario, 2) + ' a ' + usd(c.diario * 1.2, 2) + ' al día.' : 'Sube el presupuesto solo un 20 %.'; };
+  if (ventas === 0) {
+    if (N < 7) {
+      if (pruebaPago || gasto > c.cm1) { zone = 'serious'; title = 'Revisa hoy tu página de pago. Los anuncios, no los toques'; }
+      else { zone = 'neutral'; title = 'Espera: la campaña está aprendiendo'; }
+      if (pruebaPago) a.push(pruebaPago); else if (gasto > c.cm1) a.push('Haz una compra de prueba para comprobar que el botón de compra y el pago funcionan.');
+      a.push(noTocar(7));
+      if (gasto > c.cm1) a.push('Llevas ' + usd(gasto, 2) + ' gastados sin ventas y cada cliente te deja ' + usd(c.cm1, 2) + '. Si el día 7 sigue sin ventas, se para.');
+    } else {
+      zone = 'critical'; title = 'Para la campaña'; stop = true;
+      a.push('Pausa los conjuntos de anuncios (no los borres).');
+      if (pruebaPago) a.push(pruebaPago + ' Si no se registraban, arréglalo y vuelve a lanzar.');
+      a.push('Si las compras sí se registraban, el anuncio o la oferta no funcionan: vuelve a empezar con otro ángulo (otra promesa, otro gancho).');
+    }
+  } else if (N < 7) {
+    zone = 'neutral'; title = 'Espera: ya hay ventas, pero es pronto';
+    a.push(noTocar(7));
+    a.push(cac > c.cm1 ? 'Hoy cada venta te cuesta ' + usd(cac, 2) + ' y te deja ' + usd(c.cm1, 2) + '. La primera semana es normal que cueste el doble: se revisa el día 7.' : 'Cada venta te cuesta ' + usd(cac, 2) + ' (para ganar dinero, como máximo ' + usd(c.obj, 2) + '). Buen comienzo.');
+  } else if (cac > c.cm1) {
+    zone = 'critical'; title = 'Para: cada venta te cuesta más de lo que te deja'; stop = true;
+    a.push('Cada venta te cuesta ' + usd(cac, 2) + ' y solo te deja ' + usd(c.cm1, 2) + '. Pausa los conjuntos (no los borres).');
+    a.push('Antes de volver a gastar, sube lo que te deja cada cliente (precio o añadidos) o cambia de ángulo.');
+  } else if (N < 14) {
+    if (cobrado > gasto || cac <= c.obj) { zone = 'good'; title = 'Hay mercado: sigue igual hasta el día 14'; a.push(noTocar(14)); }
+    else if (cobrado >= gasto / 2) { zone = 'warning'; title = 'Hay interés, pero algo falla en el cierre'; a.push('Revisa el precio y la página de venta: la promesa del anuncio tiene que ser la misma que la de la página.'); a.push('No subas el presupuesto.'); }
+    else { zone = 'serious'; title = 'Cobras menos de la mitad de lo que gastas'; a.push('El ángulo del anuncio no está funcionando: prepara uno distinto (otra promesa, otro gancho).'); a.push('No subas el presupuesto.'); }
+    if (c.best) a.push('El conjunto que mejor va por ahora es «' + c.best + '». No apagues nada hasta el día 14.');
+  } else if (N < 21) {
+    zone = cac <= c.obj ? 'good' : 'warning'; title = 'Día 14: quédate con el mejor conjunto';
+    if (c.best) a.push('Deja activo «' + c.best + '» y apaga los demás conjuntos.');
+    a.push('Lanza 3 versiones nuevas de ese anuncio ganador, distintas de verdad (otro formato, otro gancho, otras imágenes).');
+    a.push(subir());
+  } else {
+    var v = d21Verdict(cac, c.obj, c.cm1);
+    zone = v[2]; title = { Escala: 'Escala', 'Mantén': 'Mantén el presupuesto', 'Optimiza una semana más': 'Optimiza una semana más', Para: 'Para' }[v[0]];
+    a.push(v[1].replace('Sube un 20 % cada semana.', '').trim());
+    if (v[0] === 'Escala') a.push(subir() + ' Repite cada semana mientras siga así.');
+    if (v[0] === 'Para') { stop = true; a.push('Pausa los conjuntos (no los borres) y cambia de ángulo.'); }
+  }
+  if (!stop && isFinite(t.freq) && t.freq > 3) a.push('Tu público ya vio muchas veces los anuncios (frecuencia ' + fmtN(t.freq, 1) + '): prepara anuncios nuevos.');
+  if (!stop && t.impr >= 1000 && isFinite(t.ctr) && t.ctr < 0.01) a.push('Poca gente hace clic (' + pct(t.ctr, 1) + '): cambia el gancho, los 3 primeros segundos del anuncio.');
+  var next = N < 7 ? 7 : N < 14 ? 14 : N < 21 ? 21 : null;
+  var sets = (c.sets || []).filter(function (x) { return x.gasto > 0; }).map(function (x) {
+    var lab, z;
+    if (stop) { lab = 'Pausar'; z = 'critical'; }
+    else if (x.nombre === c.best) { lab = N >= 14 ? 'Dejar activo' : 'Va mejor'; z = 'good'; }
+    else if (N >= 14 && N < 21) { lab = 'Apagar'; z = 'critical'; }
+    else { lab = 'Esperar'; z = 'neutral'; }
+    return { nombre: x.nombre, gasto: x.gasto, compras: x.compras, label: lab, zone: z };
+  });
+  return { title: title, zone: zone, actions: a.slice(0, 5), next: next, nextDate: next ? addDaysIso(c.inicio, next - 1) : '', sets: sets, cac: cac };
+}
+Object.assign(window.AndromedaModel, { readXlsx: readXlsx, normDate: normDate, simpleDataset: simpleDataset, simpleAdvice: simpleAdvice });
+
+function prodField(host, key, label, type) {
+  var id = 'sp-' + key, inp = el('input', { cls: 'in', type: 'text', inputmode: 'decimal', id: id, autocomplete: 'off' });
+  inp.value = showIn(state.producto[key], type);
+  inp.addEventListener('change', function () {
+    var n = parseNum(inp.value) / scaleIn(type), l = PRODUCTO_LIM[key];
+    if (!isFinite(n) || n < l[0] || n > l[1]) { inp.setAttribute('aria-invalid', 'true'); return; }
+    inp.removeAttribute('aria-invalid');
+    state.producto[key] = n; applyProducto(state.producto); save(); rebuild();
+  });
+  host.appendChild(el('label', { for: id }, [label + ' (' + UNIT[type] + ')', inp]));
+}
+function buildSimple() {
+  var f = clear(document.getElementById('sp-form')), f2 = clear(document.getElementById('sp-form2'));
+  prodField(f, 'precio', 'Precio del producto', 'usd'); prodField(f, 'a1', 'Precio del añadido 1', 'usd'); prodField(f, 'a2', 'Precio del añadido 2 (0 si no tienes)', 'usd');
+  prodField(f2, 'toma', 'De cada 100 compradores, cuántos se llevan cada añadido', 'pct'); prodField(f2, 'reemb', 'Reembolsos', 'pct');
+  prodField(f2, 'com', 'Comisión de tu plataforma de pago', 'pct'); prodField(f2, 'fijo', 'Comisión fija por venta', 'usd');
+  var h = clear(document.getElementById('sp-inicio')), d = el('input', { cls: 'in', type: 'date', id: 'sp-fecha' });
+  d.value = state.prueba.fecha || '';
+  d.addEventListener('change', function () { state.prueba.fecha = /^\d{4}-\d{2}-\d{2}$/.test(d.value) ? d.value : ''; save(); renderSimple(); renderPrueba(); });
+  h.appendChild(el('label', { for: 'sp-fecha' }, ['¿Qué día empezó la campaña? (si lo dejas vacío, se toma la primera fecha de tus informes)', d]));
+}
+function renderSimple() {
+  var p = state.producto, E = 'Economia Unitaria!', cm1 = R[E + 'D19'], obj = state.inputs['Supuestos!D64'];
+  var extras = [p.a1, p.a2].filter(function (x) { return x > 0; });
+  document.getElementById('sp-resumen').textContent = 'Vendes a ' + usd(p.precio, 2) + (extras.length ? ' con ' + (extras.length === 1 ? 'un añadido de ' + usd(extras[0], 2) : 'dos añadidos (' + fmtN(extras[0], 2) + ' y ' + fmtN(extras[1], 2) + ' USD)') : '') + '. Cada cliente te deja unos ' + usd(cm1, 2) + '. Para ganar dinero, cada venta debe costarte en anuncios ' + usd(obj, 2) + ' o menos.';
+  var out = clear(document.getElementById('sp-result')), ds = simpleDataset(state.reports);
+  if (!ds) { out.appendChild(el('p', { cls: 'big', text: 'Sube tu primer informe (paso 2) y aquí verás qué hacer.' })); return; }
+  var t = repAgg(ds.rows), byName = {};
+  ds.rows.forEach(function (r) { (byName[r.nombre] = byName[r.nombre] || []).push(r); });
+  var sets = Object.keys(byName).map(function (n) { var a = repAgg(byName[n]); a.nombre = n; return a; });
+  var today = new Date().toISOString().slice(0, 10);
+  var inicio = state.prueba.fecha || state.reports.map(function (r) { return r.inicio; }).filter(Boolean).sort()[0] || ds.inicio || today;
+  var fin = ds.fin || today, N = daysBetween(inicio, fin); if (!isFinite(N) || N < 1) N = 1;
+  var cover = daysBetween(ds.inicio || fin, fin);
+  var adv = simpleAdvice({ t: t, N: N, inicio: inicio, cm1: cm1, obj: obj, aov: R[E + 'D13'], best: sets.length > 1 ? repWinner(sets) : null, sets: sets, diario: isFinite(cover) && cover > 0 ? t.gasto / cover : NaN });
+  out.appendChild(el('p', { cls: 'note', text: 'Datos del ' + fmtFecha(ds.inicio) + (ds.fin !== ds.inicio ? ' al ' + fmtFecha(ds.fin) : '') + ' (' + ds.fuente + ') · día ' + N + ' de la campaña, que empezó el ' + fmtFecha(inicio) + '.' }));
+  out.appendChild(verdictBox(adv.title, '', adv.zone));
+  var ol = el('ol', { cls: 'todo' }); adv.actions.forEach(function (x) { ol.appendChild(el('li', { text: x })); }); out.appendChild(ol);
+  var k = el('div', { cls: 'grid kpis', style: 'margin-top:12px' });
+  k.appendChild(kpi('Gastaste', usd(t.gasto, 2)));
+  k.appendChild(kpi('Ventas', fmtN(t.compras, 0), fmtN(t.checkouts, 0) + ' empezaron a pagar'));
+  k.appendChild(kpi('Cada venta te costó', t.compras > 0 ? usd(adv.cac, 2) : 'Sin ventas', 'Para ganar: ' + usd(obj, 2) + ' o menos · para no perder: ' + usd(cm1, 2) + ' o menos'));
+  out.appendChild(k);
+  if (adv.sets.length > 1) {
+    var tb = el('tbody');
+    adv.sets.sort(function (a, b) { return b.gasto - a.gasto; }).forEach(function (x) { tb.appendChild(el('tr', {}, [el('td', { text: x.nombre }), el('td', { cls: 'n', text: usd(x.gasto, 2) }), el('td', { cls: 'n', text: fmtN(x.compras, 0) }), el('td', {}, [badge(x.label, x.zone)])])); });
+    out.appendChild(el('div', { cls: 'tw', style: 'margin-top:12px' }, [el('table', {}, [el('caption', { text: 'Tus conjuntos de anuncios' }), el('thead', {}, [el('tr', {}, [el('th', { scope: 'col', text: 'Conjunto' }), el('th', { scope: 'col', cls: 'n', text: 'Gastado' }), el('th', { scope: 'col', cls: 'n', text: 'Ventas' }), el('th', { scope: 'col', text: 'Qué hacer' })])]), tb])]));
+  }
+  out.appendChild(el('p', { cls: 'big', style: 'margin-top:12px', text: adv.next ? 'Vuelve a subir el informe en 2 o 3 días. La próxima decisión importante es el día ' + adv.next + ' (' + fmtFecha(adv.nextDate) + ').' : 'A partir de ahora, sube el informe una vez por semana.' }));
+  var more = el('button', { cls: 'btn', type: 'button', text: 'Ver el detalle en el modo experto' });
+  more.addEventListener('click', function () { setModo('experto'); document.getElementById('t-informe').click(); });
+  out.appendChild(more);
+  labelScrollers();
+}
+function setModo(m) {
+  state.modo = m === 'experto' ? 'experto' : 'simple'; save();
+  document.documentElement.setAttribute('data-modo', state.modo);
+  document.getElementById('btn-modo').textContent = state.modo === 'simple' ? 'Ver modo experto (todas las herramientas)' : 'Volver al modo fácil';
+  document.getElementById('skip').setAttribute('href', state.modo === 'simple' ? '#simple' : '#main');
+  // Solo una región principal visible: la del modo activo
+  var sm = document.getElementById('simple');
+  if (state.modo === 'simple') sm.setAttribute('role', 'main'); else sm.removeAttribute('role');
+}
+document.getElementById('btn-modo').addEventListener('click', function () { setModo(state.modo === 'simple' ? 'experto' : 'simple'); window.scrollTo(0, 0); });
 
 /* ================= ORQUESTACIÓN ================= */
 function renderAll() {
   R = compute(state.inputs);
-  renderSupDerived(); renderResumen(); renderEconomia(); renderValidacion(); renderMedios(); renderEscalado(); renderRutina(); renderGuardian(); renderSens(); renderLog(); renderArranque(); renderPrueba(); renderInforme();
+  renderSupDerived(); renderResumen(); renderEconomia(); renderValidacion(); renderMedios(); renderEscalado(); renderRutina(); renderGuardian(); renderSens(); renderLog(); renderArranque(); renderPrueba(); renderInforme(); renderSimple();
 }
-function rebuild() { buildSupuestos(); clear(document.getElementById('esc-inputs')); buildRutina(); buildGuardian(); buildPlan(); buildArranque(); buildPrueba(); renderAll(); }
+function rebuild() { buildSupuestos(); clear(document.getElementById('esc-inputs')); buildRutina(); buildGuardian(); buildPlan(); buildArranque(); buildPrueba(); buildSimple(); renderAll(); }
 
 function initTabs() {
   var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
@@ -1885,8 +2157,8 @@ function initTabs() {
 }
 
 document.getElementById('btn-reset').addEventListener('click', function () {
-  if (!window.confirm('¿Restablecer todos los supuestos al caso de referencia? El cuaderno, el arranque y las casillas se conservan.')) return;
-  state.inputs = JSON.parse(JSON.stringify(DEFAULTS)); state.scen = { opt: null, pes: 0.12 }; save(); rebuild();
+  if (!window.confirm('¿Restablecer los supuestos? Se vuelve al modelo de referencia con los precios de tu producto. El cuaderno, los informes y las casillas se conservan.')) return;
+  state.inputs = JSON.parse(JSON.stringify(DEFAULTS)); state.scen = { opt: null, pes: 0.12 }; applyProducto(state.producto); save(); rebuild();
   document.getElementById('io-status').textContent = 'Supuestos restablecidos.';
 });
 document.getElementById('btn-export').addEventListener('click', function () {
@@ -1899,7 +2171,11 @@ document.getElementById('file-import').addEventListener('change', function (ev) 
   if (f.size > 2e6) { st.textContent = 'Archivo demasiado grande.'; return; }
   var rd = new FileReader();
   rd.onload = function () {
-    try { state = sanitize(JSON.parse(String(rd.result))); save(); rebuild(); st.textContent = 'Datos importados.'; }
+    try {
+      state = sanitize(JSON.parse(String(rd.result)));
+      if (!state.producto) { state.producto = Object.assign({}, PRODUCTO_INICIAL); applyProducto(state.producto); }
+      save(); setModo(state.modo); rebuild(); st.textContent = 'Datos importados.';
+    }
     catch (e) { st.textContent = 'El archivo no es un JSON válido de esta app.'; }
     ev.target.value = '';
   };
@@ -1938,6 +2214,8 @@ function labelScrollers() {
   });
 }
 load();
+if (!state.producto) { state.producto = Object.assign({}, PRODUCTO_INICIAL); applyProducto(state.producto); save(); }
+setModo(state.modo);
 document.getElementById('log-form').elements.fecha.value = new Date().toISOString().slice(0, 10);
 initTabs();
 rebuild();
